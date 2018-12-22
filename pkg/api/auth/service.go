@@ -4,8 +4,8 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 	"github.com/labstack/echo"
-	"github.com/ribice/gorsk/pkg/api/auth/platform/pgsql"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new iam service
@@ -26,9 +26,9 @@ func Initialize(db *pg.DB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
 
 // Service represents auth service interface
 type Service interface {
-	Authenticate(echo.Context, string, string) (*gorsk.AuthToken, error)
-	Refresh(echo.Context, string) (*gorsk.RefreshToken, error)
-	Me(echo.Context) (*gorsk.User, error)
+	Authenticate(echo.Context, string, string) (*cerebrum.AuthToken, error)
+	Refresh(echo.Context, string) (*cerebrum.RefreshToken, error)
+	Me(echo.Context) (*cerebrum.User, error)
 }
 
 // Auth represents auth application service
@@ -42,15 +42,15 @@ type Auth struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (*gorsk.User, error)
-	FindByUsername(orm.DB, string) (*gorsk.User, error)
-	FindByToken(orm.DB, string) (*gorsk.User, error)
-	Update(orm.DB, *gorsk.User) error
+	View(orm.DB, int) (*cerebrum.User, error)
+	FindByUsername(orm.DB, string) (*cerebrum.User, error)
+	FindByToken(orm.DB, string) (*cerebrum.User, error)
+	Update(orm.DB, *cerebrum.User) error
 }
 
 // TokenGenerator represents token generator (jwt) interface
 type TokenGenerator interface {
-	GenerateToken(*gorsk.User) (string, string, error)
+	GenerateToken(*cerebrum.User) (string, string, error)
 }
 
 // Securer represents security interface
@@ -61,5 +61,5 @@ type Securer interface {
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) *gorsk.AuthUser
+	User(echo.Context) *cerebrum.AuthUser
 }

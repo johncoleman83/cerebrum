@@ -6,13 +6,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/api/password"
-	"github.com/ribice/gorsk/pkg/api/password/transport"
+	"github.com/johncoleman83/cerebrum/pkg/api/password"
+	"github.com/johncoleman83/cerebrum/pkg/api/password/transport"
 
-	"github.com/ribice/gorsk/pkg/utl/mock"
-	"github.com/ribice/gorsk/pkg/utl/mock/mockdb"
-	"github.com/ribice/gorsk/pkg/utl/model"
-	"github.com/ribice/gorsk/pkg/utl/server"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
 	"github.com/go-pg/pg/orm"
 	"github.com/labstack/echo"
@@ -67,12 +67,12 @@ func TestChangePassword(t *testing.T) {
 			},
 			id: "1",
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*gorsk.User, error) {
-					return &gorsk.User{
+				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Password: "oldPassword",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr *gorsk.User) error {
+				UpdateFn: func(db orm.DB, usr *cerebrum.User) error {
 					return nil
 				},
 			},

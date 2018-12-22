@@ -3,55 +3,55 @@ package query_test
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 
-	"github.com/ribice/gorsk/pkg/utl/query"
+	"github.com/johncoleman83/cerebrum/pkg/utl/query"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestList(t *testing.T) {
 	type args struct {
-		user *gorsk.AuthUser
+		user *cerebrum.AuthUser
 	}
 	cases := []struct {
 		name     string
 		args     args
-		wantData *gorsk.ListQuery
+		wantData *cerebrum.ListQuery
 		wantErr  error
 	}{
 		{
 			name: "Super admin user",
-			args: args{user: &gorsk.AuthUser{
-				Role: gorsk.SuperAdminRole,
+			args: args{user: &cerebrum.AuthUser{
+				Role: cerebrum.SuperAdminRole,
 			}},
 		},
 		{
 			name: "Company admin user",
-			args: args{user: &gorsk.AuthUser{
-				Role:      gorsk.CompanyAdminRole,
+			args: args{user: &cerebrum.AuthUser{
+				Role:      cerebrum.CompanyAdminRole,
 				CompanyID: 1,
 			}},
-			wantData: &gorsk.ListQuery{
+			wantData: &cerebrum.ListQuery{
 				Query: "company_id = ?",
 				ID:    1},
 		},
 		{
 			name: "Location admin user",
-			args: args{user: &gorsk.AuthUser{
-				Role:       gorsk.LocationAdminRole,
+			args: args{user: &cerebrum.AuthUser{
+				Role:       cerebrum.LocationAdminRole,
 				CompanyID:  1,
 				LocationID: 2,
 			}},
-			wantData: &gorsk.ListQuery{
+			wantData: &cerebrum.ListQuery{
 				Query: "location_id = ?",
 				ID:    2},
 		},
 		{
 			name: "Normal user",
-			args: args{user: &gorsk.AuthUser{
-				Role: gorsk.UserRole,
+			args: args{user: &cerebrum.AuthUser{
+				Role: cerebrum.UserRole,
 			}},
 			wantErr: echo.ErrForbidden,
 		},

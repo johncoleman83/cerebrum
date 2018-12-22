@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 // Company represents company model
 type Company struct {

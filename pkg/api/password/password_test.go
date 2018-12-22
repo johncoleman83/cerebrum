@@ -3,11 +3,11 @@ package password_test
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/api/password"
+	"github.com/johncoleman83/cerebrum/pkg/api/password"
 
-	"github.com/ribice/gorsk/pkg/utl/mock"
-	"github.com/ribice/gorsk/pkg/utl/mock/mockdb"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/go-pg/pg/orm"
 	"github.com/labstack/echo"
@@ -34,7 +34,7 @@ func TestChange(t *testing.T) {
 			args: args{id: 1},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id int) error {
-					return gorsk.ErrGeneric
+					return cerebrum.ErrGeneric
 				}},
 			wantErr: true,
 		},
@@ -47,11 +47,11 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*gorsk.User, error) {
+				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
 					if id != 1 {
 						return nil, nil
 					}
-					return nil, gorsk.ErrGeneric
+					return nil, cerebrum.ErrGeneric
 				},
 			},
 		},
@@ -64,8 +64,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*gorsk.User, error) {
-					return &gorsk.User{
+				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -85,8 +85,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*gorsk.User, error) {
-					return &gorsk.User{
+				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -108,12 +108,12 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*gorsk.User, error) {
-					return &gorsk.User{
+				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",
 					}, nil
 				},
-				UpdateFn: func(orm.DB, *gorsk.User) error {
+				UpdateFn: func(orm.DB, *cerebrum.User) error {
 					return nil
 				},
 			},

@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 import "github.com/labstack/echo"
 

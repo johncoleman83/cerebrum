@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"github.com/ribice/gorsk/pkg/api"
+	"github.com/johncoleman83/cerebrum/pkg/api"
 
-	"github.com/ribice/gorsk/pkg/utl/config"
+	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 )
 
 func main() {

@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ribice/gorsk/pkg/api/user"
+	"github.com/johncoleman83/cerebrum/pkg/api/user"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 )
@@ -153,7 +153,7 @@ type createReq struct {
 
 	CompanyID  int              `json:"company_id" validate:"required"`
 	LocationID int              `json:"location_id" validate:"required"`
-	RoleID     gorsk.AccessRole `json:"role_id" validate:"required"`
+	RoleID     cerebrum.AccessRole `json:"role_id" validate:"required"`
 }
 
 func (h *HTTP) create(c echo.Context) error {
@@ -168,11 +168,11 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if r.RoleID < gorsk.SuperAdminRole || r.RoleID > gorsk.UserRole {
-		return gorsk.ErrBadRequest
+	if r.RoleID < cerebrum.SuperAdminRole || r.RoleID > cerebrum.UserRole {
+		return cerebrum.ErrBadRequest
 	}
 
-	usr, err := h.svc.Create(c, gorsk.User{
+	usr, err := h.svc.Create(c, cerebrum.User{
 		Username:   r.Username,
 		Password:   r.Password,
 		Email:      r.Email,
@@ -191,12 +191,12 @@ func (h *HTTP) create(c echo.Context) error {
 }
 
 type listResponse struct {
-	Users []gorsk.User `json:"users"`
+	Users []cerebrum.User `json:"users"`
 	Page  int          `json:"page"`
 }
 
 func (h *HTTP) list(c echo.Context) error {
-	p := new(gorsk.PaginationReq)
+	p := new(cerebrum.PaginationReq)
 	if err := c.Bind(p); err != nil {
 		return err
 	}
@@ -213,7 +213,7 @@ func (h *HTTP) list(c echo.Context) error {
 func (h *HTTP) view(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return gorsk.ErrBadRequest
+		return cerebrum.ErrBadRequest
 	}
 
 	result, err := h.svc.View(c, id)
@@ -238,7 +238,7 @@ type updateReq struct {
 func (h *HTTP) update(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return gorsk.ErrBadRequest
+		return cerebrum.ErrBadRequest
 	}
 
 	req := new(updateReq)
@@ -265,7 +265,7 @@ func (h *HTTP) update(c echo.Context) error {
 func (h *HTTP) delete(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return gorsk.ErrBadRequest
+		return cerebrum.ErrBadRequest
 	}
 
 	if err := h.svc.Delete(c, id); err != nil {

@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 // Success response
 // swagger:response ok

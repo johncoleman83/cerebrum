@@ -10,8 +10,8 @@
   ],
   "swagger": "2.0",
   "info": {
-    "description": "API Docs for GORSK v1",
-    "title": "GORSK - Go(lang) restful starter kit",
+    "description": "API Docs for CEREBRUM v1",
+    "title": "CEREBRUM - Go(lang) restful starter kit",
     "contact": {
       "name": "Emir Ribic",
       "url": "https://ribice.ba",
@@ -354,7 +354,7 @@
       "description": "AccessRole represents access role type",
       "type": "integer",
       "format": "int8",
-      "x-go-package": "github.com/ribice/gorsk/internal"
+      "x-go-package": "github.com/johncoleman83/cerebrum/internal"
     },
     "Credentials": {
       "description": "Credentials contains login request",
@@ -369,7 +369,7 @@
           "x-go-name": "Username"
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/request"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/request"
     },
     "Register": {
       "description": "Register contains registration request",
@@ -415,7 +415,7 @@
           "x-go-name": "Username"
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/request"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/request"
     },
     "Role": {
       "description": "Role model",
@@ -434,7 +434,7 @@
           "x-go-name": "Name"
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/internal"
+      "x-go-package": "github.com/johncoleman83/cerebrum/internal"
     },
     "User": {
       "description": "User represents user domain model",
@@ -511,7 +511,7 @@
           "x-go-name": "Username"
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/internal"
+      "x-go-package": "github.com/johncoleman83/cerebrum/internal"
     },
     "pwChange": {
       "description": "Password change request",
@@ -531,7 +531,7 @@
         }
       },
       "x-go-name": "swaggPwChange",
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/swagger"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/swagger"
     },
     "swaggAccCreateReq": {
       "description": "Account create request",
@@ -541,7 +541,7 @@
           "$ref": "#/definitions/Register"
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/swagger"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/swagger"
     },
     "swaggUserListResponse": {
       "description": "Users model response",
@@ -566,7 +566,7 @@
           }
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/swagger"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/swagger"
     },
     "swaggUserResponse": {
       "description": "User model response",
@@ -649,7 +649,7 @@
           }
         }
       },
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/swagger"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/swagger"
     },
     "userUpdate": {
       "description": "User update request",
@@ -677,7 +677,7 @@
         }
       },
       "x-go-name": "swaggUserUpdateReq",
-      "x-go-package": "github.com/ribice/gorsk/cmd/api/swagger"
+      "x-go-package": "github.com/johncoleman83/cerebrum/cmd/api/swagger"
     }
   },
   "responses": {

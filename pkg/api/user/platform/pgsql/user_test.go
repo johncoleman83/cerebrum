@@ -3,10 +3,10 @@ package pgsql_test
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
-	"github.com/ribice/gorsk/pkg/api/user/platform/pgsql"
-	"github.com/ribice/gorsk/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/api/user/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,13 +14,13 @@ func TestCreate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		req      gorsk.User
-		wantData *gorsk.User
+		req      cerebrum.User
+		wantData *cerebrum.User
 	}{
 		{
 			name:    "User already exists",
 			wantErr: true,
-			req: gorsk.User{
+			req: cerebrum.User{
 				Email:    "johndoe@mail.com",
 				Username: "johndoe",
 			},
@@ -28,7 +28,7 @@ func TestCreate(t *testing.T) {
 		{
 			name:    "Fail on insert duplicate ID",
 			wantErr: true,
-			req: gorsk.User{
+			req: cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -37,14 +37,14 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 1,
 				},
 			},
 		},
 		{
 			name: "Success",
-			req: gorsk.User{
+			req: cerebrum.User{
 				Email:      "newtomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -53,11 +53,11 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 			},
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "newtomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -66,7 +66,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 			},
@@ -76,9 +76,9 @@ func TestCreate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[1].req); err != nil {
@@ -109,7 +109,7 @@ func TestView(t *testing.T) {
 		name     string
 		wantErr  bool
 		id       int
-		wantData *gorsk.User
+		wantData *cerebrum.User
 	}{
 		{
 			name:    "User does not exist",
@@ -119,7 +119,7 @@ func TestView(t *testing.T) {
 		{
 			name: "Success",
 			id:   2,
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -128,10 +128,10 @@ func TestView(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
-				Role: &gorsk.Role{
+				Role: &cerebrum.Role{
 					ID:          1,
 					AccessLevel: 1,
 					Name:        "SUPER_ADMIN",
@@ -143,9 +143,9 @@ func TestView(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
@@ -175,13 +175,13 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      *gorsk.User
-		wantData *gorsk.User
+		usr      *cerebrum.User
+		wantData *cerebrum.User
 	}{
 		{
 			name: "Success",
-			usr: &gorsk.User{
-				Base: gorsk.Base{
+			usr: &cerebrum.User{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 				FirstName: "Z",
@@ -191,7 +191,7 @@ func TestUpdate(t *testing.T) {
 				Mobile:    "345678",
 				Username:  "newUsername",
 			},
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Z",
 				LastName:   "Freak",
@@ -203,7 +203,7 @@ func TestUpdate(t *testing.T) {
 				Address:    "Address",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 			},
@@ -213,9 +213,9 @@ func TestUpdate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[0].usr); err != nil {
@@ -229,8 +229,8 @@ func TestUpdate(t *testing.T) {
 			err := udb.Update(db, tt.wantData)
 			assert.Equal(t, tt.wantErr, err != nil)
 			if tt.wantData != nil {
-				user := &gorsk.User{
-					Base: gorsk.Base{
+				user := &cerebrum.User{
+					Base: cerebrum.Base{
 						ID: tt.usr.ID,
 					},
 				}
@@ -251,28 +251,28 @@ func TestList(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		qp       *gorsk.ListQuery
-		pg       *gorsk.Pagination
-		wantData []gorsk.User
+		qp       *cerebrum.ListQuery
+		pg       *cerebrum.Pagination
+		wantData []cerebrum.User
 	}{
 		{
 			name:    "Invalid pagination values",
 			wantErr: true,
-			pg: &gorsk.Pagination{
+			pg: &cerebrum.Pagination{
 				Limit: -100,
 			},
 		},
 		{
 			name: "Success",
-			pg: &gorsk.Pagination{
+			pg: &cerebrum.Pagination{
 				Limit:  100,
 				Offset: 0,
 			},
-			qp: &gorsk.ListQuery{
+			qp: &cerebrum.ListQuery{
 				ID:    1,
 				Query: "company_id = ?",
 			},
-			wantData: []gorsk.User{
+			wantData: []cerebrum.User{
 				{
 					Email:      "tomjones@mail.com",
 					FirstName:  "Tom",
@@ -282,10 +282,10 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "newPass",
-					Base: gorsk.Base{
+					Base: cerebrum.Base{
 						ID: 2,
 					},
-					Role: &gorsk.Role{
+					Role: &cerebrum.Role{
 						ID:          1,
 						AccessLevel: 1,
 						Name:        "SUPER_ADMIN",
@@ -300,10 +300,10 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "hunter2",
-					Base: gorsk.Base{
+					Base: cerebrum.Base{
 						ID: 1,
 					},
-					Role: &gorsk.Role{
+					Role: &cerebrum.Role{
 						ID:          1,
 						AccessLevel: 1,
 						Name:        "SUPER_ADMIN",
@@ -317,9 +317,9 @@ func TestList(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[1].wantData); err != nil {
@@ -347,18 +347,18 @@ func TestDelete(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      *gorsk.User
-		wantData *gorsk.User
+		usr      *cerebrum.User
+		wantData *cerebrum.User
 	}{
 		{
 			name: "Success",
-			usr: &gorsk.User{
-				Base: gorsk.Base{
+			usr: &cerebrum.User{
+				Base: cerebrum.Base{
 					ID:        2,
 					DeletedAt: mock.TestTime(2018),
 				},
 			},
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -367,7 +367,7 @@ func TestDelete(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 			},
@@ -377,9 +377,9 @@ func TestDelete(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[0].wantData); err != nil {

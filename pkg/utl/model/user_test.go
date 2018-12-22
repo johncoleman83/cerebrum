@@ -1,13 +1,13 @@
-package gorsk_test
+package cerebrum_test
 
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 func TestChangePassword(t *testing.T) {
-	user := &gorsk.User{
+	user := &cerebrum.User{
 		FirstName: "TestGuy",
 	}
 
@@ -25,7 +25,7 @@ func TestChangePassword(t *testing.T) {
 }
 
 func TestUpdateLastLogin(t *testing.T) {
-	user := &gorsk.User{
+	user := &cerebrum.User{
 		FirstName: "TestGuy",
 	}
 

@@ -2,9 +2,9 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
-// GORSK - Go(lang) restful starter kit
+// CEREBRUM - Go(lang) restful starter kit
 //
-// API Docs for GORSK v1
+// API Docs for CEREBRUM v1
 //
 // 	 Terms Of Service:  N/A
 //     Schemes: http
@@ -35,24 +35,24 @@ package api
 import (
 	"crypto/sha1"
 
-	"github.com/ribice/gorsk/pkg/utl/zlog"
+	"github.com/johncoleman83/cerebrum/pkg/utl/zlog"
 
-	"github.com/ribice/gorsk/pkg/api/auth"
-	al "github.com/ribice/gorsk/pkg/api/auth/logging"
-	at "github.com/ribice/gorsk/pkg/api/auth/transport"
-	"github.com/ribice/gorsk/pkg/api/password"
-	pl "github.com/ribice/gorsk/pkg/api/password/logging"
-	pt "github.com/ribice/gorsk/pkg/api/password/transport"
-	"github.com/ribice/gorsk/pkg/api/user"
-	ul "github.com/ribice/gorsk/pkg/api/user/logging"
-	ut "github.com/ribice/gorsk/pkg/api/user/transport"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth"
+	al "github.com/johncoleman83/cerebrum/pkg/api/auth/logging"
+	at "github.com/johncoleman83/cerebrum/pkg/api/auth/transport"
+	"github.com/johncoleman83/cerebrum/pkg/api/password"
+	pl "github.com/johncoleman83/cerebrum/pkg/api/password/logging"
+	pt "github.com/johncoleman83/cerebrum/pkg/api/password/transport"
+	"github.com/johncoleman83/cerebrum/pkg/api/user"
+	ul "github.com/johncoleman83/cerebrum/pkg/api/user/logging"
+	ut "github.com/johncoleman83/cerebrum/pkg/api/user/transport"
 
-	"github.com/ribice/gorsk/pkg/utl/config"
-	"github.com/ribice/gorsk/pkg/utl/middleware/jwt"
-	"github.com/ribice/gorsk/pkg/utl/postgres"
-	"github.com/ribice/gorsk/pkg/utl/rbac"
-	"github.com/ribice/gorsk/pkg/utl/secure"
-	"github.com/ribice/gorsk/pkg/utl/server"
+	"github.com/johncoleman83/cerebrum/pkg/utl/config"
+	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	"github.com/johncoleman83/cerebrum/pkg/utl/postgres"
+	"github.com/johncoleman83/cerebrum/pkg/utl/rbac"
+	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
+	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 )
 
 // Start starts the API service

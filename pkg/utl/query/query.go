@@ -2,18 +2,18 @@ package query
 
 import (
 	"github.com/labstack/echo"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // List prepares data for list queries
-func List(u *gorsk.AuthUser) (*gorsk.ListQuery, error) {
+func List(u *cerebrum.AuthUser) (*cerebrum.ListQuery, error) {
 	switch true {
-	case u.Role <= gorsk.AdminRole: // user is SuperAdmin or Admin
+	case u.Role <= cerebrum.AdminRole: // user is SuperAdmin or Admin
 		return nil, nil
-	case u.Role == gorsk.CompanyAdminRole:
-		return &gorsk.ListQuery{Query: "company_id = ?", ID: u.CompanyID}, nil
-	case u.Role == gorsk.LocationAdminRole:
-		return &gorsk.ListQuery{Query: "location_id = ?", ID: u.LocationID}, nil
+	case u.Role == cerebrum.CompanyAdminRole:
+		return &cerebrum.ListQuery{Query: "company_id = ?", ID: u.CompanyID}, nil
+	case u.Role == cerebrum.LocationAdminRole:
+		return &cerebrum.ListQuery{Query: "location_id = ?", ID: u.LocationID}, nil
 	default:
 		return nil, echo.ErrForbidden
 	}

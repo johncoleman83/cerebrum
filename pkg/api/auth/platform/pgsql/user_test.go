@@ -3,11 +3,11 @@ package pgsql_test
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
-	"github.com/ribice/gorsk/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 
-	"github.com/ribice/gorsk/pkg/api/auth/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/pgsql"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +17,7 @@ func TestView(t *testing.T) {
 		name     string
 		wantErr  bool
 		id       int
-		wantData *gorsk.User
+		wantData *cerebrum.User
 	}{
 		{
 			name:    "User does not exist",
@@ -27,7 +27,7 @@ func TestView(t *testing.T) {
 		{
 			name: "Success",
 			id:   2,
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -36,10 +36,10 @@ func TestView(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
-				Role: &gorsk.Role{
+				Role: &cerebrum.Role{
 					ID:          1,
 					AccessLevel: 1,
 					Name:        "SUPER_ADMIN",
@@ -51,9 +51,9 @@ func TestView(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
@@ -84,7 +84,7 @@ func TestFindByUsername(t *testing.T) {
 		name     string
 		wantErr  bool
 		username string
-		wantData *gorsk.User
+		wantData *cerebrum.User
 	}{
 		{
 			name:     "User does not exist",
@@ -94,7 +94,7 @@ func TestFindByUsername(t *testing.T) {
 		{
 			name:     "Success",
 			username: "tomjones",
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -103,10 +103,10 @@ func TestFindByUsername(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
-				Role: &gorsk.Role{
+				Role: &cerebrum.Role{
 					ID:          1,
 					AccessLevel: 1,
 					Name:        "SUPER_ADMIN",
@@ -118,9 +118,9 @@ func TestFindByUsername(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
@@ -149,7 +149,7 @@ func TestFindByToken(t *testing.T) {
 		name     string
 		wantErr  bool
 		token    string
-		wantData *gorsk.User
+		wantData *cerebrum.User
 	}{
 		{
 			name:    "User does not exist",
@@ -159,7 +159,7 @@ func TestFindByToken(t *testing.T) {
 		{
 			name:  "Success",
 			token: "loginrefresh",
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "johndoe@mail.com",
 				FirstName:  "John",
 				LastName:   "Doe",
@@ -168,10 +168,10 @@ func TestFindByToken(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "hunter2",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 1,
 				},
-				Role: &gorsk.Role{
+				Role: &cerebrum.Role{
 					ID:          1,
 					AccessLevel: 1,
 					Name:        "SUPER_ADMIN",
@@ -184,9 +184,9 @@ func TestFindByToken(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
@@ -214,13 +214,13 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      *gorsk.User
-		wantData *gorsk.User
+		usr      *cerebrum.User
+		wantData *cerebrum.User
 	}{
 		{
 			name: "Success",
-			usr: &gorsk.User{
-				Base: gorsk.Base{
+			usr: &cerebrum.User{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 				FirstName: "Z",
@@ -230,7 +230,7 @@ func TestUpdate(t *testing.T) {
 				Mobile:    "345678",
 				Username:  "newUsername",
 			},
-			wantData: &gorsk.User{
+			wantData: &cerebrum.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Z",
 				LastName:   "Freak",
@@ -242,7 +242,7 @@ func TestUpdate(t *testing.T) {
 				Address:    "Address",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: gorsk.Base{
+				Base: cerebrum.Base{
 					ID: 2,
 				},
 			},
@@ -252,9 +252,9 @@ func TestUpdate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &gorsk.Role{}, &gorsk.User{})
+	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &gorsk.Role{
+	if err := mock.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[0].usr); err != nil {
@@ -268,8 +268,8 @@ func TestUpdate(t *testing.T) {
 			err := udb.Update(db, tt.wantData)
 			assert.Equal(t, tt.wantErr, err != nil)
 			if tt.wantData != nil {
-				user := &gorsk.User{
-					Base: gorsk.Base{
+				user := &cerebrum.User{
+					Base: cerebrum.Base{
 						ID: tt.usr.ID,
 					},
 				}

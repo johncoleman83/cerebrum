@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/ribice/gorsk/pkg/api/user"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/api/user"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new user logging service
-func New(svc user.Service, logger gorsk.Logger) *LogService {
+func New(svc user.Service, logger cerebrum.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -19,13 +19,13 @@ func New(svc user.Service, logger gorsk.Logger) *LogService {
 // LogService represents user logging service
 type LogService struct {
 	user.Service
-	logger gorsk.Logger
+	logger cerebrum.Logger
 }
 
 const name = "user"
 
 // Create logging
-func (ls *LogService) Create(c echo.Context, req gorsk.User) (resp *gorsk.User, err error) {
+func (ls *LogService) Create(c echo.Context, req cerebrum.User) (resp *cerebrum.User, err error) {
 	req.Password = "xxx-redacted-xxx"
 	defer func(begin time.Time) {
 		ls.logger.Log(
@@ -42,7 +42,7 @@ func (ls *LogService) Create(c echo.Context, req gorsk.User) (resp *gorsk.User, 
 }
 
 // List logging
-func (ls *LogService) List(c echo.Context, req *gorsk.Pagination) (resp []gorsk.User, err error) {
+func (ls *LogService) List(c echo.Context, req *cerebrum.Pagination) (resp []cerebrum.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -58,7 +58,7 @@ func (ls *LogService) List(c echo.Context, req *gorsk.Pagination) (resp []gorsk.
 }
 
 // View logging
-func (ls *LogService) View(c echo.Context, req int) (resp *gorsk.User, err error) {
+func (ls *LogService) View(c echo.Context, req int) (resp *cerebrum.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -89,7 +89,7 @@ func (ls *LogService) Delete(c echo.Context, req int) (err error) {
 }
 
 // Update logging
-func (ls *LogService) Update(c echo.Context, req *user.Update) (resp *gorsk.User, err error) {
+func (ls *LogService) Update(c echo.Context, req *user.Update) (resp *cerebrum.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

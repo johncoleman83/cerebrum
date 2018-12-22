@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ribice/gorsk/pkg/api/password"
+	"github.com/johncoleman83/cerebrum/pkg/api/password"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 )
@@ -68,7 +68,7 @@ type changeReq struct {
 func (h *HTTP) change(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return gorsk.ErrBadRequest
+		return cerebrum.ErrBadRequest
 	}
 
 	p := new(changeReq)

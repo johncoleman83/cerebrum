@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 import (
 	"time"

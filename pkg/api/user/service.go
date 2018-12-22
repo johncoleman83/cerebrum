@@ -4,17 +4,17 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 	"github.com/labstack/echo"
-	"github.com/ribice/gorsk/pkg/api/user/platform/pgsql"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/api/user/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // Service represents user application interface
 type Service interface {
-	Create(echo.Context, gorsk.User) (*gorsk.User, error)
-	List(echo.Context, *gorsk.Pagination) ([]gorsk.User, error)
-	View(echo.Context, int) (*gorsk.User, error)
+	Create(echo.Context, cerebrum.User) (*cerebrum.User, error)
+	List(echo.Context, *cerebrum.Pagination) ([]cerebrum.User, error)
+	View(echo.Context, int) (*cerebrum.User, error)
 	Delete(echo.Context, int) error
-	Update(echo.Context, *Update) (*gorsk.User, error)
+	Update(echo.Context, *Update) (*cerebrum.User, error)
 }
 
 // New creates new user application service
@@ -42,17 +42,17 @@ type Securer interface {
 
 // UDB represents user repository interface
 type UDB interface {
-	Create(orm.DB, gorsk.User) (*gorsk.User, error)
-	View(orm.DB, int) (*gorsk.User, error)
-	List(orm.DB, *gorsk.ListQuery, *gorsk.Pagination) ([]gorsk.User, error)
-	Update(orm.DB, *gorsk.User) error
-	Delete(orm.DB, *gorsk.User) error
+	Create(orm.DB, cerebrum.User) (*cerebrum.User, error)
+	View(orm.DB, int) (*cerebrum.User, error)
+	List(orm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error)
+	Update(orm.DB, *cerebrum.User) error
+	Delete(orm.DB, *cerebrum.User) error
 }
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) *gorsk.AuthUser
+	User(echo.Context) *cerebrum.AuthUser
 	EnforceUser(echo.Context, int) error
-	AccountCreate(echo.Context, gorsk.AccessRole, int, int) error
-	IsLowerRole(echo.Context, gorsk.AccessRole) error
+	AccountCreate(echo.Context, cerebrum.AccessRole, int, int) error
+	IsLowerRole(echo.Context, cerebrum.AccessRole) error
 }

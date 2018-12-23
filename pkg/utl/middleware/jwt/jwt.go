@@ -75,7 +75,7 @@ func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
 		return nil, cerebrum.ErrGeneric
 	}
 	parts := strings.SplitN(token, " ", 2)
-	if !(len(parts) == 2 && parts[0] == "Bearer") {
+	if len(parts) != 2 || parts[0] != "Bearer" {
 		return nil, cerebrum.ErrGeneric
 	}
 

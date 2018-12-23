@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 // AccessRole represents access role type
 type AccessRole int

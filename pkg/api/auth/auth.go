@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 )
@@ -14,7 +14,7 @@ var (
 )
 
 // Authenticate tries to authenticate the user provided by username and password
-func (a *Auth) Authenticate(c echo.Context, user, pass string) (*gorsk.AuthToken, error) {
+func (a *Auth) Authenticate(c echo.Context, user, pass string) (*cerebrum.AuthToken, error) {
 	u, err := a.udb.FindByUsername(a.db, user)
 	if err != nil {
 		return nil, err
@@ -25,12 +25,12 @@ func (a *Auth) Authenticate(c echo.Context, user, pass string) (*gorsk.AuthToken
 	}
 
 	if !u.Active {
-		return nil, gorsk.ErrUnauthorized
+		return nil, cerebrum.ErrUnauthorized
 	}
 
 	token, expire, err := a.tg.GenerateToken(u)
 	if err != nil {
-		return nil, gorsk.ErrUnauthorized
+		return nil, cerebrum.ErrUnauthorized
 	}
 
 	u.UpdateLastLogin(a.sec.Token(token))
@@ -39,11 +39,11 @@ func (a *Auth) Authenticate(c echo.Context, user, pass string) (*gorsk.AuthToken
 		return nil, err
 	}
 
-	return &gorsk.AuthToken{Token: token, Expires: expire, RefreshToken: u.Token}, nil
+	return &cerebrum.AuthToken{Token: token, Expires: expire, RefreshToken: u.Token}, nil
 }
 
 // Refresh refreshes jwt token and puts new claims inside
-func (a *Auth) Refresh(c echo.Context, token string) (*gorsk.RefreshToken, error) {
+func (a *Auth) Refresh(c echo.Context, token string) (*cerebrum.RefreshToken, error) {
 	user, err := a.udb.FindByToken(a.db, token)
 	if err != nil {
 		return nil, err
@@ -52,11 +52,11 @@ func (a *Auth) Refresh(c echo.Context, token string) (*gorsk.RefreshToken, error
 	if err != nil {
 		return nil, err
 	}
-	return &gorsk.RefreshToken{Token: token, Expires: expire}, nil
+	return &cerebrum.RefreshToken{Token: token, Expires: expire}, nil
 }
 
 // Me returns info about currently logged user
-func (a *Auth) Me(c echo.Context) (*gorsk.User, error) {
+func (a *Auth) Me(c echo.Context) (*cerebrum.User, error) {
 	au := a.rbac.User(c)
 	return a.udb.View(a.db, au.ID)
 }

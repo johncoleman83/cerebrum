@@ -10,13 +10,13 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/ribice/gorsk/pkg/api/auth"
-	"github.com/ribice/gorsk/pkg/api/auth/transport"
-	"github.com/ribice/gorsk/pkg/utl/middleware/jwt"
-	"github.com/ribice/gorsk/pkg/utl/mock"
-	"github.com/ribice/gorsk/pkg/utl/mock/mockdb"
-	"github.com/ribice/gorsk/pkg/utl/model"
-	"github.com/ribice/gorsk/pkg/utl/server"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth/transport"
+	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
 	"github.com/go-pg/pg/orm"
 	"github.com/stretchr/testify/assert"
@@ -27,7 +27,7 @@ func TestLogin(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *gorsk.AuthToken
+		wantResp   *cerebrum.AuthToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 		sec        *mock.Secure
@@ -42,8 +42,8 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (*gorsk.User, error) {
-					return nil, gorsk.ErrGeneric
+				FindByUsernameFn: func(orm.DB, string) (*cerebrum.User, error) {
+					return nil, cerebrum.ErrGeneric
 				},
 			},
 		},
@@ -52,18 +52,18 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (*gorsk.User, error) {
-					return &gorsk.User{
+				FindByUsernameFn: func(orm.DB, string) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Password: "hunter123",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u *gorsk.User) error {
+				UpdateFn: func(db orm.DB, u *cerebrum.User) error {
 					return nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(*gorsk.User) (string, string, error) {
+				GenerateTokenFn: func(*cerebrum.User) (string, string, error) {
 					return "jwttokenstring", mock.TestTime(2018).Format(time.RFC3339), nil
 				},
 			},
@@ -75,7 +75,7 @@ func TestLogin(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantResp: &gorsk.AuthToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339), RefreshToken: "refreshtoken"},
+			wantResp: &cerebrum.AuthToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339), RefreshToken: "refreshtoken"},
 		},
 	}
 
@@ -92,7 +92,7 @@ func TestLogin(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(gorsk.AuthToken)
+				response := new(cerebrum.AuthToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -109,7 +109,7 @@ func TestRefresh(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *gorsk.RefreshToken
+		wantResp   *cerebrum.RefreshToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 	}{
@@ -118,8 +118,8 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (*gorsk.User, error) {
-					return nil, gorsk.ErrGeneric
+				FindByTokenFn: func(orm.DB, string) (*cerebrum.User, error) {
+					return nil, cerebrum.ErrGeneric
 				},
 			},
 		},
@@ -128,19 +128,19 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (*gorsk.User, error) {
-					return &gorsk.User{
+				FindByTokenFn: func(orm.DB, string) (*cerebrum.User, error) {
+					return &cerebrum.User{
 						Username: "johndoe",
 						Active:   true,
 					}, nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(*gorsk.User) (string, string, error) {
+				GenerateTokenFn: func(*cerebrum.User) (string, string, error) {
 					return "jwttokenstring", mock.TestTime(2018).Format(time.RFC3339), nil
 				},
 			},
-			wantResp: &gorsk.RefreshToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339)},
+			wantResp: &cerebrum.RefreshToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339)},
 		},
 	}
 
@@ -157,7 +157,7 @@ func TestRefresh(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(gorsk.RefreshToken)
+				response := new(cerebrum.RefreshToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -172,7 +172,7 @@ func TestMe(t *testing.T) {
 	cases := []struct {
 		name       string
 		wantStatus int
-		wantResp   *gorsk.User
+		wantResp   *cerebrum.User
 		header     string
 		udb        *mockdb.User
 		rbac       *mock.RBAC
@@ -181,13 +181,13 @@ func TestMe(t *testing.T) {
 			name:       "Fail on user view",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				ViewFn: func(orm.DB, int) (*gorsk.User, error) {
-					return nil, gorsk.ErrGeneric
+				ViewFn: func(orm.DB, int) (*cerebrum.User, error) {
+					return nil, cerebrum.ErrGeneric
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) *gorsk.AuthUser {
-					return &gorsk.AuthUser{ID: 1}
+				UserFn: func(echo.Context) *cerebrum.AuthUser {
+					return &cerebrum.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
@@ -196,9 +196,9 @@ func TestMe(t *testing.T) {
 			name:       "Success",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, i int) (*gorsk.User, error) {
-					return &gorsk.User{
-						Base: gorsk.Base{
+				ViewFn: func(db orm.DB, i int) (*cerebrum.User, error) {
+					return &cerebrum.User{
+						Base: cerebrum.Base{
 							ID: i,
 						},
 						CompanyID:  2,
@@ -210,13 +210,13 @@ func TestMe(t *testing.T) {
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) *gorsk.AuthUser {
-					return &gorsk.AuthUser{ID: 1}
+				UserFn: func(echo.Context) *cerebrum.AuthUser {
+					return &cerebrum.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
-			wantResp: &gorsk.User{
-				Base: gorsk.Base{
+			wantResp: &cerebrum.User{
+				Base: cerebrum.Base{
 					ID: 1,
 				},
 				CompanyID:  2,
@@ -249,7 +249,7 @@ func TestMe(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(gorsk.User)
+				response := new(cerebrum.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}

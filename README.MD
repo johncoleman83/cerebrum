@@ -76,11 +76,22 @@ Using Gorsk requires having Go 1.7 or above. Once you downloaded Gorsk (either u
 
 5. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessery data, with a new account username/password admin/admin.
 
+* if you start a postgres docker container with:
+  ```
+  docker run --name some_postgress_name --env POSTGRES_PASSWORD=postgres --env POSTGRES_USER=postgres --publish 5432:5432 --detach postgres:alpine
+  ```
+  set the psn to:
+  ```
+  postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+  ```
+
 6. Run the app using:
 
 ```bash
 go run cmd/api/main.go
 ```
+
+7. Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
 The application runs as an HTTP server at port 8080. It provides the following RESTful endpoints:
 
@@ -94,7 +105,9 @@ The application runs as an HTTP server at port 8080. It provides the following R
 * `PATCH /v1/password/:id`: changes password for a user
 * `DELETE /v1/users/:id`: deletes a user
 
-You can log in as admin to the application by sending a post request to localhost:8080/login with username `admin` and password `admin` in JSON body.
+* You can log in as admin to the application by sending a post request to localhost:8080/login with username `admin` and password `admin` in JSON body.
+
+* When sending the Authorization header use this format: `Authorization: Bearer TOKEN_HASH`
 
 ### Implementing CRUD of another table
 

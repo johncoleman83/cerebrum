@@ -1,4 +1,4 @@
-package gorsk
+package cerebrum
 
 // Pagination constants
 const (

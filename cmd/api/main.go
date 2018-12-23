@@ -2,14 +2,26 @@ package main
 
 import (
 	"flag"
+	"os"
+	"fmt"
 
-	"github.com/ribice/gorsk/pkg/api"
+	"github.com/johncoleman83/cerebrum/pkg/api"
 
-	"github.com/ribice/gorsk/pkg/utl/config"
+	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 )
 
 func main() {
-
+	envs := map[string]bool{
+    "dev": true,
+    "stg": true,
+		"prod": true,
+	}
+	// set ENVIRONMENT_NAME to dev if unset
+	if _, err := envs["ENVIRONMENT_NAME"]; err {
+    os.Setenv("ENVIRONMENT_NAME", "dev")
+	}
+	fmt.Println(os.Getenv("ENVIRONMENT_NAME"))
+	
 	cfgPath := flag.String("p", "./cmd/api/conf.local.yaml", "Path to config file")
 	flag.Parse()
 

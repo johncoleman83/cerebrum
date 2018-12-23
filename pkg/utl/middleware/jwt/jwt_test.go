@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/middleware/jwt"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
-	"github.com/ribice/gorsk/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
@@ -79,7 +79,7 @@ func TestGenerateToken(t *testing.T) {
 		name      string
 		wantToken string
 		algo      string
-		req       *gorsk.User
+		req       *cerebrum.User
 	}{
 		{
 			name: "Invalid algo",
@@ -88,14 +88,14 @@ func TestGenerateToken(t *testing.T) {
 		{
 			name: "Success",
 			algo: "HS256",
-			req: &gorsk.User{
-				Base: gorsk.Base{
+			req: &cerebrum.User{
+				Base: cerebrum.Base{
 					ID: 1,
 				},
 				Username: "johndoe",
 				Email:    "johndoe@mail.com",
-				Role: &gorsk.Role{
-					AccessLevel: gorsk.SuperAdminRole,
+				Role: &cerebrum.Role{
+					AccessLevel: cerebrum.SuperAdminRole,
 				},
 				CompanyID:  1,
 				LocationID: 1,

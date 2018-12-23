@@ -1,14 +1,14 @@
-package gorsk_test
+package cerebrum_test
 
 import (
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/mock"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 func TestBeforeInsert(t *testing.T) {
-	base := &gorsk.Base{
+	base := &cerebrum.Base{
 		ID: 1,
 	}
 	base.BeforeInsert(nil)
@@ -21,7 +21,7 @@ func TestBeforeInsert(t *testing.T) {
 }
 
 func TestBeforeUpdate(t *testing.T) {
-	base := &gorsk.Base{
+	base := &cerebrum.Base{
 		ID:        1,
 		CreatedAt: mock.TestTime(2000),
 	}
@@ -33,7 +33,7 @@ func TestBeforeUpdate(t *testing.T) {
 }
 
 func TestPaginationTransform(t *testing.T) {
-	p := &gorsk.PaginationReq{
+	p := &cerebrum.PaginationReq{
 		Limit: 5000, Page: 5,
 	}
 

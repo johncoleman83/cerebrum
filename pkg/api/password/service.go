@@ -4,8 +4,8 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 	"github.com/labstack/echo"
-	"github.com/ribice/gorsk/pkg/api/password/platform/pgsql"
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // Service represents password application interface
@@ -38,8 +38,8 @@ type Password struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (*gorsk.User, error)
-	Update(orm.DB, *gorsk.User) error
+	View(orm.DB, int) (*cerebrum.User, error)
+	Update(orm.DB, *cerebrum.User) error
 }
 
 // Securer represents security interface

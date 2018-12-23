@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"testing"
 
-	"github.com/ribice/gorsk/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ribice/gorsk/pkg/utl/postgres"
+	"github.com/johncoleman83/cerebrum/pkg/utl/postgres"
 
 	"github.com/fortytw2/dockertest"
 )
@@ -48,7 +48,7 @@ func TestNew(t *testing.T) {
 		t.Fatalf("Error establishing connection %v", err)
 	}
 
-	var user gorsk.User
+	var user cerebrum.User
 	db.Select(&user)
 
 	assert.NotNil(t, db)

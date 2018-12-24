@@ -1,18 +1,21 @@
-# GORSK - GO(lang) Restful Starter Kit
+# Cerebrum
 
 [![Build Status](https://travis-ci.org/johncoleman83/cerebrum.svg?branch=master)](https://travis-ci.org/johncoleman83/cerebrum)
 [![codecov](https://codecov.io/gh/johncoleman83/cerebrum/branch/master/graph/badge.svg)](https://codecov.io/gh/johncoleman83/cerebrum)
 [![Go Report Card](https://goreportcard.com/badge/github.com/johncoleman83/cerebrum)](https://goreportcard.com/report/github.com/johncoleman83/cerebrum)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c3cb09dbc0bc43186464/maintainability)](https://codeclimate.com/github/johncoleman83/cerebrum/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/maintainability)](https://codeclimate.com/github/johncoleman83/cerebrum/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/test_coverage)](https://codeclimate.com/github/johncoleman83/cerebrum/test_coverage)
 
-**[App started with GORSK (GOlang Restful Starter Kit)](https://www.ribice.ba/refactoring-gorsk/)**
+## GORSK - GO(lang) Restful Starter Kit
+
+**[App started with GORSK](https://www.ribice.ba/refactoring-gorsk/)**
 
 Gorsk is a Golang starter kit for developing RESTful services. It is designed to help you kickstart your project, skipping the 'setting-up part' and jumping straight to writing business logic.
 
 Previously Gorsk was built using [Gin](https://github.com/gin-gonic/gin). Gorsk using Gin is available [HERE](https://github.com/ribice/gorsk-gin).
 
 
-The GORSK starter kit currently provides:
+The GORSK starter kit provided:
 
 * Fully featured RESTful endpoints for authentication, changing password and CRUD operations on the user entity
 * JWT authentication and session

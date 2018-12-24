@@ -147,7 +147,7 @@ Instead of passing database client as `s.db` , inside this function pass it as `
 
 1. Root directory contains things not related to code directly, e.g. docker-compose, CI/CD, readme, bash scripts etc. It should also contain vendor folder, Gopkg.toml and Gopkg.lock if dep is being used.
 
-2. Cmd package contains code for starting applications (main packages). The directory name for each application should match the name of the executable you want to have. Gorsk is structured as a monolith application but can be easily restructured to contain multiple microservices. An application may produce multiple binaries, therefore Gorsk uses the Go convention of placing main package as a subdirectory of the cmd package. As an example, scheduler application's binary would be located under cmd/cron. It also loads the necessery configuration and passes it to the service initializers.
+2. Cmd package contains code for starting applications (main packages). The directory name for each application should match the name of the executable you want to have. Gorsk is structured as a monolith application but can be easily restructured to contain multiple microservices. An application may produce multiple binaries, therefore Gorsk uses the Go convention of placing main package as a subdirectory of the cmd package. As an example, scheduler applications binary would be located under cmd/cron. It also loads the necessery configuration and passes it to the service initializers.
 
 3. Rest of the code is located under /pkg. The pkg directory contains `utl` and 'microservice' directories.
 
@@ -161,10 +161,17 @@ Instead of passing database client as `s.db` , inside this function pass it as `
 
 8. Utl directory contains helper packages and models. Packages such as mock, middleware, configuration, server are located here.
 
+## Tests
+
+* cleanup docker files from tests
+  ```
+  command docker ps --all --format "{{.ID}}\t{{.Image}}" | grep postgres:alpine | cut -f1 | xargs docker rm
+  ```
+
 ## License
 
 gorsk is licensed under the MIT license. Check the [LICENSE](LICENSE.md) file for details.
 
 ## Author
 
-[Emir Ribic](https://ribice.ba)
+[David John Coleman II](https://davidjohncoleman.com)

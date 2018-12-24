@@ -1,19 +1,18 @@
 # GORSK - GO(lang) Restful Starter Kit
 
-[![Build Status](https://travis-ci.org/ribice/gorsk.svg?branch=master)](https://travis-ci.org/ribice/gorsk)
-[![codecov](https://codecov.io/gh/ribice/gorsk/branch/master/graph/badge.svg)](https://codecov.io/gh/ribice/gorsk)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ribice/gorsk)](https://goreportcard.com/report/github.com/ribice/gorsk)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c3cb09dbc0bc43186464/maintainability)](https://codeclimate.com/github/ribice/gorsk/maintainability)
+[![Build Status](https://travis-ci.org/johncoleman83/cerebrum.svg?branch=master)](https://travis-ci.org/johncoleman83/cerebrum)
+[![codecov](https://codecov.io/gh/johncoleman83/cerebrum/branch/master/graph/badge.svg)](https://codecov.io/gh/johncoleman83/cerebrum)
+[![Go Report Card](https://goreportcard.com/badge/github.com/johncoleman83/cerebrum)](https://goreportcard.com/report/github.com/johncoleman83/cerebrum)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c3cb09dbc0bc43186464/maintainability)](https://codeclimate.com/github/johncoleman83/cerebrum/maintainability)
 
-**[Gorsk V2 is released - read more about it](https://www.ribice.ba/refactoring-gorsk/)**
+**[App started with GORSK (GOlang Restful Starter Kit)](https://www.ribice.ba/refactoring-gorsk/)**
 
 Gorsk is a Golang starter kit for developing RESTful services. It is designed to help you kickstart your project, skipping the 'setting-up part' and jumping straight to writing business logic.
 
 Previously Gorsk was built using [Gin](https://github.com/gin-gonic/gin). Gorsk using Gin is available [HERE](https://github.com/ribice/gorsk-gin).
 
-Gorsk follows SOLID principles, with package design being inspired by several package designs, including Ben Johnson's [Standard Package Layout](https://medium.com/@benbjohnson/standard-package-layout-7cdbc8391fc1), [Go Standard Package Layout](https://github.com/golang-standards/project-layout) with my own ideas applied to both. The idea for building this project and its readme structure was inspired by [this](https://github.com/qiangxue/golang-restful-starter-kit).
 
-This starter kit currently provides:
+The GORSK starter kit currently provides:
 
 * Fully featured RESTful endpoints for authentication, changing password and CRUD operations on the user entity
 * JWT authentication and session
@@ -66,15 +65,7 @@ Most of these can easily be replaced with your own choices since their usage is 
 
 Using Gorsk requires having Go 1.7 or above. Once you downloaded Gorsk (either using Git or go get) you need to configure the following:
 
-1. To use Gorsk as a starting point of a real project whose package name is something like `github.com/author/project`, move the directory `$GOPATH/github.com/ribice/gorsk` to `$GOPATH/github.com/author/project` and do a global replacement of the string `github.com/ribice/gorsk` with `github.com/author/project`.
-
-2. Rename the gorsk package inside `pkg/utl/model` with your own project name, then using search & replace do a global replacement of `.gorsk` with your project name.
-
-3. Change the configuration file according to your needs, or create a new one.
-
-4. Set the ("ENVIRONMENT_NAME") environment variable, either using terminal or os.Setenv("ENVIRONMENT_NAME","dev").
-
-5. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessery data, with a new account username/password admin/admin.
+1. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessery data, with a new account username/password admin/admin.
 
 * if you start a postgres docker container with:
   ```
@@ -85,13 +76,13 @@ Using Gorsk requires having Go 1.7 or above. Once you downloaded Gorsk (either u
   postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
   ```
 
-6. Run the app using:
+2. Run the app using:
 
 ```bash
 go run cmd/api/main.go
 ```
 
-7. Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
+3. Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
 The application runs as an HTTP server at port 8080. It provides the following RESTful endpoints:
 

@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"os"
-	"fmt"
 
 	"github.com/johncoleman83/cerebrum/pkg/api"
 
@@ -11,16 +9,8 @@ import (
 )
 
 func main() {
-	envs := map[string]bool{
-    "dev": true,
-    "stg": true,
-		"prod": true,
-	}
-	// set ENVIRONMENT_NAME to dev if unset
-	if _, err := envs["ENVIRONMENT_NAME"]; err {
-    os.Setenv("ENVIRONMENT_NAME", "dev")
-	}
-	fmt.Println(os.Getenv("ENVIRONMENT_NAME"))
+	errEnv := config.LoadEnvironment()
+	checkErr(errEnv)
 	
 	cfgPath := flag.String("p", "./cmd/api/conf.local.yaml", "Path to config file")
 	flag.Parse()

@@ -1,8 +1,12 @@
 package cerebrum
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 // Company represents company model
 type Company struct {
-	Base
+	gorm.Model
 	Name      string     `json:"name"`
 	Active    bool       `json:"active"`
 	Locations []Location `json:"locations,omitempty"`

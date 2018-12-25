@@ -9,13 +9,7 @@ import (
 )
 
 func main() {
-	errEnv := config.LoadEnvironment()
-	checkErr(errEnv)
-	
-	cfgPath := flag.String("p", "./cmd/api/conf.local.yaml", "Path to config file")
-	flag.Parse()
-
-	cfg, err := config.Load(*cfgPath)
+	cfg, err := config.LoadConfig()
 	checkErr(err)
 
 	checkErr(api.Start(cfg))

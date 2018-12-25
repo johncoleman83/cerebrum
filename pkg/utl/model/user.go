@@ -2,11 +2,13 @@ package cerebrum
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // User represents user domain model
 type User struct {
-	Base
+	gorm.Model
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Username  string `json:"username"`

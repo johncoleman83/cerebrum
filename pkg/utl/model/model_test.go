@@ -7,6 +7,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
+/*
 func TestBeforeInsert(t *testing.T) {
 	base := &cerebrum.Base{
 		ID: 1,
@@ -31,6 +32,7 @@ func TestBeforeUpdate(t *testing.T) {
 	}
 
 }
+*/
 
 func TestPaginationTransform(t *testing.T) {
 	p := &cerebrum.PaginationReq{

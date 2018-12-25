@@ -1,7 +1,12 @@
 database:
-  log_queries: true
-  timeout_seconds: 5
-  psn: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+  dialect: mysql
+  user: mysql_dev_user
+  password: mysql_dev_password
+  name: cerebrum_mysql_dev_db
+  protocol: tcp
+  host: localhost
+  port: 3306
+  settings: tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=5
 
 server:
   port: :8080

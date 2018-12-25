@@ -1,8 +1,12 @@
 package cerebrum
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 // Location represents company location model
 type Location struct {
-	Base
+	gorm.Model
 	Name    string `json:"name"`
 	Active  bool   `json:"active"`
 	Address string `json:"address"`

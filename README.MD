@@ -37,7 +37,7 @@ The following dependencies are used in this project (generated using [Glice](htt
 |             DEPENDENCY              |                  REPOURL                   |   LICENSE    |
 |-------------------------------------|--------------------------------------------|--------------|
 | github.com/labstack/echo            | https://github.com/labstack/echo           | MIT          |
-| github.com/go-pg/pg                 | https://github.com/go-pg/pg                | bsd-2-clause |
+| github.com/jinzhu/gorm              | https://github.com/jinzhu/gorm             | MIT          |
 | github.com/dgrijalva/jwt-go         | https://github.com/dgrijalva/jwt-go        | MIT          |
 | github.com/rs/zerolog               | https://github.com/rs/zerolog              | MIT          |
 | golang.org/x/crypto/bcrypt          | https://github.com/golang/crypto           |              |
@@ -45,7 +45,6 @@ The following dependencies are used in this project (generated using [Glice](htt
 | gopkg.in/go-playground/validator.v8 | https://github.com/go-playground/validator | MIT          |
 | github.com/lib/pq                   | https://github.com/lib/pq                  | Other        |
 | github.com/nbutton23/zxcvbn-go      | https://github.com/nbutton23/zxcvbn-go     | MIT          |
-| github.com/fortytw2/dockertest      | https://github.com/fortytw2/dockertest     | MIT          |
 | github.com/stretchr/testify         | https://github.com/stretchr/testify        | Other        |
 |-------------------------------------|--------------------------------------------|--------------|
 ```
@@ -77,6 +76,11 @@ Using Gorsk requires having Go 1.7 or above. Once you downloaded Gorsk (either u
   set the psn to:
   ```
   postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+  ```
+
+* if you start with mysql:
+  ```
+  $ docker-compose up --detach
   ```
 
 2. Run the app using:
@@ -113,7 +117,7 @@ Let's say you have a table named 'cars' that handles employee's cars. To impleme
 
 3. Inside car folder, create folders named `platform`, `transport` and `logging`.
 
-4. Code for interacting with a platform like database (postgresql) should be placed under `car/platform/pgsql`. (`pkg/api/car/platform/pgsql/car.go`)
+4. Code for interacting with a platform like database (postgresql) should be placed under `car/platform/mysqldb`. (`pkg/api/car/platform/mysqldb/car.go`)
 
 5. In `pkg/api/car/transport` create a new file named `http.go`. This is where your handlers are located. Under the same location create http_test.go to test your API.
 
@@ -144,6 +148,8 @@ err := s.db.RunInTransaction(func (tx *pg.Tx) error{
 Instead of passing database client as `s.db` , inside this function pass it as `tx`. Handle the error accordingly.
 
 ## Project Structure
+
+Follows this [project layout](https://github.com/golang-standards/project-layout)
 
 1. Root directory contains things not related to code directly, e.g. docker-compose, CI/CD, readme, bash scripts etc. It should also contain vendor folder, Gopkg.toml and Gopkg.lock if dep is being used.
 

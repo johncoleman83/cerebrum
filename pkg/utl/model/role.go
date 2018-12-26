@@ -1,7 +1,7 @@
 package cerebrum
 
 // AccessRole represents access role type
-type AccessRole int
+type AccessRole uint
 
 const (
 	// SuperAdminRole has all permissions

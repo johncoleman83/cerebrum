@@ -1,9 +1,14 @@
-RUNNING_CONTAINER := $(shell docker ps -aqf 'name=cerebrum_mysql_dev_db_1')
+# cerebrum make
 
-refresh: clean docker
+refresh: clean_dev clean_test docker_dev
 
-clean:
-	docker stop $(RUNNING_CONTAINER) && docker rm $(RUNNING_CONTAINER)
+clean_test:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_no_ | cut -f1 | xargs docker stop
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_no_ | cut -f1 | xargs docker rm
 
-docker:
+clean_dev:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db_1 | cut -f1 | xargs docker stop
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db_1 | cut -f1 | xargs docker rm
+
+docker_dev:
 	docker-compose up -d

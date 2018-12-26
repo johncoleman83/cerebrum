@@ -3,15 +3,14 @@ package user_test
 import (
 	"testing"
 
+	"github.com/jinzhu/gorm"
+	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-
-	"github.com/go-pg/pg/orm"
-	"github.com/labstack/echo"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCreate(t *testing.T) {
@@ -30,7 +29,7 @@ func TestCreate(t *testing.T) {
 	}{{
 		name: "Fail on is lower role",
 		rbac: &mock.RBAC{
-			AccountCreateFn: func(echo.Context, cerebrum.AccessRole, int, int) error {
+			AccountCreateFn: func(echo.Context, cerebrum.AccessRole, uint, uint) error {
 				return cerebrum.ErrGeneric
 			}},
 		wantErr: true,
@@ -52,7 +51,7 @@ func TestCreate(t *testing.T) {
 				Password:  "Thranduil8822",
 			}},
 			udb: &mockdb.User{
-				CreateFn: func(db orm.DB, u cerebrum.User) (*cerebrum.User, error) {
+				CreateFn: func(db *gorm.DB, u cerebrum.User) (*cerebrum.User, error) {
 					u.CreatedAt = mock.TestTime(2000)
 					u.UpdatedAt = mock.TestTime(2000)
 					u.Base.ID = 1
@@ -60,7 +59,7 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(echo.Context, cerebrum.AccessRole, int, int) error {
+				AccountCreateFn: func(echo.Context, cerebrum.AccessRole, uint, uint) error {
 					return nil
 				}},
 			sec: &mock.Secure{
@@ -69,11 +68,11 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			wantData: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
-				},
+				}},
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
@@ -93,7 +92,7 @@ func TestCreate(t *testing.T) {
 func TestView(t *testing.T) {
 	type args struct {
 		c  echo.Context
-		id int
+		id uint
 	}
 	cases := []struct {
 		name     string
@@ -107,7 +106,7 @@ func TestView(t *testing.T) {
 			name: "Fail on RBAC",
 			args: args{id: 5},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return cerebrum.ErrGeneric
 				}},
 			wantErr: cerebrum.ErrGeneric,
@@ -116,28 +115,28 @@ func TestView(t *testing.T) {
 			name: "Success",
 			args: args{id: 1},
 			wantData: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
-				},
+				}},
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
 			},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					if id == 1 {
 						return &cerebrum.User{
-							Base: cerebrum.Base{
+							Base: cerebrum.Base{Model: gorm.Model{
 								ID:        1,
 								CreatedAt: mock.TestTime(2000),
 								UpdatedAt: mock.TestTime(2000),
-							},
+							}},
 							FirstName: "John",
 							LastName:  "Doe",
 							Username:  "JohnDoe",
@@ -202,25 +201,25 @@ func TestList(t *testing.T) {
 					}
 				}},
 			udb: &mockdb.User{
-				ListFn: func(orm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error) {
+				ListFn: func(*gorm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error) {
 					return []cerebrum.User{
 						{
-							Base: cerebrum.Base{
+							Base: cerebrum.Base{Model: gorm.Model{
 								ID:        1,
 								CreatedAt: mock.TestTime(1999),
 								UpdatedAt: mock.TestTime(2000),
-							},
+							}},
 							FirstName: "John",
 							LastName:  "Doe",
 							Email:     "johndoe@gmail.com",
 							Username:  "johndoe",
 						},
 						{
-							Base: cerebrum.Base{
+							Base: cerebrum.Base{Model: gorm.Model{
 								ID:        2,
 								CreatedAt: mock.TestTime(2001),
 								UpdatedAt: mock.TestTime(2002),
-							},
+							}},
 							FirstName: "Hunter",
 							LastName:  "Logan",
 							Email:     "logan@aol.com",
@@ -230,22 +229,22 @@ func TestList(t *testing.T) {
 				}},
 			wantData: []cerebrum.User{
 				{
-					Base: cerebrum.Base{
+					Base: cerebrum.Base{Model: gorm.Model{
 						ID:        1,
 						CreatedAt: mock.TestTime(1999),
 						UpdatedAt: mock.TestTime(2000),
-					},
+					}},
 					FirstName: "John",
 					LastName:  "Doe",
 					Email:     "johndoe@gmail.com",
 					Username:  "johndoe",
 				},
 				{
-					Base: cerebrum.Base{
+					Base: cerebrum.Base{Model: gorm.Model{
 						ID:        2,
 						CreatedAt: mock.TestTime(2001),
 						UpdatedAt: mock.TestTime(2002),
-					},
+					}},
 					FirstName: "Hunter",
 					LastName:  "Logan",
 					Email:     "logan@aol.com",
@@ -267,7 +266,7 @@ func TestList(t *testing.T) {
 func TestDelete(t *testing.T) {
 	type args struct {
 		c  echo.Context
-		id int
+		id uint
 	}
 	cases := []struct {
 		name    string
@@ -281,7 +280,7 @@ func TestDelete(t *testing.T) {
 			args:    args{id: 1},
 			wantErr: cerebrum.ErrGeneric,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					if id != 1 {
 						return nil, nil
 					}
@@ -293,13 +292,13 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			args: args{id: 1},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{
+						Base: cerebrum.Base{Model: gorm.Model{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
-						},
+						}},
 						FirstName: "John",
 						LastName:  "Doe",
 						Role: &cerebrum.Role{
@@ -318,13 +317,13 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			args: args{id: 1},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{
+						Base: cerebrum.Base{Model: gorm.Model{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
-						},
+						}},
 						FirstName: "John",
 						LastName:  "Doe",
 						Role: &cerebrum.Role{
@@ -334,7 +333,7 @@ func TestDelete(t *testing.T) {
 						},
 					}, nil
 				},
-				DeleteFn: func(db orm.DB, usr *cerebrum.User) error {
+				DeleteFn: func(db *gorm.DB, usr *cerebrum.User) error {
 					return nil
 				},
 			},
@@ -374,7 +373,7 @@ func TestUpdate(t *testing.T) {
 				ID: 1,
 			}},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return cerebrum.ErrGeneric
 				}},
 			wantErr: cerebrum.ErrGeneric,
@@ -385,12 +384,12 @@ func TestUpdate(t *testing.T) {
 				ID: 1,
 			}},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			wantErr: cerebrum.ErrGeneric,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					if id != 1 {
 						return nil, nil
 					}
@@ -404,18 +403,18 @@ func TestUpdate(t *testing.T) {
 				ID: 1,
 			}},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			wantErr: cerebrum.ErrGeneric,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{
+						Base: cerebrum.Base{Model: gorm.Model{
 							ID:        1,
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(1991),
-						},
+						}},
 						CompanyID:  1,
 						LocationID: 2,
 						RoleID:     3,
@@ -427,7 +426,7 @@ func TestUpdate(t *testing.T) {
 						Email:      "golang@go.org",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, usr *cerebrum.User) error {
 					return cerebrum.ErrGeneric
 				},
 			},
@@ -442,15 +441,15 @@ func TestUpdate(t *testing.T) {
 				Phone:     mock.Str2Ptr("234567"),
 			}},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			wantData: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID:        1,
 					CreatedAt: mock.TestTime(1990),
 					UpdatedAt: mock.TestTime(2000),
-				},
+				}},
 				CompanyID:  1,
 				LocationID: 2,
 				RoleID:     3,
@@ -462,13 +461,13 @@ func TestUpdate(t *testing.T) {
 				Email:      "golang@go.org",
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{
+						Base: cerebrum.Base{Model: gorm.Model{
 							ID:        1,
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(1991),
-						},
+						}},
 						CompanyID:  1,
 						LocationID: 2,
 						RoleID:     3,
@@ -480,7 +479,7 @@ func TestUpdate(t *testing.T) {
 						Email:      "golang@go.org",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, usr *cerebrum.User) error {
 					usr.UpdatedAt = mock.TestTime(2000)
 					return nil
 				},

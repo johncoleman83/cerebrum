@@ -6,7 +6,7 @@ database:
   protocol: tcp
   host: localhost
   port: 3306
-  settings: tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=5
+  settings: tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=20s
 
 server:
   port: :8080

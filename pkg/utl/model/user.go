@@ -2,13 +2,11 @@ package cerebrum
 
 import (
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 // User represents user domain model
 type User struct {
-	gorm.Model
+	Base
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Username  string `json:"username"`
@@ -29,15 +27,15 @@ type User struct {
 	Role *Role `json:"role,omitempty"`
 
 	RoleID     AccessRole `json:"-"`
-	CompanyID  int        `json:"company_id"`
-	LocationID int        `json:"location_id"`
+	CompanyID  uint        `json:"company_id"`
+	LocationID uint        `json:"location_id"`
 }
 
 // AuthUser represents data stored in JWT token for user
 type AuthUser struct {
-	ID         int
-	CompanyID  int
-	LocationID int
+	ID         uint
+	CompanyID  uint
+	LocationID uint
 	Username   string
 	Email      string
 	Role       AccessRole

@@ -58,7 +58,7 @@ func (ls *LogService) List(c echo.Context, req *cerebrum.Pagination) (resp []cer
 }
 
 // View logging
-func (ls *LogService) View(c echo.Context, req int) (resp *cerebrum.User, err error) {
+func (ls *LogService) View(c echo.Context, req uint) (resp *cerebrum.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -74,7 +74,7 @@ func (ls *LogService) View(c echo.Context, req int) (resp *cerebrum.User, err er
 }
 
 // Delete logging
-func (ls *LogService) Delete(c echo.Context, req int) (err error) {
+func (ls *LogService) Delete(c echo.Context, req uint) (err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

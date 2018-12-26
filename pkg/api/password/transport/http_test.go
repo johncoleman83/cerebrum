@@ -14,7 +14,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )
@@ -50,7 +50,7 @@ func TestChangePassword(t *testing.T) {
 			name: "Fail on RBAC",
 			req:  `{"new_password":"newpassw","old_password":"oldpassw", "new_password_confirm":"newpassw"}`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -61,18 +61,18 @@ func TestChangePassword(t *testing.T) {
 			name: "Success",
 			req:  `{"new_password":"newpassw","old_password":"oldpassw", "new_password_confirm":"newpassw"}`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				},
 			},
 			id: "1",
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "oldPassword",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, usr *cerebrum.User) error {
 					return nil
 				},
 			},

@@ -1,10 +1,9 @@
 package user
 
 import (
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/api/user/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/api/user/platform/mysqldb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
@@ -12,24 +11,24 @@ import (
 type Service interface {
 	Create(echo.Context, cerebrum.User) (*cerebrum.User, error)
 	List(echo.Context, *cerebrum.Pagination) ([]cerebrum.User, error)
-	View(echo.Context, int) (*cerebrum.User, error)
-	Delete(echo.Context, int) error
+	View(echo.Context, uint) (*cerebrum.User, error)
+	Delete(echo.Context, uint) error
 	Update(echo.Context, *Update) (*cerebrum.User, error)
 }
 
 // New creates new user application service
-func New(db *pg.DB, udb UDB, rbac RBAC, sec Securer) *User {
+func New(db *gorm.DB, udb UDB, rbac RBAC, sec Securer) *User {
 	return &User{db: db, udb: udb, rbac: rbac, sec: sec}
 }
 
 // Initialize initalizes User application service with defaults
-func Initialize(db *pg.DB, rbac RBAC, sec Securer) *User {
-	return New(db, pgsql.NewUser(), rbac, sec)
+func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *User {
+	return New(db, mysqldb.NewUser(), rbac, sec)
 }
 
 // User represents user application service
 type User struct {
-	db   *pg.DB
+	db   *gorm.DB
 	udb  UDB
 	rbac RBAC
 	sec  Securer
@@ -42,17 +41,17 @@ type Securer interface {
 
 // UDB represents user repository interface
 type UDB interface {
-	Create(orm.DB, cerebrum.User) (*cerebrum.User, error)
-	View(orm.DB, int) (*cerebrum.User, error)
-	List(orm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error)
-	Update(orm.DB, *cerebrum.User) error
-	Delete(orm.DB, *cerebrum.User) error
+	Create(*gorm.DB, cerebrum.User) (*cerebrum.User, error)
+	View(*gorm.DB, uint) (*cerebrum.User, error)
+	List(*gorm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error)
+	Update(*gorm.DB, *cerebrum.User) error
+	Delete(*gorm.DB, *cerebrum.User) error
 }
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
 	User(echo.Context) *cerebrum.AuthUser
-	EnforceUser(echo.Context, int) error
-	AccountCreate(echo.Context, cerebrum.AccessRole, int, int) error
+	EnforceUser(echo.Context, uint) error
+	AccountCreate(echo.Context, cerebrum.AccessRole, uint, uint) error
 	IsLowerRole(echo.Context, cerebrum.AccessRole) error
 }

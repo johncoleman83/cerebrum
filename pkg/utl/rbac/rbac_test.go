@@ -62,7 +62,7 @@ func TestEnforceRole(t *testing.T) {
 func TestEnforceUser(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
 		name    string
@@ -97,7 +97,7 @@ func TestEnforceUser(t *testing.T) {
 func TestEnforceCompany(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
 		name    string
@@ -137,7 +137,7 @@ func TestEnforceCompany(t *testing.T) {
 func TestEnforceLocation(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
 		name    string
@@ -178,8 +178,8 @@ func TestAccountCreate(t *testing.T) {
 	type args struct {
 		ctx         echo.Context
 		roleID      cerebrum.AccessRole
-		company_id  int
-		location_id int
+		company_id  uint
+		location_id uint
 	}
 	cases := []struct {
 		name    string

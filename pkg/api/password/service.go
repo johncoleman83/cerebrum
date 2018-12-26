@@ -1,20 +1,19 @@
 package password
 
 import (
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/mysqldb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // Service represents password application interface
 type Service interface {
-	Change(echo.Context, int, string, string) error
+	Change(echo.Context, uint, string, string) error
 }
 
 // New creates new password application service
-func New(db *pg.DB, udb UserDB, rbac RBAC, sec Securer) *Password {
+func New(db *gorm.DB, udb UserDB, rbac RBAC, sec Securer) *Password {
 	return &Password{
 		db:   db,
 		udb:  udb,
@@ -24,13 +23,13 @@ func New(db *pg.DB, udb UserDB, rbac RBAC, sec Securer) *Password {
 }
 
 // Initialize initalizes password application service with defaults
-func Initialize(db *pg.DB, rbac RBAC, sec Securer) *Password {
-	return New(db, pgsql.NewUser(), rbac, sec)
+func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *Password {
+	return New(db, mysqldb.NewUser(), rbac, sec)
 }
 
 // Password represents password application service
 type Password struct {
-	db   *pg.DB
+	db   *gorm.DB
 	udb  UserDB
 	rbac RBAC
 	sec  Securer
@@ -38,8 +37,8 @@ type Password struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (*cerebrum.User, error)
-	Update(orm.DB, *cerebrum.User) error
+	View(*gorm.DB, uint) (*cerebrum.User, error)
+	Update(*gorm.DB, *cerebrum.User) error
 }
 
 // Securer represents security interface
@@ -51,5 +50,5 @@ type Securer interface {
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	EnforceUser(echo.Context, int) error
+	EnforceUser(echo.Context, uint) error
 }

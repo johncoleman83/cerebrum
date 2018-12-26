@@ -6,7 +6,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/maintainability)](https://codeclimate.com/github/johncoleman83/cerebrum/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/test_coverage)](https://codeclimate.com/github/johncoleman83/cerebrum/test_coverage)
 
-## GORSK - GO(lang) Restful Starter Kit
+## Branched off of GORSK - GO(lang) Restful Starter Kit
 
 **[App started with GORSK](https://www.ribice.ba/refactoring-gorsk/)**
 
@@ -50,13 +50,13 @@ The following dependencies are used in this project (generated using [Glice](htt
 ```
 
 1. Echo - HTTP 'framework'.
-2. Go-Pg - PostgreSQL ORM
-3. JWT-Go - JWT Authentication
-4. Zerolog - Structured logging
-5. Bcrypt - Password hashing
-6. Yaml - Unmarshalling YAML config file
-7. Validator - Request validation.
-8. lib/pq - PostgreSQL driver
+2. GORM - Golang ORM
+3. lib/mysql - mysql driver (part of GORM)
+4. JWT-Go - JWT Authentication
+5. Zerolog - Structured logging
+6. Bcrypt - Password hashing
+7. Yaml - Unmarshalling YAML config file
+8. Validator - Request validation.
 9. zxcvbn-go - Password strength checker
 10. DockerTest - Testing database queries
 11. Testify/Assert - Asserting test results

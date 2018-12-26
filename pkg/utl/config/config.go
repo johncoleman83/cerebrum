@@ -6,20 +6,28 @@ import (
 	"log"
 	"io/ioutil"
 	"os"
+	"strings"
+
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
+func expectedFiles() map[string]bool {
+	return map[string]bool{
+    "conf.development.yaml": true,
+    "conf.testing.yaml": true,
+    "conf.staging.yaml": true,
+		"conf.production.yaml": true,
+	}
+}
+
 // checks if path has expected name format
 func isExpectedConfigPath(cfgPath string) (error) {
-	expectedPaths := map[string]bool{
-    "./configs/conf.development.yaml": true,
-    "./configs/conf.testing.yaml": true,
-    "./configs/conf.staging.yaml": true,
-		"./configs/conf.production.yaml": true,
-	}
-	if val, status := expectedPaths[cfgPath]; !(val && status) {
-    return fmt.Errorf("error with path name: you must follow the syntax of './configs/conf.ENVIRONMENT.yaml'")
+	fileName := cfgPath[strings.LastIndex(cfgPath, "/") + 1:]
+	files := expectedFiles()
+	if val, status := files[fileName]; !(val && status) {
+    return fmt.Errorf("filename must be recognized")
 	}
 	if _, errPath := os.Stat(cfgPath); errPath != nil {
 		return fmt.Errorf("error finding the path, %s", cfgPath)
@@ -29,15 +37,8 @@ func isExpectedConfigPath(cfgPath string) (error) {
 	}
 }
 
-// LoadConfig returns Configuration struct
-func LoadConfig() (*Configuration, error) {
-	cfgPath := flag.String("config", "./configs/conf.development.yaml", "Path to config file")
-	flag.Parse()
-
-	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
-		return nil, errName
-	}
-	bytes, errRead := ioutil.ReadFile(*cfgPath)
+func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
+	bytes, errRead := ioutil.ReadFile(cfgPath)
 	if errRead != nil {
 		return nil, fmt.Errorf("error reading config file, %s", errRead)
 	}
@@ -46,6 +47,22 @@ func LoadConfig() (*Configuration, error) {
 		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", errYaml)
 	}
 	return cfg, nil
+}
+
+// LoadConfigFromFlags returns Configuration struct compiled from flags
+func LoadConfigFromFlags() (*Configuration, error) {
+	cfgPath := flag.String("config", support.DevelopmentConfigPath(), "Path to config file")
+	flag.Parse()
+
+	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
+		return nil, errName
+	}
+	return readFileAndBuildStruct(*cfgPath)
+}
+
+// LoadConfigFrom returns Configuration struct compile from input path
+func LoadConfigFrom(path string) (*Configuration, error) {
+	return readFileAndBuildStruct(path)
 }
 
 // Configuration holds data necessery for configuring application
@@ -65,7 +82,7 @@ type Database struct {
   Protocol string `yaml:"protocol,omitempty"`
   Host 		 string `yaml:"host,omitempty"`
   Port		 string `yaml:"port,omitempty"`
-	Params 	 string `yaml:"params,omitempty"`
+	Settings string `yaml:"settings,omitempty"`
 }
 
 // Server holds data necessery for server configuration

@@ -1,15 +1,14 @@
 package auth
 
 import (
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/pgsql"
+	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/mysqldb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new iam service
-func New(db *pg.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
+func New(db *gorm.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
 	return &Auth{
 		db:   db,
 		udb:  udb,
@@ -20,8 +19,8 @@ func New(db *pg.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Auth 
 }
 
 // Initialize initializes auth application service
-func Initialize(db *pg.DB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
-	return New(db, pgsql.NewUser(), j, sec, rbac)
+func Initialize(db *gorm.DB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
+	return New(db, mysqldb.NewUser(), j, sec, rbac)
 }
 
 // Service represents auth service interface
@@ -33,7 +32,7 @@ type Service interface {
 
 // Auth represents auth application service
 type Auth struct {
-	db   *pg.DB
+	db   *gorm.DB
 	udb  UserDB
 	tg   TokenGenerator
 	sec  Securer
@@ -42,10 +41,10 @@ type Auth struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (*cerebrum.User, error)
-	FindByUsername(orm.DB, string) (*cerebrum.User, error)
-	FindByToken(orm.DB, string) (*cerebrum.User, error)
-	Update(orm.DB, *cerebrum.User) error
+	View(*gorm.DB, uint) (*cerebrum.User, error)
+	FindByUsername(*gorm.DB, string) (*cerebrum.User, error)
+	FindByToken(*gorm.DB, string) (*cerebrum.User, error)
+	Update(*gorm.DB, *cerebrum.User) error
 }
 
 // TokenGenerator represents token generator (jwt) interface

@@ -1,20 +1,21 @@
-package pgsql_test
+package mysqldb_test
 
 import (
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-
-	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/pgsql"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/stretchr/testify/assert"
+	"github.com/jinzhu/gorm"
+
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/mysqldb"
 )
 
 func TestView(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		id       int
+		id       uint
 		wantData *cerebrum.User
 	}{
 		{
@@ -34,26 +35,26 @@ func TestView(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID: 2,
-				},
+				}},
 			},
 		},
 	}
 
-	dbCon := mock.NewPGContainer(t)
-	defer dbCon.Shutdown()
+	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
+	defer dbContainer.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
+	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &cerebrum.Role{
+	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
 		t.Error(err)
 	}
 
-	udb := pgsql.NewUser()
+	udb := mysqldb.NewUser()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -70,6 +71,7 @@ func TestView(t *testing.T) {
 			}
 		})
 	}
+	db.Close()
 }
 
 func TestUpdate(t *testing.T) {
@@ -82,9 +84,9 @@ func TestUpdate(t *testing.T) {
 		{
 			name: "Success",
 			usr: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID: 2,
-				},
+				}},
 				FirstName: "Z",
 				LastName:  "Freak",
 				Address:   "Address",
@@ -104,38 +106,34 @@ func TestUpdate(t *testing.T) {
 				Address:    "Address",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID: 2,
-				},
+				}},
 			},
 		},
 	}
 
-	dbCon := mock.NewPGContainer(t)
-	defer dbCon.Shutdown()
+	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
+	defer dbContainer.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &cerebrum.Role{}, &cerebrum.User{})
+	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
 
-	if err := mock.InsertMultiple(db, &cerebrum.Role{
+	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, cases[0].usr); err != nil {
 		t.Error(err)
 	}
 
-	udb := pgsql.NewUser()
+	udb := mysqldb.NewUser()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			err := udb.Update(db, tt.wantData)
 			assert.Equal(t, tt.wantErr, err != nil)
 			if tt.wantData != nil {
-				user := &cerebrum.User{
-					Base: cerebrum.Base{
-						ID: tt.usr.ID,
-					},
-				}
-				if err := db.Select(user); err != nil {
+				user := &cerebrum.User{}
+				if err := db.First(user, tt.usr.ID).Error; err != nil {
 					t.Error(err)
 				}
 				tt.wantData.UpdatedAt = user.UpdatedAt
@@ -146,4 +144,5 @@ func TestUpdate(t *testing.T) {
 			}
 		})
 	}
+	db.Close()
 }

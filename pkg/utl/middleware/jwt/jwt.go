@@ -48,9 +48,9 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 
 			claims := token.Claims.(jwt.MapClaims)
 
-			id := int(claims["id"].(float64))
-			companyID := int(claims["c"].(float64))
-			locationID := int(claims["l"].(float64))
+			id := uint(claims["id"].(float64))
+			companyID := uint(claims["c"].(float64))
+			locationID := uint(claims["l"].(float64))
 			username := claims["u"].(string)
 			email := claims["e"].(string)
 			role := cerebrum.AccessRole(claims["r"].(float64))

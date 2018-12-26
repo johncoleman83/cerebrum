@@ -9,7 +9,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
 	"github.com/stretchr/testify/assert"
@@ -34,7 +34,7 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
@@ -44,7 +44,7 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "notHashedPassword"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
 					}, nil
@@ -61,7 +61,7 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "pass",
@@ -80,7 +80,7 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "pass",
@@ -104,14 +104,14 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "pass",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
 					return cerebrum.ErrGeneric
 				},
 			},
@@ -133,14 +133,14 @@ func TestAuthenticate(t *testing.T) {
 			name: "Success",
 			args: args{user: "juzernejm", pass: "pass"},
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "password",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
 					return nil
 				},
 			},
@@ -194,7 +194,7 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (*cerebrum.User, error) {
+				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
@@ -204,7 +204,7 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (*cerebrum.User, error) {
+				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "username",
 						Password: "password",
@@ -223,7 +223,7 @@ func TestRefresh(t *testing.T) {
 			name: "Success",
 			args: args{token: "refreshtoken"},
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (*cerebrum.User, error) {
+				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "username",
 						Password: "password",
@@ -269,13 +269,13 @@ func TestMe(t *testing.T) {
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{
+						Base: cerebrum.Base{Model: gorm.Model{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
-						},
+						}},
 						FirstName: "John",
 						LastName:  "Doe",
 						Role: &cerebrum.Role{
@@ -285,11 +285,11 @@ func TestMe(t *testing.T) {
 				},
 			},
 			wantData: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID:        9,
 					CreatedAt: mock.TestTime(1999),
 					UpdatedAt: mock.TestTime(2000),
-				},
+				}},
 				FirstName: "John",
 				LastName:  "Doe",
 				Role: &cerebrum.Role{

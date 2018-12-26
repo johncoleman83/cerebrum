@@ -1,22 +1,20 @@
 package main
 
 import (
-	"flag"
-
 	"github.com/johncoleman83/cerebrum/pkg/api"
-
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 )
 
 func main() {
-	cfg, err := config.LoadConfig()
-	checkErr(err)
-
-	checkErr(api.Start(cfg))
-}
-
-func checkErr(err error) {
+	cfg, err := config.LoadConfigFromFlags()
 	if err != nil {
+		panic(err.Error())
+	}
+	if cfg == nil {
+		panic("unknown error loading yaml file")
+	}
+
+	if err = api.Start(cfg); err != nil {
 		panic(err.Error())
 	}
 }

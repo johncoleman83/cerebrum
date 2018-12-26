@@ -30,8 +30,8 @@ func (z *Log) Log(ctx echo.Context, source, msg string, err error, params map[st
 
 	params["source"] = source
 
-	if id, ok := ctx.Get("id").(int); ok {
-		params["id"] = id
+	if id, ok := ctx.Get("id").(uint); ok {
+		params["id"] = uint(id)
 		params["user"] = ctx.Get("username").(string)
 	}
 

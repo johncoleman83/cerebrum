@@ -66,7 +66,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: int
+	//   type: uint
 	//   required: true
 	// responses:
 	//   "200":
@@ -91,7 +91,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: int
+	//   type: uint
 	//   required: true
 	// - name: request
 	//   in: body
@@ -120,7 +120,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: int
+	//   type: uint
 	//   required: true
 	// responses:
 	//   "200":
@@ -151,8 +151,8 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  int              `json:"company_id" validate:"required"`
-	LocationID int              `json:"location_id" validate:"required"`
+	CompanyID  uint              	 `json:"company_id" validate:"required"`
+	LocationID uint              	 `json:"location_id" validate:"required"`
 	RoleID     cerebrum.AccessRole `json:"role_id" validate:"required"`
 }
 
@@ -215,8 +215,9 @@ func (h *HTTP) view(c echo.Context) error {
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
+	idUint := uint(id)
 
-	result, err := h.svc.View(c, id)
+	result, err := h.svc.View(c, idUint)
 	if err != nil {
 		return err
 	}
@@ -227,7 +228,7 @@ func (h *HTTP) view(c echo.Context) error {
 // User update request
 // swagger:model userUpdate
 type updateReq struct {
-	ID        int     `json:"-"`
+	ID        uint    `json:"-"`
 	FirstName *string `json:"first_name,omitempty" validate:"omitempty,min=2"`
 	LastName  *string `json:"last_name,omitempty" validate:"omitempty,min=2"`
 	Mobile    *string `json:"mobile,omitempty"`
@@ -240,6 +241,7 @@ func (h *HTTP) update(c echo.Context) error {
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
+	idUint := uint(id)
 
 	req := new(updateReq)
 	if err := c.Bind(req); err != nil {
@@ -247,7 +249,7 @@ func (h *HTTP) update(c echo.Context) error {
 	}
 
 	usr, err := h.svc.Update(c, &user.Update{
-		ID:        id,
+		ID:        idUint,
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Mobile:    req.Mobile,
@@ -267,8 +269,9 @@ func (h *HTTP) delete(c echo.Context) error {
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
+	idUint := uint(id)
 
-	if err := h.svc.Delete(c, id); err != nil {
+	if err := h.svc.Delete(c, idUint); err != nil {
 		return err
 	}
 

@@ -17,18 +17,18 @@ type User struct {
 	Phone   string `json:"phone,omitempty"`
 	Address string `json:"address,omitempty"`
 
-	Active bool `json:"active"`
+	CompanyID  uint `json:"company_id"`
+	LocationID uint `json:"location_id"`
+
+	Role   Role       `json:"role,omitempty" gorm:"foreignkey:ID;association_foreignkey:RoleID;auto_preload;"`
+	RoleID AccessRole `json:"-" gorm:"auto_preload"`
+
+	Token string `json:"-"`
 
 	LastLogin          time.Time `json:"last_login,omitempty"`
 	LastPasswordChange time.Time `json:"last_password_change,omitempty"`
 
-	Token string `json:"-"`
-
-	Role *Role `json:"role,omitempty"`
-
-	RoleID     AccessRole `json:"-"`
-	CompanyID  uint        `json:"company_id"`
-	LocationID uint        `json:"location_id"`
+	Active bool `json:"active"`
 }
 
 // AuthUser represents data stored in JWT token for user
@@ -38,7 +38,7 @@ type AuthUser struct {
 	LocationID uint
 	Username   string
 	Email      string
-	Role       AccessRole
+	Role       AccessRole `gorm:"auto_preload"`
 }
 
 // ChangePassword updates user's password related fields

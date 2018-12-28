@@ -6,14 +6,14 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
 )
 
-func buildQueries() ([7]string) {
+func buildQueries() [7]string {
 	return [7]string{
 		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
 		"INSERT INTO locations VALUES (1, now(), now(), NULL, 'admin_location', true, 'admin_address', 1);",
@@ -35,7 +35,7 @@ func main() {
 	db, err := datastore.NewMySQLGormDb(cfg.DB)
 	checkErr(err)
 
-	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, &cerebrum.Role{}, &cerebrum.User{})
+	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
 
 	for _, v := range queries[0 : len(queries)-1] {
 		db.Exec(v)

@@ -1,6 +1,8 @@
 package datastore_test
 
+// TODO: NEED TO UPDATE THIS TO ACCOUNT FOR NEW CONTAINER SOLUTION
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,58 +10,48 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/docker"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-	"github.com/johncoleman83/cerebrum/pkg/utl/support"
-)
-
-var (
-	testConfigPath = support.TestingConfigPath()
 )
 
 func TestNew(t *testing.T) {
-	cfg, err := config.LoadConfigFrom(testConfigPath)
-	if cfg == nil || err != nil {
-		t.Fatalf("Error loading test config %v", err)
-	}
-	args := mockdb.BuildDockerArgs(cfg.DB)
-	container, err := docker.RunContainer("mysql:latest", "3306", mockdb.WaitFunc, args...)
-	if err != nil {
-		t.Fatalf("Error starting container %v", err)
-	}
+	container := mockdb.NewMySQLDockerTestContainer(t)
+	db, cfg, pool, resource := container.DB, container.Configuration, container.Pool, container.Resource
 
-	defer container.Shutdown()
+	dsn := datastore.FormatDSN(cfg.DB)
+	expectedDsn := "mysql_test_user:mysql_test_password" +
+		fmt.Sprintf("@tcp(localhost:%s)/cerebrum_mysql_test_db", cfg.DB.Port) +
+		"?tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=20s"
+	assert.Equal(t, expectedDsn, dsn, "dsn should be properly formated")
 
-	corruptedDBcfg := cfg.DB
-	corruptedDBcfg.Host, corruptedDBcfg.Port  = "pluto", "53456345634563"
-	_, err = datastore.NewMySQLGormDb(corruptedDBcfg)
-	if err == nil {
-		t.Error("Expected error due to improper host")
+	corruptedDBcfg := &config.Database{
+		Dialect:  cfg.DB.Dialect,
+		User:     cfg.DB.User,
+		Password: cfg.DB.Password,
+		Name:     cfg.DB.Name,
+		Protocol: cfg.DB.Protocol,
+		Host:     cfg.DB.Host,
+		Port:     cfg.DB.Port,
+		Settings: cfg.DB.Settings,
 	}
+	corruptedDBcfg.Host, corruptedDBcfg.Port = "pluto", "53456345634563"
+	_, err := datastore.NewMySQLGormDb(corruptedDBcfg)
+	assert.EqualError(t, err, err.Error(), "there should be an error connecting to mysql with bad config")
 
-	corruptedDBcfg = cfg.DB
+	corruptedDBcfg.Host, corruptedDBcfg.Port = cfg.DB.Host, cfg.DB.Port
 	corruptedDBcfg.Password = "root"
 	_, err = datastore.NewMySQLGormDb(corruptedDBcfg)
-	if err == nil {
-		t.Error("Expected error due to incorrect password")
-	}
+	assert.EqualError(t, err, err.Error(), "there should be an error connecting to mysql with bad config")
 
 	corruptedDBcfg.Password = "admin"
 	_, err = datastore.NewMySQLGormDb(corruptedDBcfg)
-	if err == nil {
-		t.Error("Expected error due to incorrect password")
-	}
+	assert.EqualError(t, err, err.Error(), "there should be an error connecting to mysql with bad config")
 
-	db, err := datastore.NewMySQLGormDb(cfg.DB)
+	db, err = datastore.NewMySQLGormDb(cfg.DB)
 	if err != nil {
 		t.Fatalf("Error establishing connection %v", err)
 	}
 
-	var user cerebrum.User
-	found := db.First(&user).RecordNotFound()
-
-	assert.Nil(t, db.Error, "there should not be an error in querying the DB")
-	assert.True(t, found, "there should be a proper response from RecordNotFound when the DB is empty")
-
-	assert.Nil(t, db.Close().Error, "there should not be an error closing the DB")
+	assert.Nil(t, db.Close(), "there should not be an error closing the DB")
+	if err := pool.Purge(resource); err != nil {
+		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
+	}
 }

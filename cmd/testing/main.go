@@ -5,24 +5,20 @@ import (
 	"log"
 	"path/filepath"
 	"runtime"
+
 	//"time"
 	"database/sql"
 
+	"github.com/jinzhu/gorm"
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	//"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	//"github.com/johncoleman83/cerebrum/pkg/utl/mock/docker"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"	
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 var (
-	_, b, _, _ 		 = runtime.Caller(0)
-	basepath   		 = filepath.Dir(b)
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
 )
-
-func WaitFunc(addr string) error {
-	return nil
-}
 
 func main() {
 	fmt.Println(basepath)
@@ -40,14 +36,24 @@ func main() {
 		fmt.Println(errSQL)
 	} else {
 		fmt.Println("************************")
-		fmt.Println("SUCCESSSSSFUL!!!")
+		fmt.Println("SUCCESSSSSFUL Going to Ping!!!")
 		fmt.Println(dbSQL.Ping())
 	}
 	dbSQL.Close()
 	db, errDB := datastore.NewMySQLGormDb(cfg.DB)
 	checkErr(errDB)
-	
+
 	user := &cerebrum.User{}
+	if err := db.Where("id = ?", 4).First(&user).Error; gorm.IsRecordNotFoundError(err) {
+		fmt.Println("Record not found error")
+		fmt.Println(gorm.IsRecordNotFoundError(err))
+		fmt.Println(err)
+		err = db.First(&user, 4).Error
+		err2 := db.Error
+		fmt.Println(err)
+		fmt.Println(err2)
+	}
+
 	res := db.First(&user, 4).RecordNotFound()
 
 	userTwo := &cerebrum.User{}

@@ -1,13 +1,15 @@
 package mysqldb
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // NewUser returns a new user database instance
@@ -24,37 +26,35 @@ var (
 )
 
 // Create creates a new user on database
-func (u *User) Create(db *gorm.DB, usr cerebrum.User) (*cerebrum.User, error) {
-	var user = new(cerebrum.User)
-	found := db.Where(
-		"lower(username) = ? or lower(email) = ? and deleted_at is null",
-		strings.ToLower(usr.Username), strings.ToLower(usr.Email)).First(&user).RecordNotFound()
-
-	if found || db.Error != nil {
+func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
+	var checkUser = new(cerebrum.User)
+	if err := db.Where(
+		"lower(username) = ? or lower(email) = ?",
+		strings.ToLower(user.Username),
+		strings.ToLower(user.Email)).First(&checkUser).Error; !gorm.IsRecordNotFoundError(err) {
 		return nil, ErrAlreadyExists
-
 	}
-
-	if err := db.Create(&usr).Error; err != nil {
+	if err := db.Create(&user).Error; err != nil {
 		return nil, err
 	}
-	return &usr, nil
+	return &user, nil
 }
 
 // View returns single user by ID
 func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 	var user = new(cerebrum.User)
-	sql := `SELECT "user".*, "role"."id" AS "role__id", "role"."access_level" AS "role__access_level", "role"."name" AS "role__name" 
-	FROM "users" AS "user" LEFT JOIN "roles" AS "role" ON "role"."id" = "user"."role_id" 
-	WHERE ("user"."id" = ? and deleted_at is null)`
-	db.Raw(sql, id).Scan(&user)
-
+	if err := db.Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
+		return user, err
+	} else if err != nil {
+		log.Panicln(fmt.Sprintf("db connection error %v", err))
+		return user, err
+	}
 	return user, nil
 }
 
 // Update updates user's contact info
 func (u *User) Update(db *gorm.DB, user *cerebrum.User) error {
-	return db.Update(user).Error
+	return db.Save(user).Error
 }
 
 // List returns list of all users retrievable for the current user, depending on role
@@ -62,9 +62,9 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 	var users []cerebrum.User
 	// Inner Join users with Role
 	if qp != nil {
-		db.Find(&users).Related("role").Where(qp.Query, qp.ID).Where("deleted_at is null").Limit(p.Limit).Offset(p.Offset).Order("user.id desc")
+		db.Offset(p.Offset).Limit(p.Limit).Find(&users).Where(qp.Query, qp.ID).Order("lastname asc")
 	} else {
-		db.Find(&users).Related("role").Where("deleted_at is null").Limit(p.Limit).Offset(p.Offset).Order("user.id desc")
+		db.Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc")
 	}
 	return users, db.Error
 }

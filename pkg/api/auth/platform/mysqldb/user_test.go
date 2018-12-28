@@ -1,63 +1,66 @@
 package mysqldb_test
 
 import (
-	"testing"
 	"fmt"
+	"testing"
+	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/jinzhu/gorm"
-	
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/mysqldb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+)
+
+var (
+	someTime   = time.Now().Round(time.Second)
+	superAdmin = cerebrum.Role{
+		ID:          cerebrum.AccessRole(1),
+		AccessLevel: cerebrum.AccessRole(1),
+		Name:        "SUPER_ADMIN",
+	}
 )
 
 func TestView(t *testing.T) {
 	cases := []struct {
-		name     string
-		wantErr  bool
-		id       uint
-		wantData *cerebrum.User
+		name         string
+		expectedErr  bool
+		id           uint
+		expectedData *cerebrum.User
 	}{
 		{
-			name:    "User does not exist",
-			wantErr: true,
-			id:      1000,
+			name:        "User should not not exist and not return error",
+			expectedErr: true,
+			id:          1000,
 		},
 		{
-			name: "Success",
-			id:   2,
-			wantData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "tomjones",
-				RoleID:     1,
-				CompanyID:  1,
-				LocationID: 1,
-				Password:   "newPass",
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 2,
-				}},
-				Role: &cerebrum.Role{
-					ID:          1,
-					AccessLevel: 1,
-					Name:        "SUPER_ADMIN",
+			name:        "Success",
+			id:          2,
+			expectedErr: false,
+			expectedData: &cerebrum.User{
+				Email:              "tomjones@mail.com",
+				FirstName:          "Tom",
+				LastName:           "Jones",
+				Username:           "tomjones",
+				RoleID:             cerebrum.AccessRole(1),
+				CompanyID:          1,
+				LocationID:         1,
+				Password:           "newPass",
+				Token:              "asdf",
+				LastPasswordChange: someTime,
+				LastLogin:          someTime,
+				Base: cerebrum.Base{
+					Model: gorm.Model{ID: 2},
 				},
 			},
 		},
 	}
 
-	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
-	defer dbContainer.Shutdown()
+	container := mockdb.NewMySQLDockerTestContainer(t)
+	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	fmt.Println(dbContainer)
-	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
-
-	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
-		ID:          1,
-		AccessLevel: 1,
-		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -66,66 +69,63 @@ func TestView(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			user, err := udb.View(db, tt.id)
-			assert.Equal(t, tt.wantErr, err != nil)
-			if tt.wantData != nil {
+			fmt.Println(err)
+			fmt.Println(tt.expectedErr)
+			assert.Equal(t, tt.expectedErr, err != nil)
+			if tt.expectedData != nil {
 				if user == nil {
 					t.Errorf("response was nil due to: %v", err)
 				} else {
-					tt.wantData.CreatedAt = user.CreatedAt
-					tt.wantData.UpdatedAt = user.UpdatedAt
-					assert.Equal(t, tt.wantData, user)
+					tt.expectedData.CreatedAt = user.CreatedAt
+					tt.expectedData.UpdatedAt = user.UpdatedAt
+					assert.Equal(t, tt.expectedData, user)
 				}
 			}
 		})
 	}
 	db.Close()
+	if err := pool.Purge(resource); err != nil {
+		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
+	}
 }
-/*
+
 func TestFindByUsername(t *testing.T) {
 	cases := []struct {
-		name     string
-		wantErr  bool
-		username string
-		wantData *cerebrum.User
+		name         string
+		expectedErr  bool
+		username     string
+		expectedData *cerebrum.User
 	}{
 		{
-			name:     "User does not exist",
-			wantErr:  true,
-			username: "notExists",
+			name:        "User does not exist",
+			expectedErr: true,
+			username:    "notExists",
 		},
 		{
 			name:     "Success",
 			username: "tomjones",
-			wantData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "tomjones",
-				RoleID:     1,
-				CompanyID:  1,
-				LocationID: 1,
-				Password:   "newPass",
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 2,
-				}},
-				Role: &cerebrum.Role{
-					ID:          1,
-					AccessLevel: 1,
-					Name:        "SUPER_ADMIN",
+			expectedData: &cerebrum.User{
+				Email:              "tomjones@mail.com",
+				FirstName:          "Tom",
+				LastName:           "Jones",
+				Username:           "tomjones",
+				RoleID:             cerebrum.AccessRole(1),
+				CompanyID:          1,
+				LocationID:         1,
+				Password:           "newPass",
+				LastPasswordChange: someTime,
+				LastLogin:          someTime,
+				Base: cerebrum.Base{
+					Model: gorm.Model{ID: 2},
 				},
 			},
 		},
 	}
 
-	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
-	defer dbContainer.Shutdown()
+	container := mockdb.NewMySQLDockerTestContainer(t)
+	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
-
-	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
-		ID:          1,
-		AccessLevel: 1,
-		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -134,65 +134,60 @@ func TestFindByUsername(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			user, err := udb.FindByUsername(db, tt.username)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedErr, err != nil)
 
-			if tt.wantData != nil {
-				tt.wantData.CreatedAt = user.CreatedAt
-				tt.wantData.UpdatedAt = user.UpdatedAt
-				assert.Equal(t, tt.wantData, user)
+			if tt.expectedData != nil {
+				tt.expectedData.CreatedAt = user.CreatedAt
+				tt.expectedData.UpdatedAt = user.UpdatedAt
+				assert.Equal(t, tt.expectedData, user)
 
 			}
 		})
 	}
 	db.Close()
+	if err := pool.Purge(resource); err != nil {
+		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
+	}
 }
 
 func TestFindByToken(t *testing.T) {
 	cases := []struct {
-		name     string
-		wantErr  bool
-		token    string
-		wantData *cerebrum.User
+		name         string
+		expectedErr  bool
+		token        string
+		expectedData *cerebrum.User
 	}{
 		{
-			name:    "User does not exist",
-			wantErr: true,
-			token:   "notExists",
+			name:        "User does not exist",
+			expectedErr: true,
+			token:       "notExists",
 		},
 		{
 			name:  "Success",
 			token: "loginrefresh",
-			wantData: &cerebrum.User{
-				Email:      "johndoe@mail.com",
-				FirstName:  "John",
-				LastName:   "Doe",
-				Username:   "johndoe",
-				RoleID:     1,
-				CompanyID:  1,
-				LocationID: 1,
-				Password:   "hunter2",
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 1,
-				}},
-				Role: &cerebrum.Role{
-					ID:          1,
-					AccessLevel: 1,
-					Name:        "SUPER_ADMIN",
+			expectedData: &cerebrum.User{
+				Email:              "johndoe@mail.com",
+				FirstName:          "John",
+				LastName:           "Doe",
+				Username:           "johndoe",
+				RoleID:             cerebrum.AccessRole(1),
+				CompanyID:          1,
+				LocationID:         1,
+				Password:           "hunter2",
+				LastPasswordChange: someTime,
+				LastLogin:          someTime,
+				Base: cerebrum.Base{
+					Model: gorm.Model{ID: 1},
 				},
 				Token: "loginrefresh",
 			},
 		},
 	}
 
-	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
-	defer dbContainer.Shutdown()
+	container := mockdb.NewMySQLDockerTestContainer(t)
+	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
-
-	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
-		ID:          1,
-		AccessLevel: 1,
-		Name:        "SUPER_ADMIN"}, cases[1].wantData); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -201,67 +196,71 @@ func TestFindByToken(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			user, err := udb.FindByToken(db, tt.token)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedErr, err != nil)
 
-			if tt.wantData != nil {
-				tt.wantData.CreatedAt = user.CreatedAt
-				tt.wantData.UpdatedAt = user.UpdatedAt
-				assert.Equal(t, tt.wantData, user)
+			if tt.expectedData != nil {
+				tt.expectedData.CreatedAt = user.CreatedAt
+				tt.expectedData.UpdatedAt = user.UpdatedAt
+				assert.Equal(t, tt.expectedData, user)
 
 			}
 		})
 	}
 	db.Close()
+	if err := pool.Purge(resource); err != nil {
+		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
+	}
 }
 
 func TestUpdate(t *testing.T) {
 	cases := []struct {
-		name     string
-		wantErr  bool
-		usr      *cerebrum.User
-		wantData *cerebrum.User
+		name         string
+		expectedErr  bool
+		usr          *cerebrum.User
+		expectedData *cerebrum.User
 	}{
 		{
 			name: "Success",
 			usr: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 2,
-				}},
-				FirstName: "Z",
-				LastName:  "Freak",
-				Address:   "Address",
-				Phone:     "123456",
-				Mobile:    "345678",
-				Username:  "newUsername",
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID: 2,
+					},
+				},
+				FirstName:          "Z",
+				LastName:           "Freak",
+				Address:            "Address",
+				Phone:              "123456",
+				Mobile:             "345678",
+				Username:           "newUsername",
+				LastPasswordChange: someTime,
+				LastLogin:          someTime,
 			},
-			wantData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Z",
-				LastName:   "Freak",
-				Username:   "tomjones",
-				RoleID:     1,
-				CompanyID:  1,
-				LocationID: 1,
-				Password:   "newPass",
-				Address:    "Address",
-				Phone:      "123456",
-				Mobile:     "345678",
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 2,
-				}},
+			expectedData: &cerebrum.User{
+				Email:              "tomjones@mail.com",
+				FirstName:          "Z",
+				LastName:           "Freak",
+				Username:           "tomjones",
+				RoleID:             cerebrum.AccessRole(1),
+				CompanyID:          1,
+				LocationID:         1,
+				Password:           "newPass",
+				LastPasswordChange: someTime,
+				LastLogin:          someTime,
+				Address:            "Address",
+				Phone:              "123456",
+				Mobile:             "345678",
+				Base: cerebrum.Base{
+					Model: gorm.Model{ID: 2},
+				},
 			},
 		},
 	}
 
-	dbContainer, cfg := mockdb.MySqlTestContainerConfig(t)
-	defer dbContainer.Shutdown()
+	container := mockdb.NewMySQLDockerTestContainer(t)
+	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	db := mockdb.NewDBConn(t, cfg, &cerebrum.Role{}, &cerebrum.User{})
-
-	if err := mockdb.InsertMultiple(db, &cerebrum.Role{
-		ID:          1,
-		AccessLevel: 1,
-		Name:        "SUPER_ADMIN"}, cases[0].usr); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, cases[0].usr); err != nil {
 		t.Error(err)
 	}
 
@@ -269,21 +268,27 @@ func TestUpdate(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			err := udb.Update(db, tt.wantData)
-			assert.Equal(t, tt.wantErr, err != nil)
-			if tt.wantData != nil {
-				user := &cerebrum.User{}
+			user := &cerebrum.User{}
+			if err := db.First(user, tt.usr.ID).Error; err != nil {
+				t.Error(err)
+			}
+			tt.expectedData.CreatedAt = user.CreatedAt
+			tt.expectedData.LastLogin = user.LastLogin
+			tt.expectedData.DeletedAt = user.DeletedAt
+			err := udb.Update(db, tt.expectedData)
+			assert.Equal(t, tt.expectedErr, err != nil)
+			if tt.expectedData != nil {
+				user = &cerebrum.User{}
 				if err := db.First(user, tt.usr.ID).Error; err != nil {
 					t.Error(err)
 				}
-				tt.wantData.UpdatedAt = user.UpdatedAt
-				tt.wantData.CreatedAt = user.CreatedAt
-				tt.wantData.LastLogin = user.LastLogin
-				tt.wantData.DeletedAt = user.DeletedAt
-				assert.Equal(t, tt.wantData, user)
+				tt.expectedData.UpdatedAt = user.UpdatedAt
+				assert.Equal(t, tt.expectedData, user)
 			}
 		})
 	}
 	db.Close()
+	if err := pool.Purge(resource); err != nil {
+		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
+	}
 }
-*/

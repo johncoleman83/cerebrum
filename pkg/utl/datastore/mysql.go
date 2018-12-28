@@ -3,20 +3,15 @@ package datastore
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 )
 
-type Result struct {
-	Date  time.Time
-	Total int64
-}
-
-func FormatDSN(dbConfig *config.Database) (string) {
+// FormatDSN creates the datastore name string for database connections
+func FormatDSN(dbConfig *config.Database) string {
 	return fmt.Sprintf(
 		"%s:%s@%s(%s:%s)/%s?%s",
 		dbConfig.User,
@@ -29,16 +24,16 @@ func FormatDSN(dbConfig *config.Database) (string) {
 	)
 }
 
+// ExtractHostAndPortFrom turns an address into 2 host and port variables
 func ExtractHostAndPortFrom(addr string) (string, string) {
 	addrSplit := strings.Split(addr, ":")
 	return addrSplit[0], addrSplit[1]
 }
 
-// New creates new database connection to a mysql database
+// NewMySQLGormDb creates new database connection to a mysql database
 func NewMySQLGormDb(dbConfig *config.Database) (*gorm.DB, error) {
 	dsn := FormatDSN(dbConfig)
 
-	fmt.Println(dsn)
 	db, err := gorm.Open(dbConfig.Dialect, dsn)
 	if err != nil {
 		return db, err

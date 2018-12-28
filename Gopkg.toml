@@ -3,24 +3,12 @@
   version = "3.2.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/fortytw2/dockertest"
-
-[[constraint]]
-  name = "github.com/go-pg/pg"
-  version = "6.14.3"
-
-[[constraint]]
   name = "github.com/go-playground/validator"
   version = "9.20.2"
 
 [[constraint]]
   name = "github.com/labstack/echo"
   version = "3.3.5"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/lib/pq"
 
 [[constraint]]
   name = "github.com/stretchr/testify"
@@ -38,3 +26,7 @@
   go-tests = true
   unused-packages = true
   non-go = true
+
+[[constraint]]
+  name = "github.com/ory/dockertest"
+  version = "3.3.2"

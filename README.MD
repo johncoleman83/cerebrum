@@ -43,8 +43,8 @@ The following dependencies are used in this project (generated using [Glice](htt
 | golang.org/x/crypto/bcrypt          | https://github.com/golang/crypto           |              |
 | gopkg.in/yaml.v2                    | https://github.com/go-yaml/yaml            |              |
 | gopkg.in/go-playground/validator.v8 | https://github.com/go-playground/validator | MIT          |
-| github.com/lib/pq                   | https://github.com/lib/pq                  | Other        |
 | github.com/nbutton23/zxcvbn-go      | https://github.com/nbutton23/zxcvbn-go     | MIT          |
+| github.com/ory/dockertest           | https://github.com/ory/dockertest          | Apache       |
 | github.com/stretchr/testify         | https://github.com/stretchr/testify        | Other        |
 |-------------------------------------|--------------------------------------------|--------------|
 ```
@@ -167,12 +167,39 @@ Follows this [project layout](https://github.com/golang-standards/project-layout
 
 8. Utl directory contains helper packages and models. Packages such as mock, middleware, configuration, server are located here.
 
+## Make
+
+* use make to help with development
+
+```
+make refresh
+```
+
+* clean up stuff
+```
+make clean_dev
+make clean_test
+```
+
+
 ## Tests
 
-* cleanup docker files from tests
-  ```
-  command docker ps --all --format "{{.ID}}\t{{.Image}}" | grep postgres:alpine | cut -f1 | xargs docker rm
-  ```
+* trouble with DB connection, then add this to docker-compose and remove synchronous db testing:
+```
+  db_test:
+    image: mysql:latest
+    container_name: cerebrum_mysql_test_db_no_0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=cerebrum_mysql_test_db
+      - MYSQL_USER=mysql_test_user
+      - MYSQL_PASSWORD=mysql_test_password
+    ports:
+      - 3307:3306
+```
+
 
 ## License
 

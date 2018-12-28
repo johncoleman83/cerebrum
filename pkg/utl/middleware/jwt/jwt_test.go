@@ -6,13 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/labstack/echo"
 	"github.com/jinzhu/gorm"
+	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 func echoHandler(mw ...echo.MiddlewareFunc) *echo.Echo {
@@ -94,7 +94,7 @@ func TestGenerateToken(t *testing.T) {
 				}},
 				Username: "johndoe",
 				Email:    "johndoe@mail.com",
-				Role: &cerebrum.Role{
+				Role: cerebrum.Role{
 					AccessLevel: cerebrum.SuperAdminRole,
 				},
 				CompanyID:  1,

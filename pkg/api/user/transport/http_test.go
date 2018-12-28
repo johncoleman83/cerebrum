@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 	"github.com/johncoleman83/cerebrum/pkg/api/user/transport"
@@ -84,11 +84,13 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			wantResp: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID:        1,
-					CreatedAt: mock.TestTime(2018),
-					UpdatedAt: mock.TestTime(2018),
-				}},
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2018),
+						UpdatedAt: mock.TestTime(2018),
+					},
+				},
 				FirstName:  "John",
 				LastName:   "Doe",
 				Username:   "juzernejm",
@@ -128,7 +130,7 @@ func TestCreate(t *testing.T) {
 func TestList(t *testing.T) {
 	type listResponse struct {
 		Users []cerebrum.User `json:"users"`
-		Page  int          `json:"page"`
+		Page  int             `json:"page"`
 	}
 	cases := []struct {
 		name       string
@@ -177,34 +179,38 @@ func TestList(t *testing.T) {
 					if p.Limit == 100 && p.Offset == 100 {
 						return []cerebrum.User{
 							{
-								Base: cerebrum.Base{Model: gorm.Model{
-									ID:        10,
-									CreatedAt: mock.TestTime(2001),
-									UpdatedAt: mock.TestTime(2002),
-								}},
+								Base: cerebrum.Base{
+									Model: gorm.Model{
+										ID:        10,
+										CreatedAt: mock.TestTime(2001),
+										UpdatedAt: mock.TestTime(2002),
+									},
+								},
 								FirstName:  "John",
 								LastName:   "Doe",
 								Email:      "john@mail.com",
 								CompanyID:  2,
 								LocationID: 3,
-								Role: &cerebrum.Role{
+								Role: cerebrum.Role{
 									ID:          1,
 									AccessLevel: 1,
 									Name:        "SUPER_ADMIN",
 								},
 							},
 							{
-								Base: cerebrum.Base{Model: gorm.Model{
-									ID:        11,
-									CreatedAt: mock.TestTime(2004),
-									UpdatedAt: mock.TestTime(2005),
-								}},
+								Base: cerebrum.Base{
+									Model: gorm.Model{
+										ID:        11,
+										CreatedAt: mock.TestTime(2004),
+										UpdatedAt: mock.TestTime(2005),
+									},
+								},
 								FirstName:  "Joanna",
 								LastName:   "Dye",
 								Email:      "joanna@mail.com",
 								CompanyID:  1,
 								LocationID: 2,
-								Role: &cerebrum.Role{
+								Role: cerebrum.Role{
 									ID:          2,
 									AccessLevel: 2,
 									Name:        "ADMIN",
@@ -219,34 +225,38 @@ func TestList(t *testing.T) {
 			wantResp: &listResponse{
 				Users: []cerebrum.User{
 					{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID:        10,
-							CreatedAt: mock.TestTime(2001),
-							UpdatedAt: mock.TestTime(2002),
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID:        10,
+								CreatedAt: mock.TestTime(2001),
+								UpdatedAt: mock.TestTime(2002),
+							},
+						},
 						FirstName:  "John",
 						LastName:   "Doe",
 						Email:      "john@mail.com",
 						CompanyID:  2,
 						LocationID: 3,
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							ID:          1,
 							AccessLevel: 1,
 							Name:        "SUPER_ADMIN",
 						},
 					},
 					{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID:        11,
-							CreatedAt: mock.TestTime(2004),
-							UpdatedAt: mock.TestTime(2005),
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID:        11,
+								CreatedAt: mock.TestTime(2004),
+								UpdatedAt: mock.TestTime(2005),
+							},
+						},
 						FirstName:  "Joanna",
 						LastName:   "Dye",
 						Email:      "joanna@mail.com",
 						CompanyID:  1,
 						LocationID: 2,
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							ID:          2,
 							AccessLevel: 2,
 							Name:        "ADMIN",
@@ -317,11 +327,13 @@ func TestView(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID:        1,
-							CreatedAt: mock.TestTime(2000),
-							UpdatedAt: mock.TestTime(2000),
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID:        1,
+								CreatedAt: mock.TestTime(2000),
+								UpdatedAt: mock.TestTime(2000),
+							},
+						},
 						FirstName: "John",
 						LastName:  "Doe",
 						Username:  "JohnDoe",
@@ -330,11 +342,13 @@ func TestView(t *testing.T) {
 			},
 			wantStatus: http.StatusOK,
 			wantResp: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID:        1,
-					CreatedAt: mock.TestTime(2000),
-					UpdatedAt: mock.TestTime(2000),
-				}},
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2000),
+						UpdatedAt: mock.TestTime(2000),
+					},
+				},
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
@@ -412,11 +426,13 @@ func TestUpdate(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID:        1,
-							CreatedAt: mock.TestTime(2000),
-							UpdatedAt: mock.TestTime(2000),
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID:        1,
+								CreatedAt: mock.TestTime(2000),
+								UpdatedAt: mock.TestTime(2000),
+							},
+						},
 						FirstName: "John",
 						LastName:  "Doe",
 						Username:  "JohnDoe",
@@ -432,11 +448,13 @@ func TestUpdate(t *testing.T) {
 			},
 			wantStatus: http.StatusOK,
 			wantResp: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID:        1,
-					CreatedAt: mock.TestTime(2000),
-					UpdatedAt: mock.TestTime(2010),
-				}},
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2000),
+						UpdatedAt: mock.TestTime(2010),
+					},
+				},
 				FirstName: "jj",
 				LastName:  "okocha",
 				Username:  "JohnDoe",
@@ -496,7 +514,7 @@ func TestDelete(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							AccessLevel: cerebrum.CompanyAdminRole,
 						},
 					}, nil
@@ -515,7 +533,7 @@ func TestDelete(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							AccessLevel: cerebrum.CompanyAdminRole,
 						},
 					}, nil

@@ -7,7 +7,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
@@ -21,18 +21,18 @@ func TestAuthenticate(t *testing.T) {
 		pass string
 	}
 	cases := []struct {
-		name     string
-		args     args
-		wantData *cerebrum.AuthToken
-		wantErr  bool
-		udb      *mockdb.User
-		jwt      *mock.JWT
-		sec      *mock.Secure
+		name         string
+		args         args
+		expectedData *cerebrum.AuthToken
+		expectedErr  bool
+		udb          *mockdb.User
+		jwt          *mock.JWT
+		sec          *mock.Secure
 	}{
 		{
-			name:    "Fail on finding user",
-			args:    args{user: "juzernejm"},
-			wantErr: true,
+			name:        "Fail on finding user",
+			args:        args{user: "juzernejm"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
@@ -40,9 +40,9 @@ func TestAuthenticate(t *testing.T) {
 			},
 		},
 		{
-			name:    "Fail on wrong password",
-			args:    args{user: "juzernejm", pass: "notHashedPassword"},
-			wantErr: true,
+			name:        "Fail on wrong password",
+			args:        args{user: "juzernejm", pass: "notHashedPassword"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -57,9 +57,9 @@ func TestAuthenticate(t *testing.T) {
 			},
 		},
 		{
-			name:    "Inactive user",
-			args:    args{user: "juzernejm", pass: "pass"},
-			wantErr: true,
+			name:        "Inactive user",
+			args:        args{user: "juzernejm", pass: "pass"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -76,9 +76,9 @@ func TestAuthenticate(t *testing.T) {
 			},
 		},
 		{
-			name:    "Fail on token generation",
-			args:    args{user: "juzernejm", pass: "pass"},
-			wantErr: true,
+			name:        "Fail on token generation",
+			args:        args{user: "juzernejm", pass: "pass"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -100,9 +100,9 @@ func TestAuthenticate(t *testing.T) {
 			},
 		},
 		{
-			name:    "Fail on updating last login",
-			args:    args{user: "juzernejm", pass: "pass"},
-			wantErr: true,
+			name:        "Fail on updating last login",
+			args:        args{user: "juzernejm", pass: "pass"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -157,7 +157,7 @@ func TestAuthenticate(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantData: &cerebrum.AuthToken{
+			expectedData: &cerebrum.AuthToken{
 				Token:        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 				Expires:      mock.TestTime(2000).Format(time.RFC3339),
 				RefreshToken: "refreshtoken",
@@ -168,11 +168,11 @@ func TestAuthenticate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := auth.New(nil, tt.udb, tt.jwt, tt.sec, nil)
 			token, err := s.Authenticate(nil, tt.args.user, tt.args.pass)
-			if tt.wantData != nil {
-				tt.wantData.RefreshToken = token.RefreshToken
-				assert.Equal(t, tt.wantData, token)
+			if tt.expectedData != nil {
+				tt.expectedData.RefreshToken = token.RefreshToken
+				assert.Equal(t, tt.expectedData, token)
 			}
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedErr, err != nil)
 		})
 	}
 }
@@ -182,17 +182,17 @@ func TestRefresh(t *testing.T) {
 		token string
 	}
 	cases := []struct {
-		name     string
-		args     args
-		wantData *cerebrum.RefreshToken
-		wantErr  bool
-		udb      *mockdb.User
-		jwt      *mock.JWT
+		name         string
+		args         args
+		expectedData *cerebrum.RefreshToken
+		expectedErr  bool
+		udb          *mockdb.User
+		jwt          *mock.JWT
 	}{
 		{
-			name:    "Fail on finding token",
-			args:    args{token: "refreshtoken"},
-			wantErr: true,
+			name:        "Fail on finding token",
+			args:        args{token: "refreshtoken"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
@@ -200,9 +200,9 @@ func TestRefresh(t *testing.T) {
 			},
 		},
 		{
-			name:    "Fail on token generation",
-			args:    args{token: "refreshtoken"},
-			wantErr: true,
+			name:        "Fail on token generation",
+			args:        args{token: "refreshtoken"},
+			expectedErr: true,
 			udb: &mockdb.User{
 				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -237,7 +237,7 @@ func TestRefresh(t *testing.T) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", mock.TestTime(2000).Format(time.RFC3339), nil
 				},
 			},
-			wantData: &cerebrum.RefreshToken{
+			expectedData: &cerebrum.RefreshToken{
 				Token:   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 				Expires: mock.TestTime(2000).Format(time.RFC3339),
 			},
@@ -247,19 +247,19 @@ func TestRefresh(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := auth.New(nil, tt.udb, tt.jwt, nil, nil)
 			token, err := s.Refresh(tt.args.c, tt.args.token)
-			assert.Equal(t, tt.wantData, token)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedData, token)
+			assert.Equal(t, tt.expectedErr, err != nil)
 		})
 	}
 }
 
 func TestMe(t *testing.T) {
 	cases := []struct {
-		name     string
-		wantData *cerebrum.User
-		udb      *mockdb.User
-		rbac     *mock.RBAC
-		wantErr  bool
+		name         string
+		expectedData *cerebrum.User
+		udb          *mockdb.User
+		rbac         *mock.RBAC
+		expectedErr  bool
 	}{
 		{
 			name: "Success",
@@ -271,28 +271,32 @@ func TestMe(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID:        id,
-							CreatedAt: mock.TestTime(1999),
-							UpdatedAt: mock.TestTime(2000),
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID:        id,
+								CreatedAt: mock.TestTime(1999),
+								UpdatedAt: mock.TestTime(2000),
+							},
+						},
 						FirstName: "John",
 						LastName:  "Doe",
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							AccessLevel: cerebrum.UserRole,
 						},
 					}, nil
 				},
 			},
-			wantData: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID:        9,
-					CreatedAt: mock.TestTime(1999),
-					UpdatedAt: mock.TestTime(2000),
-				}},
+			expectedData: &cerebrum.User{
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID:        9,
+						CreatedAt: mock.TestTime(1999),
+						UpdatedAt: mock.TestTime(2000),
+					},
+				},
 				FirstName: "John",
 				LastName:  "Doe",
-				Role: &cerebrum.Role{
+				Role: cerebrum.Role{
 					AccessLevel: cerebrum.UserRole,
 				},
 			},
@@ -302,8 +306,8 @@ func TestMe(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := auth.New(nil, tt.udb, nil, nil, tt.rbac)
 			user, err := s.Me(nil)
-			assert.Equal(t, tt.wantData, user)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedData, user)
+			assert.Equal(t, tt.expectedErr, err != nil)
 		})
 	}
 }

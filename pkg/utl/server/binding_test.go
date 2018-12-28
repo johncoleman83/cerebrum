@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/go-playground/validator"
-	"github.com/labstack/echo"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
+	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,26 +18,26 @@ type Req struct {
 
 func TestBind(t *testing.T) {
 	cases := []struct {
-		name     string
-		req      string
-		wantErr  bool
-		wantData *Req
+		name         string
+		req          string
+		expectedErr  bool
+		expectedData *Req
 	}{
 		{
-			name:     "Fail on binding",
-			wantErr:  true,
-			req:      `"bleja"`,
-			wantData: &Req{Name: ""},
+			name:         "Fail on binding",
+			expectedErr:  true,
+			req:          `"bleja"`,
+			expectedData: &Req{Name: ""},
 		},
 		{
-			name:     "Fail on validation",
-			wantErr:  true,
-			wantData: &Req{Name: ""},
+			name:         "Fail on validation",
+			expectedErr:  true,
+			expectedData: &Req{Name: ""},
 		},
 		{
-			name:     "Success",
-			req:      `{"name":"John"}`,
-			wantData: &Req{Name: "John"},
+			name:         "Success",
+			req:          `{"name":"John"}`,
+			expectedData: &Req{Name: "John"},
 		},
 	}
 	b := server.NewBinder()
@@ -52,8 +52,8 @@ func TestBind(t *testing.T) {
 			c := e.NewContext(req, w)
 			r := new(Req)
 			err := b.Bind(r, c)
-			assert.Equal(t, tt.wantData, r)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedData, r)
+			assert.Equal(t, tt.expectedErr, err != nil)
 		})
 	}
 

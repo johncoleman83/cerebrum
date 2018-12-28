@@ -11,33 +11,33 @@ import (
 
 func TestLoad(t *testing.T) {
 	cases := []struct {
-		name     string
-		path     string
-		wantData *config.Configuration
-		wantErr  bool
+		name         string
+		path         string
+		expectedData *config.Configuration
+		expectedErr  bool
 	}{
 		{
-			name:    "Fail on non-existing file",
-			path:    "./path/does/not/Exists",
-			wantErr: true,
+			name:        "Fail on non-existing file",
+			path:        "./path/does/not/Exists",
+			expectedErr: true,
 		},
 		{
-			name:    "Fail on wrong file format",
-			path:    "testdata/config.invalid.yaml",
-			wantErr: true,
+			name:        "Fail on wrong file format",
+			path:        "testdata/config.invalid.yaml",
+			expectedErr: true,
 		},
 		{
 			name: "Success",
 			path: support.TestingConfigPath(),
-			wantData: &config.Configuration{
+			expectedData: &config.Configuration{
 				DB: &config.Database{
-					Dialect: 	"mysql",
-					User: 		"mysql_test_user",
+					Dialect:  "mysql",
+					User:     "mysql_test_user",
 					Password: "mysql_test_password",
-					Name: 		"cerebrum_mysql_test_db",
+					Name:     "cerebrum_mysql_test_db",
 					Protocol: "tcp",
-					Host: 		"localhost",
-					Port: 		"3306",
+					Host:     "localhost",
+					Port:     "3306",
 					Settings: "tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=20s",
 				},
 				Server: &config.Server{
@@ -63,8 +63,8 @@ func TestLoad(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg, err := config.LoadConfigFrom(tt.path)
-			assert.Equal(t, tt.wantData, cfg)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedData, cfg)
+			assert.Equal(t, tt.expectedErr, err != nil)
 		})
 	}
 }

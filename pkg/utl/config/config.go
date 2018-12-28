@@ -3,8 +3,8 @@ package config
 import (
 	"flag"
 	"fmt"
-	"log"
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 
@@ -15,32 +15,31 @@ import (
 
 func expectedFiles() map[string]bool {
 	return map[string]bool{
-    "conf.development.yaml": true,
-    "conf.testing.yaml": true,
-    "conf.staging.yaml": true,
-		"conf.production.yaml": true,
+		"conf.development.yaml": true,
+		"conf.testing.yaml":     true,
+		"conf.staging.yaml":     true,
+		"conf.production.yaml":  true,
 	}
 }
 
 // checks if path has expected name format
-func isExpectedConfigPath(cfgPath string) (error) {
-	fileName := cfgPath[strings.LastIndex(cfgPath, "/") + 1:]
+func isExpectedConfigPath(cfgPath string) error {
+	fileName := cfgPath[strings.LastIndex(cfgPath, "/")+1:]
 	files := expectedFiles()
 	if val, status := files[fileName]; !(val && status) {
-    return fmt.Errorf("filename must be recognized")
+		return fmt.Errorf("filename must be recognized")
 	}
 	if _, errPath := os.Stat(cfgPath); errPath != nil {
 		return fmt.Errorf("error finding the path, %s", cfgPath)
-	} else {
-		log.Printf("config file: %s", cfgPath)
-		return nil
 	}
+	log.Printf("config file: %s", cfgPath)
+	return nil
 }
 
 func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
 	bytes, errRead := ioutil.ReadFile(cfgPath)
 	if errRead != nil {
-		return nil, fmt.Errorf("error reading config file, %s", errRead)
+		return nil, fmt.Errorf("error reading config file, %v", errRead)
 	}
 	var cfg = new(Configuration)
 	if errYaml := yaml.Unmarshal(bytes, cfg); errYaml != nil {
@@ -75,13 +74,13 @@ type Configuration struct {
 
 // Database holds data necessery for database configuration
 type Database struct {
-	Dialect	 string `yaml:"dialect,omitempty"`
-  User 		 string `yaml:"user,omitempty"`
-  Password string `yaml:"password,omitempty"`
-  Name 		 string `yaml:"name,omitempty"`
-  Protocol string `yaml:"protocol,omitempty"`
-  Host 		 string `yaml:"host,omitempty"`
-  Port		 string `yaml:"port,omitempty"`
+	Dialect  string `yaml:"dialect,omitempty"`
+	User     string `yaml:"user,omitempty"`
+	Password string `yaml:"password,omitempty"`
+	Name     string `yaml:"name,omitempty"`
+	Protocol string `yaml:"protocol,omitempty"`
+	Host     string `yaml:"host,omitempty"`
+	Port     string `yaml:"port,omitempty"`
 	Settings string `yaml:"settings,omitempty"`
 }
 

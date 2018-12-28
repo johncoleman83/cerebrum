@@ -15,7 +15,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
 	"github.com/jinzhu/gorm"
@@ -198,9 +198,11 @@ func TestMe(t *testing.T) {
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Base: cerebrum.Base{Model: gorm.Model{
-							ID: id,
-						}},
+						Base: cerebrum.Base{
+							Model: gorm.Model{
+								ID: id,
+							},
+						},
 						CompanyID:  2,
 						LocationID: 3,
 						Email:      "john@mail.com",
@@ -216,9 +218,11 @@ func TestMe(t *testing.T) {
 			},
 			header: mock.HeaderValid(),
 			wantResp: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
-					ID: 1,
-				}},
+				Base: cerebrum.Base{
+					Model: gorm.Model{
+						ID: 1,
+					},
+				},
 				CompanyID:  2,
 				LocationID: 3,
 				Email:      "john@mail.com",

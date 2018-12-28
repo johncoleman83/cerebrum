@@ -7,7 +7,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
@@ -22,12 +22,12 @@ func TestChange(t *testing.T) {
 		id      uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
-		udb     *mockdb.User
-		rbac    *mock.RBAC
-		sec     *mock.Secure
+		name        string
+		args        args
+		expectedErr bool
+		udb         *mockdb.User
+		rbac        *mock.RBAC
+		sec         *mock.Secure
 	}{
 		{
 			name: "Fail on EnforceUser",
@@ -36,12 +36,12 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return cerebrum.ErrGeneric
 				}},
-			wantErr: true,
+			expectedErr: true,
 		},
 		{
-			name:    "Fail on ViewUser",
-			args:    args{id: 1},
-			wantErr: true,
+			name:        "Fail on ViewUser",
+			args:        args{id: 1},
+			expectedErr: true,
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
@@ -62,7 +62,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			wantErr: true,
+			expectedErr: true,
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -83,7 +83,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			wantErr: true,
+			expectedErr: true,
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -134,7 +134,7 @@ func TestChange(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := password.New(nil, tt.udb, tt.rbac, tt.sec)
 			err := s.Change(nil, tt.args.id, tt.args.oldpass, tt.args.newpass)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedErr, err != nil)
 			// Check whether password was changed
 		})
 	}

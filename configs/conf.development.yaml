@@ -1,0 +1,26 @@
+database:
+  dialect: mysql
+  user: mysql_dev_user
+  password: mysql_dev_password
+  name: cerebrum_mysql_dev_db
+  protocol: tcp
+  host: localhost
+  port: 3306
+  settings: tls=skip-verify&charset=utf8&parseTime=True&loc=Local&autocommit=true&timeout=20s
+
+server:
+  port: :8080
+  debug: true
+  read_timeout_seconds: 10
+  write_timeout_seconds: 5
+
+jwt:
+  secret: jwtrealm # Change this value
+  duration_minutes: 15
+  refresh_duration_minutes: 15
+  max_refresh_minutes: 1440
+  signing_algorithm: HS256
+
+application:
+  min_password_strength: 1
+  swagger_ui_path: assets/swaggerui

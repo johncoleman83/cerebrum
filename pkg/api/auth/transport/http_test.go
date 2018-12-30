@@ -15,10 +15,10 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +42,7 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
@@ -52,13 +52,13 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (*cerebrum.User, error) {
+				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "hunter123",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
 					return nil
 				},
 			},
@@ -118,7 +118,7 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (*cerebrum.User, error) {
+				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
@@ -128,7 +128,7 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (*cerebrum.User, error) {
+				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "johndoe",
 						Active:   true,
@@ -181,7 +181,7 @@ func TestMe(t *testing.T) {
 			name:       "Fail on user view",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				ViewFn: func(orm.DB, int) (*cerebrum.User, error) {
+				ViewFn: func(*gorm.DB, uint) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
@@ -196,10 +196,12 @@ func TestMe(t *testing.T) {
 			name:       "Success",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, i int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
-							ID: i,
+							Model: gorm.Model{
+								ID: id,
+							},
 						},
 						CompanyID:  2,
 						LocationID: 3,
@@ -217,7 +219,9 @@ func TestMe(t *testing.T) {
 			header: mock.HeaderValid(),
 			wantResp: &cerebrum.User{
 				Base: cerebrum.Base{
-					ID: 1,
+					Model: gorm.Model{
+						ID: 1,
+					},
 				},
 				CompanyID:  2,
 				LocationID: 3,

@@ -7,9 +7,9 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
 	"github.com/stretchr/testify/assert"
@@ -19,35 +19,35 @@ func TestChange(t *testing.T) {
 	type args struct {
 		oldpass string
 		newpass string
-		id      int
+		id      uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
-		udb     *mockdb.User
-		rbac    *mock.RBAC
-		sec     *mock.Secure
+		name        string
+		args        args
+		expectedErr bool
+		udb         *mockdb.User
+		rbac        *mock.RBAC
+		sec         *mock.Secure
 	}{
 		{
 			name: "Fail on EnforceUser",
 			args: args{id: 1},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return cerebrum.ErrGeneric
 				}},
-			wantErr: true,
+			expectedErr: true,
 		},
 		{
-			name:    "Fail on ViewUser",
-			args:    args{id: 1},
-			wantErr: true,
+			name:        "Fail on ViewUser",
+			args:        args{id: 1},
+			expectedErr: true,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					if id != 1 {
 						return nil, nil
 					}
@@ -59,12 +59,12 @@ func TestChange(t *testing.T) {
 			name: "Fail on PasswordMatch",
 			args: args{id: 1, oldpass: "hunter123"},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			wantErr: true,
+			expectedErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "HashedPassword",
 					}, nil
@@ -80,12 +80,12 @@ func TestChange(t *testing.T) {
 			name: "Fail on InsecurePassword",
 			args: args{id: 1, oldpass: "hunter123"},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			wantErr: true,
+			expectedErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "HashedPassword",
 					}, nil
@@ -104,16 +104,16 @@ func TestChange(t *testing.T) {
 			name: "Success",
 			args: args{id: 1, oldpass: "hunter123", newpass: "password"},
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(c echo.Context, id int) error {
+				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",
 					}, nil
 				},
-				UpdateFn: func(orm.DB, *cerebrum.User) error {
+				UpdateFn: func(*gorm.DB, *cerebrum.User) error {
 					return nil
 				},
 			},
@@ -134,7 +134,7 @@ func TestChange(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := password.New(nil, tt.udb, tt.rbac, tt.sec)
 			err := s.Change(nil, tt.args.id, tt.args.oldpass, tt.args.newpass)
-			assert.Equal(t, tt.wantErr, err != nil)
+			assert.Equal(t, tt.expectedErr, err != nil)
 			// Check whether password was changed
 		})
 	}

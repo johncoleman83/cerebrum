@@ -1,23 +1,67 @@
 package config
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Load returns Configuration struct
-func Load(path string) (*Configuration, error) {
-	bytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("error reading config file, %s", err)
+func expectedFiles() map[string]bool {
+	return map[string]bool{
+		"conf.development.yaml": true,
+		"conf.testing.yaml":     true,
+		"conf.staging.yaml":     true,
+		"conf.production.yaml":  true,
+	}
+}
+
+// checks if path has expected name format
+func isExpectedConfigPath(cfgPath string) error {
+	fileName := cfgPath[strings.LastIndex(cfgPath, "/")+1:]
+	files := expectedFiles()
+	if val, status := files[fileName]; !(val && status) {
+		return fmt.Errorf("filename must be recognized")
+	}
+	if _, errPath := os.Stat(cfgPath); errPath != nil {
+		return fmt.Errorf("error finding the path, %s", cfgPath)
+	}
+	log.Printf("config file: %s", cfgPath)
+	return nil
+}
+
+func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
+	bytes, errRead := ioutil.ReadFile(cfgPath)
+	if errRead != nil {
+		return nil, fmt.Errorf("error reading config file, %v", errRead)
 	}
 	var cfg = new(Configuration)
-	if err := yaml.Unmarshal(bytes, cfg); err != nil {
-		return nil, fmt.Errorf("unable to decode into struct, %v", err)
+	if errYaml := yaml.Unmarshal(bytes, cfg); errYaml != nil {
+		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", errYaml)
 	}
 	return cfg, nil
+}
+
+// LoadConfigFromFlags returns Configuration struct compiled from flags
+func LoadConfigFromFlags() (*Configuration, error) {
+	cfgPath := flag.String("config", support.DevelopmentConfigPath(), "Path to config file")
+	flag.Parse()
+
+	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
+		return nil, errName
+	}
+	return readFileAndBuildStruct(*cfgPath)
+}
+
+// LoadConfigFrom returns Configuration struct compile from input path
+func LoadConfigFrom(path string) (*Configuration, error) {
+	return readFileAndBuildStruct(path)
 }
 
 // Configuration holds data necessery for configuring application
@@ -30,9 +74,14 @@ type Configuration struct {
 
 // Database holds data necessery for database configuration
 type Database struct {
-	PSN        string `yaml:"psn,omitempty"`
-	LogQueries bool   `yaml:"log_queries,omitempty"`
-	Timeout    int    `yaml:"timeout_seconds,omitempty"`
+	Dialect  string `yaml:"dialect,omitempty"`
+	User     string `yaml:"user,omitempty"`
+	Password string `yaml:"password,omitempty"`
+	Name     string `yaml:"name,omitempty"`
+	Protocol string `yaml:"protocol,omitempty"`
+	Host     string `yaml:"host,omitempty"`
+	Port     string `yaml:"port,omitempty"`
+	Settings string `yaml:"settings,omitempty"`
 }
 
 // Server holds data necessery for server configuration

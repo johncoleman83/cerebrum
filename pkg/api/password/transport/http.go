@@ -29,7 +29,7 @@ func NewHTTP(svc password.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: int
+	//   type: uint
 	//   required: true
 	// - name: request
 	//   in: body
@@ -59,7 +59,7 @@ var (
 // Password change request
 // swagger:model pwChange
 type changeReq struct {
-	ID                 int    `json:"-"`
+	ID                 uint    `json:"-"`
 	OldPassword        string `json:"old_password" validate:"required,min=8"`
 	NewPassword        string `json:"new_password" validate:"required,min=8"`
 	NewPasswordConfirm string `json:"new_password_confirm" validate:"required"`
@@ -70,6 +70,7 @@ func (h *HTTP) change(c echo.Context) error {
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
+	idUint := uint(id)
 
 	p := new(changeReq)
 	if err := c.Bind(p); err != nil {
@@ -80,7 +81,7 @@ func (h *HTTP) change(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if err := h.svc.Change(c, id, p.OldPassword, p.NewPassword); err != nil {
+	if err := h.svc.Change(c, idUint, p.OldPassword, p.NewPassword); err != nil {
 		return err
 	}
 

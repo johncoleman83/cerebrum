@@ -29,10 +29,10 @@ func (s *Service) User(c echo.Context) *cerebrum.AuthUser {
 	email := c.Get("email").(string)
 	role := c.Get("role").(cerebrum.AccessRole)
 	return &cerebrum.AuthUser{
-		ID:         id,
+		ID:         uint(id),
 		Username:   user,
-		CompanyID:  companyID,
-		LocationID: locationID,
+		CompanyID:  uint(companyID),
+		LocationID: uint(locationID),
 		Email:      email,
 		Role:       role,
 	}
@@ -44,38 +44,38 @@ func (s *Service) EnforceRole(c echo.Context, r cerebrum.AccessRole) error {
 }
 
 // EnforceUser checks whether the request to change user data is done by the same user
-func (s *Service) EnforceUser(c echo.Context, ID int) error {
+func (s *Service) EnforceUser(c echo.Context, ID uint) error {
 	// TODO: Implement querying db and checking the requested user's company_id/location_id
 	// to allow company/location admins to view the user
 	if s.isAdmin(c) {
 		return nil
 	}
-	return checkBool(c.Get("id").(int) == ID)
+	return checkBool(uint(c.Get("id").(int)) == ID)
 }
 
 // EnforceCompany checks whether the request to apply change to company data
 // is done by the user belonging to the that company and that the user has role CompanyAdmin.
 // If user has admin role, the check for company doesnt need to pass.
-func (s *Service) EnforceCompany(c echo.Context, ID int) error {
+func (s *Service) EnforceCompany(c echo.Context, ID uint) error {
 	if s.isAdmin(c) {
 		return nil
 	}
 	if err := s.EnforceRole(c, cerebrum.CompanyAdminRole); err != nil {
 		return err
 	}
-	return checkBool(c.Get("company_id").(int) == ID)
+	return checkBool(uint(c.Get("company_id").(int)) == ID)
 }
 
 // EnforceLocation checks whether the request to change location data
 // is done by the user belonging to the requested location
-func (s *Service) EnforceLocation(c echo.Context, ID int) error {
+func (s *Service) EnforceLocation(c echo.Context, ID uint) error {
 	if s.isCompanyAdmin(c) {
 		return nil
 	}
 	if err := s.EnforceRole(c, cerebrum.LocationAdminRole); err != nil {
 		return err
 	}
-	return checkBool((c.Get("location_id").(int) == ID))
+	return checkBool(uint(c.Get("location_id").(int)) == ID)
 }
 
 func (s *Service) isAdmin(c echo.Context) bool {
@@ -89,7 +89,7 @@ func (s *Service) isCompanyAdmin(c echo.Context) bool {
 
 // AccountCreate performs auth check when creating a new account
 // Location admin cannot create accounts, needs to be fixed on EnforceLocation function
-func (s *Service) AccountCreate(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID int) error {
+func (s *Service) AccountCreate(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 	if err := s.EnforceLocation(c, locationID); err != nil {
 		return err
 	}

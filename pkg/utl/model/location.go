@@ -7,5 +7,5 @@ type Location struct {
 	Active  bool   `json:"active"`
 	Address string `json:"address"`
 
-	CompanyID int `json:"company_id"`
+	CompanyID uint `json:"company_id"`
 }

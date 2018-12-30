@@ -6,13 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 func echoHandler(mw ...echo.MiddlewareFunc) *echo.Echo {
@@ -89,12 +89,12 @@ func TestGenerateToken(t *testing.T) {
 			name: "Success",
 			algo: "HS256",
 			req: &cerebrum.User{
-				Base: cerebrum.Base{
+				Base: cerebrum.Base{Model: gorm.Model{
 					ID: 1,
-				},
+				}},
 				Username: "johndoe",
 				Email:    "johndoe@mail.com",
-				Role: &cerebrum.Role{
+				Role: cerebrum.Role{
 					AccessLevel: cerebrum.SuperAdminRole,
 				},
 				CompanyID:  1,

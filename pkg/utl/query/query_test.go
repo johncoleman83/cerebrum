@@ -3,7 +3,7 @@ package query_test
 import (
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 
@@ -16,10 +16,10 @@ func TestList(t *testing.T) {
 		user *cerebrum.AuthUser
 	}
 	cases := []struct {
-		name     string
-		args     args
-		wantData *cerebrum.ListQuery
-		wantErr  error
+		name         string
+		args         args
+		expectedData *cerebrum.ListQuery
+		expectedErr  error
 	}{
 		{
 			name: "Super admin user",
@@ -33,7 +33,7 @@ func TestList(t *testing.T) {
 				Role:      cerebrum.CompanyAdminRole,
 				CompanyID: 1,
 			}},
-			wantData: &cerebrum.ListQuery{
+			expectedData: &cerebrum.ListQuery{
 				Query: "company_id = ?",
 				ID:    1},
 		},
@@ -44,7 +44,7 @@ func TestList(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 2,
 			}},
-			wantData: &cerebrum.ListQuery{
+			expectedData: &cerebrum.ListQuery{
 				Query: "location_id = ?",
 				ID:    2},
 		},
@@ -53,14 +53,14 @@ func TestList(t *testing.T) {
 			args: args{user: &cerebrum.AuthUser{
 				Role: cerebrum.UserRole,
 			}},
-			wantErr: echo.ErrForbidden,
+			expectedErr: echo.ErrForbidden,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			q, err := query.List(tt.args.user)
-			assert.Equal(t, tt.wantData, q)
-			assert.Equal(t, tt.wantErr, err)
+			assert.Equal(t, tt.expectedData, q)
+			assert.Equal(t, tt.expectedErr, err)
 		})
 	}
 }

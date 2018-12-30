@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 	"github.com/johncoleman83/cerebrum/pkg/api/user/transport"
@@ -16,7 +16,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,7 +45,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on invalid role",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":50}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -55,7 +55,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on RBAC",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -66,12 +66,12 @@ func TestCreate(t *testing.T) {
 			name: "Success",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return nil
 				},
 			},
 			udb: &mockdb.User{
-				CreateFn: func(db orm.DB, usr cerebrum.User) (*cerebrum.User, error) {
+				CreateFn: func(db *gorm.DB, usr cerebrum.User) (*cerebrum.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
 					usr.UpdatedAt = mock.TestTime(2018)
@@ -85,9 +85,11 @@ func TestCreate(t *testing.T) {
 			},
 			wantResp: &cerebrum.User{
 				Base: cerebrum.Base{
-					ID:        1,
-					CreatedAt: mock.TestTime(2018),
-					UpdatedAt: mock.TestTime(2018),
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2018),
+						UpdatedAt: mock.TestTime(2018),
+					},
 				},
 				FirstName:  "John",
 				LastName:   "Doe",
@@ -128,7 +130,7 @@ func TestCreate(t *testing.T) {
 func TestList(t *testing.T) {
 	type listResponse struct {
 		Users []cerebrum.User `json:"users"`
-		Page  int          `json:"page"`
+		Page  int             `json:"page"`
 	}
 	cases := []struct {
 		name       string
@@ -173,21 +175,23 @@ func TestList(t *testing.T) {
 					}
 				}},
 			udb: &mockdb.User{
-				ListFn: func(db orm.DB, q *cerebrum.ListQuery, p *cerebrum.Pagination) ([]cerebrum.User, error) {
+				ListFn: func(db *gorm.DB, q *cerebrum.ListQuery, p *cerebrum.Pagination) ([]cerebrum.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
 						return []cerebrum.User{
 							{
 								Base: cerebrum.Base{
-									ID:        10,
-									CreatedAt: mock.TestTime(2001),
-									UpdatedAt: mock.TestTime(2002),
+									Model: gorm.Model{
+										ID:        10,
+										CreatedAt: mock.TestTime(2001),
+										UpdatedAt: mock.TestTime(2002),
+									},
 								},
 								FirstName:  "John",
 								LastName:   "Doe",
 								Email:      "john@mail.com",
 								CompanyID:  2,
 								LocationID: 3,
-								Role: &cerebrum.Role{
+								Role: cerebrum.Role{
 									ID:          1,
 									AccessLevel: 1,
 									Name:        "SUPER_ADMIN",
@@ -195,16 +199,18 @@ func TestList(t *testing.T) {
 							},
 							{
 								Base: cerebrum.Base{
-									ID:        11,
-									CreatedAt: mock.TestTime(2004),
-									UpdatedAt: mock.TestTime(2005),
+									Model: gorm.Model{
+										ID:        11,
+										CreatedAt: mock.TestTime(2004),
+										UpdatedAt: mock.TestTime(2005),
+									},
 								},
 								FirstName:  "Joanna",
 								LastName:   "Dye",
 								Email:      "joanna@mail.com",
 								CompanyID:  1,
 								LocationID: 2,
-								Role: &cerebrum.Role{
+								Role: cerebrum.Role{
 									ID:          2,
 									AccessLevel: 2,
 									Name:        "ADMIN",
@@ -220,16 +226,18 @@ func TestList(t *testing.T) {
 				Users: []cerebrum.User{
 					{
 						Base: cerebrum.Base{
-							ID:        10,
-							CreatedAt: mock.TestTime(2001),
-							UpdatedAt: mock.TestTime(2002),
+							Model: gorm.Model{
+								ID:        10,
+								CreatedAt: mock.TestTime(2001),
+								UpdatedAt: mock.TestTime(2002),
+							},
 						},
 						FirstName:  "John",
 						LastName:   "Doe",
 						Email:      "john@mail.com",
 						CompanyID:  2,
 						LocationID: 3,
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							ID:          1,
 							AccessLevel: 1,
 							Name:        "SUPER_ADMIN",
@@ -237,16 +245,18 @@ func TestList(t *testing.T) {
 					},
 					{
 						Base: cerebrum.Base{
-							ID:        11,
-							CreatedAt: mock.TestTime(2004),
-							UpdatedAt: mock.TestTime(2005),
+							Model: gorm.Model{
+								ID:        11,
+								CreatedAt: mock.TestTime(2004),
+								UpdatedAt: mock.TestTime(2005),
+							},
 						},
 						FirstName:  "Joanna",
 						LastName:   "Dye",
 						Email:      "joanna@mail.com",
 						CompanyID:  1,
 						LocationID: 2,
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							ID:          2,
 							AccessLevel: 2,
 							Name:        "ADMIN",
@@ -300,7 +310,7 @@ func TestView(t *testing.T) {
 			name: "Fail on RBAC",
 			req:  `1`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(echo.Context, int) error {
+				EnforceUserFn: func(echo.Context, uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -310,17 +320,19 @@ func TestView(t *testing.T) {
 			name: "Success",
 			req:  `1`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(echo.Context, int) error {
+				EnforceUserFn: func(echo.Context, uint) error {
 					return nil
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
-							ID:        1,
-							CreatedAt: mock.TestTime(2000),
-							UpdatedAt: mock.TestTime(2000),
+							Model: gorm.Model{
+								ID:        1,
+								CreatedAt: mock.TestTime(2000),
+								UpdatedAt: mock.TestTime(2000),
+							},
 						},
 						FirstName: "John",
 						LastName:  "Doe",
@@ -331,9 +343,11 @@ func TestView(t *testing.T) {
 			wantStatus: http.StatusOK,
 			wantResp: &cerebrum.User{
 				Base: cerebrum.Base{
-					ID:        1,
-					CreatedAt: mock.TestTime(2000),
-					UpdatedAt: mock.TestTime(2000),
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2000),
+						UpdatedAt: mock.TestTime(2000),
+					},
 				},
 				FirstName: "John",
 				LastName:  "Doe",
@@ -394,7 +408,7 @@ func TestUpdate(t *testing.T) {
 			id:   `1`,
 			req:  `{"first_name":"jj","last_name":"okocha","mobile":"123456","phone":"321321","address":"home"}`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(echo.Context, int) error {
+				EnforceUserFn: func(echo.Context, uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -405,17 +419,19 @@ func TestUpdate(t *testing.T) {
 			id:   `1`,
 			req:  `{"first_name":"jj","last_name":"okocha","phone":"321321","address":"home"}`,
 			rbac: &mock.RBAC{
-				EnforceUserFn: func(echo.Context, int) error {
+				EnforceUserFn: func(echo.Context, uint) error {
 					return nil
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
-							ID:        1,
-							CreatedAt: mock.TestTime(2000),
-							UpdatedAt: mock.TestTime(2000),
+							Model: gorm.Model{
+								ID:        1,
+								CreatedAt: mock.TestTime(2000),
+								UpdatedAt: mock.TestTime(2000),
+							},
 						},
 						FirstName: "John",
 						LastName:  "Doe",
@@ -424,7 +440,7 @@ func TestUpdate(t *testing.T) {
 						Phone:     "332223",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, usr *cerebrum.User) error {
 					usr.UpdatedAt = mock.TestTime(2010)
 					usr.Mobile = "991991"
 					return nil
@@ -433,9 +449,11 @@ func TestUpdate(t *testing.T) {
 			wantStatus: http.StatusOK,
 			wantResp: &cerebrum.User{
 				Base: cerebrum.Base{
-					ID:        1,
-					CreatedAt: mock.TestTime(2000),
-					UpdatedAt: mock.TestTime(2010),
+					Model: gorm.Model{
+						ID:        1,
+						CreatedAt: mock.TestTime(2000),
+						UpdatedAt: mock.TestTime(2010),
+					},
 				},
 				FirstName: "jj",
 				LastName:  "okocha",
@@ -494,9 +512,9 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							AccessLevel: cerebrum.CompanyAdminRole,
 						},
 					}, nil
@@ -513,14 +531,14 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Role: &cerebrum.Role{
+						Role: cerebrum.Role{
 							AccessLevel: cerebrum.CompanyAdminRole,
 						},
 					}, nil
 				},
-				DeleteFn: func(orm.DB, *cerebrum.User) error {
+				DeleteFn: func(*gorm.DB, *cerebrum.User) error {
 					return nil
 				},
 			},

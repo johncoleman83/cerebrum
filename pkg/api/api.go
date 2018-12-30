@@ -48,8 +48,8 @@ import (
 	ut "github.com/johncoleman83/cerebrum/pkg/api/user/transport"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
+	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
-	"github.com/johncoleman83/cerebrum/pkg/utl/postgres"
 	"github.com/johncoleman83/cerebrum/pkg/utl/rbac"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
@@ -57,7 +57,7 @@ import (
 
 // Start starts the API service
 func Start(cfg *config.Configuration) error {
-	db, err := postgres.New(cfg.DB.PSN, cfg.DB.Timeout, cfg.DB.LogQueries)
+	db, err := datastore.NewMySQLGormDb(cfg.DB)
 	if err != nil {
 		return err
 	}

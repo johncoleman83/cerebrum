@@ -3,7 +3,7 @@ package rbac_test
 import (
 	"testing"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/rbac"
@@ -35,26 +35,26 @@ func TestEnforceRole(t *testing.T) {
 		role cerebrum.AccessRole
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedErr bool
 	}{
 		{
-			name:    "Not authorized",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, cerebrum.CompanyAdminRole), role: cerebrum.SuperAdminRole},
-			wantErr: true,
+			name:        "Not authorized",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"role"}, cerebrum.CompanyAdminRole), role: cerebrum.SuperAdminRole},
+			expectedErr: true,
 		},
 		{
-			name:    "Authorized",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, cerebrum.SuperAdminRole), role: cerebrum.CompanyAdminRole},
-			wantErr: false,
+			name:        "Authorized",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"role"}, cerebrum.SuperAdminRole), role: cerebrum.CompanyAdminRole},
+			expectedErr: false,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			rbacSvc := rbac.New()
 			res := rbacSvc.EnforceRole(tt.args.ctx, tt.args.role)
-			assert.Equal(t, tt.wantErr, res == echo.ErrForbidden)
+			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
 }
@@ -62,34 +62,34 @@ func TestEnforceRole(t *testing.T) {
 func TestEnforceUser(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedErr bool
 	}{
 		{
-			name:    "Not same user, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 15, cerebrum.LocationAdminRole), id: 122},
-			wantErr: true,
+			name:        "Not same user, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 15, cerebrum.LocationAdminRole), id: 122},
+			expectedErr: true,
 		},
 		{
-			name:    "Not same user, but admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 22, cerebrum.SuperAdminRole), id: 44},
-			wantErr: false,
+			name:        "Not same user, but admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 22, cerebrum.SuperAdminRole), id: 44},
+			expectedErr: false,
 		},
 		{
-			name:    "Same user",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 8, cerebrum.AdminRole), id: 8},
-			wantErr: false,
+			name:        "Same user",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 8, cerebrum.AdminRole), id: 8},
+			expectedErr: false,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			rbacSvc := rbac.New()
 			res := rbacSvc.EnforceUser(tt.args.ctx, tt.args.id)
-			assert.Equal(t, tt.wantErr, res == echo.ErrForbidden)
+			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
 }
@@ -97,39 +97,39 @@ func TestEnforceUser(t *testing.T) {
 func TestEnforceCompany(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedErr bool
 	}{
 		{
-			name:    "Not same company, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 7, cerebrum.UserRole), id: 9},
-			wantErr: true,
+			name:        "Not same company, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 7, cerebrum.UserRole), id: 9},
+			expectedErr: true,
 		},
 		{
-			name:    "Same company, not company admin or admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 22, cerebrum.UserRole), id: 22},
-			wantErr: true,
+			name:        "Same company, not company admin or admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 22, cerebrum.UserRole), id: 22},
+			expectedErr: true,
 		},
 		{
-			name:    "Same company, company admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 5, cerebrum.CompanyAdminRole), id: 5},
-			wantErr: false,
+			name:        "Same company, company admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 5, cerebrum.CompanyAdminRole), id: 5},
+			expectedErr: false,
 		},
 		{
-			name:    "Not same company but admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 8, cerebrum.AdminRole), id: 9},
-			wantErr: false,
+			name:        "Not same company but admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 8, cerebrum.AdminRole), id: 9},
+			expectedErr: false,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			rbacSvc := rbac.New()
 			res := rbacSvc.EnforceCompany(tt.args.ctx, tt.args.id)
-			assert.Equal(t, tt.wantErr, res == echo.ErrForbidden)
+			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
 }
@@ -137,39 +137,39 @@ func TestEnforceCompany(t *testing.T) {
 func TestEnforceLocation(t *testing.T) {
 	type args struct {
 		ctx echo.Context
-		id  int
+		id  uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedErr bool
 	}{
 		{
-			name:    "Not same location, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 7, cerebrum.UserRole), id: 9},
-			wantErr: true,
+			name:        "Not same location, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 7, cerebrum.UserRole), id: 9},
+			expectedErr: true,
 		},
 		{
-			name:    "Same location, not company admin or admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 22, cerebrum.UserRole), id: 22},
-			wantErr: true,
+			name:        "Same location, not company admin or admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 22, cerebrum.UserRole), id: 22},
+			expectedErr: true,
 		},
 		{
-			name:    "Same location, company admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, cerebrum.CompanyAdminRole), id: 5},
-			wantErr: false,
+			name:        "Same location, company admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, cerebrum.CompanyAdminRole), id: 5},
+			expectedErr: false,
 		},
 		{
-			name:    "Location admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, cerebrum.LocationAdminRole), id: 5},
-			wantErr: false,
+			name:        "Location admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, cerebrum.LocationAdminRole), id: 5},
+			expectedErr: false,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			rbacSvc := rbac.New()
 			res := rbacSvc.EnforceLocation(tt.args.ctx, tt.args.id)
-			assert.Equal(t, tt.wantErr, res == echo.ErrForbidden)
+			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
 }
@@ -178,50 +178,50 @@ func TestAccountCreate(t *testing.T) {
 	type args struct {
 		ctx         echo.Context
 		roleID      cerebrum.AccessRole
-		company_id  int
-		location_id int
+		company_id  uint
+		location_id uint
 	}
 	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedErr bool
 	}{
 		{
-			name:    "Different location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.UserRole), roleID: 500, company_id: 7, location_id: 8},
-			wantErr: true,
+			name:        "Different location, company, creating user role, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.UserRole), roleID: 500, company_id: 7, location_id: 8},
+			expectedErr: true,
 		},
 		{
-			name:    "Same location, not company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.UserRole), roleID: 500, company_id: 2, location_id: 8},
-			wantErr: true,
+			name:        "Same location, not company, creating user role, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.UserRole), roleID: 500, company_id: 2, location_id: 8},
+			expectedErr: true,
 		},
 		{
-			name:    "Different location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 400, company_id: 2, location_id: 4},
-			wantErr: false,
+			name:        "Different location, company, creating user role, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 400, company_id: 2, location_id: 4},
+			expectedErr: false,
 		},
 		{
-			name:    "Same location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 500, company_id: 2, location_id: 3},
-			wantErr: false,
+			name:        "Same location, company, creating user role, not an admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 500, company_id: 2, location_id: 3},
+			expectedErr: false,
 		},
 		{
-			name:    "Same location, company, creating user role, admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 500, company_id: 2, location_id: 3},
-			wantErr: false,
+			name:        "Same location, company, creating user role, admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.CompanyAdminRole), roleID: 500, company_id: 2, location_id: 3},
+			expectedErr: false,
 		},
 		{
-			name:    "Different everything, admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.AdminRole), roleID: 200, company_id: 7, location_id: 4},
-			wantErr: false,
+			name:        "Different everything, admin",
+			args:        args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, cerebrum.AdminRole), roleID: 200, company_id: 7, location_id: 4},
+			expectedErr: false,
 		},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			rbacSvc := rbac.New()
 			res := rbacSvc.AccountCreate(tt.args.ctx, tt.args.roleID, tt.args.company_id, tt.args.location_id)
-			assert.Equal(t, tt.wantErr, res == echo.ErrForbidden)
+			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
 }

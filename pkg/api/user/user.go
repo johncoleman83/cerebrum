@@ -2,10 +2,10 @@
 package user
 
 import (
-	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/query"
 	"github.com/johncoleman83/cerebrum/pkg/utl/structs"
+	"github.com/labstack/echo"
 )
 
 // Create creates a new user account
@@ -28,7 +28,7 @@ func (u *User) List(c echo.Context, p *cerebrum.Pagination) ([]cerebrum.User, er
 }
 
 // View returns single user
-func (u *User) View(c echo.Context, id int) (*cerebrum.User, error) {
+func (u *User) View(c echo.Context, id uint) (*cerebrum.User, error) {
 	if err := u.rbac.EnforceUser(c, id); err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (u *User) View(c echo.Context, id int) (*cerebrum.User, error) {
 }
 
 // Delete deletes a user
-func (u *User) Delete(c echo.Context, id int) error {
+func (u *User) Delete(c echo.Context, id uint) error {
 	user, err := u.udb.View(u.db, id)
 	if err != nil {
 		return err
@@ -49,7 +49,7 @@ func (u *User) Delete(c echo.Context, id int) error {
 
 // Update contains user's information used for updating
 type Update struct {
-	ID        int
+	ID        uint
 	FirstName *string
 	LastName  *string
 	Mobile    *string

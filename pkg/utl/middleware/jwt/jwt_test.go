@@ -30,29 +30,29 @@ func hwHandler(c echo.Context) error {
 
 func TestMWFunc(t *testing.T) {
 	cases := []struct {
-		name       string
-		wantStatus int
-		header     string
-		signMethod string
+		name           string
+		expectedStatus int
+		header         string
+		signMethod     string
 	}{
 		{
-			name:       "Empty header",
-			wantStatus: http.StatusUnauthorized,
+			name:           "Empty header",
+			expectedStatus: http.StatusUnauthorized,
 		},
 		{
-			name:       "Header not containing Bearer",
-			header:     "notBearer",
-			wantStatus: http.StatusUnauthorized,
+			name:           "Header not containing Bearer",
+			header:         "notBearer",
+			expectedStatus: http.StatusUnauthorized,
 		},
 		{
-			name:       "Invalid header",
-			header:     mock.HeaderInvalid(),
-			wantStatus: http.StatusUnauthorized,
+			name:           "Invalid header",
+			header:         mock.HeaderInvalid(),
+			expectedStatus: http.StatusUnauthorized,
 		},
 		{
-			name:       "Success",
-			header:     mock.HeaderValid(),
-			wantStatus: http.StatusOK,
+			name:           "Success",
+			header:         mock.HeaderValid(),
+			expectedStatus: http.StatusOK,
 		},
 	}
 	jwtMW := jwt.New("jwtsecret", "HS256", 60)
@@ -69,17 +69,17 @@ func TestMWFunc(t *testing.T) {
 			if err != nil {
 				t.Fatal("Cannot create http request")
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestGenerateToken(t *testing.T) {
 	cases := []struct {
-		name      string
-		wantToken string
-		algo      string
-		req       *cerebrum.User
+		name          string
+		expectedToken string
+		algo          string
+		req           *cerebrum.User
 	}{
 		{
 			name: "Invalid algo",
@@ -100,7 +100,7 @@ func TestGenerateToken(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 			},
-			wantToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+			expectedToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 		},
 	}
 
@@ -115,7 +115,7 @@ func TestGenerateToken(t *testing.T) {
 			jwt := jwt.New("jwtsecret", tt.algo, 60)
 			str, _, err := jwt.GenerateToken(tt.req)
 			assert.Nil(t, err)
-			assert.Equal(t, tt.wantToken, strings.Split(str, ".")[0])
+			assert.Equal(t, tt.expectedToken, strings.Split(str, ".")[0])
 		})
 	}
 }

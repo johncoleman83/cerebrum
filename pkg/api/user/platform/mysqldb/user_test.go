@@ -17,8 +17,8 @@ import (
 var (
 	someTime   = time.Now().Round(time.Second)
 	superAdmin = cerebrum.Role{
-		ID:          cerebrum.AccessRole(1),
-		AccessLevel: cerebrum.AccessRole(1),
+		ID:          cerebrum.AccessRole(100),
+		AccessLevel: cerebrum.AccessRole(100),
 		Name:        "SUPER_ADMIN",
 	}
 )
@@ -34,16 +34,14 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate ID",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:              "tomjones@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "tomjones",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
-				RoleID:             1,
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "pass",
+				Email:      "tomjones@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "tomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "pass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 1,
@@ -55,16 +53,14 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate email but new id",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:              "johndoe@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "asdf",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
-				RoleID:             1,
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "pass",
+				Email:      "johndoe@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "asdf",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "pass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 12,
@@ -76,16 +72,14 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate username but new id",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:              "asdf@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "johndoe",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
-				RoleID:             1,
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "pass",
+				Email:      "asdf@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "johndoe",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "pass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 13,
@@ -97,16 +91,14 @@ func TestCreate(t *testing.T) {
 			name:        "Success",
 			expectedErr: false,
 			req: cerebrum.User{
-				Email:              "newtomjones@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "newtomjones",
-				RoleID:             1,
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "pass",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				Email:      "newtomjones@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "newtomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "pass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 42,
@@ -114,16 +106,14 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			expectedData: &cerebrum.User{
-				Email:              "newtomjones@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "newtomjones",
-				RoleID:             cerebrum.AccessRole(1),
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "pass",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				Email:      "newtomjones@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "newtomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "pass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 42,
@@ -137,10 +127,8 @@ func TestCreate(t *testing.T) {
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
 	duplicateUser := &cerebrum.User{
-		Email:              "johndoe@mail.com",
-		Username:           "johndoe",
-		LastPasswordChange: someTime,
-		LastLogin:          someTime,
+		Email:    "johndoe@mail.com",
+		Username: "johndoe",
 		Base: cerebrum.Base{
 			Model: gorm.Model{
 				ID: 1,
@@ -164,6 +152,8 @@ func TestCreate(t *testing.T) {
 				}
 				tt.expectedData.CreatedAt = resp.CreatedAt
 				tt.expectedData.UpdatedAt = resp.UpdatedAt
+				tt.expectedData.LastLogin = resp.LastLogin
+				tt.expectedData.LastPasswordChange = resp.LastPasswordChange
 				assert.Equal(t, tt.expectedData, resp)
 			}
 		})
@@ -190,16 +180,14 @@ func TestView(t *testing.T) {
 			name: "Success",
 			id:   3,
 			expectedData: &cerebrum.User{
-				Email:              "tomjones@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "tomjones",
-				RoleID:             cerebrum.AccessRole(1),
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "newPass",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				Email:      "tomjones@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "tomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "newPass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 3,
@@ -228,6 +216,9 @@ func TestView(t *testing.T) {
 				} else {
 					tt.expectedData.CreatedAt = user.CreatedAt
 					tt.expectedData.UpdatedAt = user.UpdatedAt
+					tt.expectedData.LastLogin = user.LastLogin
+					tt.expectedData.LastPasswordChange = user.LastPasswordChange
+					tt.expectedData.Role = superAdmin
 					assert.Equal(t, tt.expectedData, user)
 				}
 			}
@@ -254,29 +245,25 @@ func TestUpdate(t *testing.T) {
 						ID: 3,
 					},
 				},
-				FirstName:          "Z",
-				LastName:           "Freak",
-				Address:            "Address",
-				Phone:              "123456",
-				Mobile:             "345678",
-				Username:           "newUsername",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				FirstName: "Z",
+				LastName:  "Freak",
+				Address:   "Address",
+				Phone:     "123456",
+				Mobile:    "345678",
+				Username:  "newUsername",
 			},
 			expectedData: &cerebrum.User{
-				Email:              "tomjones@mail.com",
-				FirstName:          "Z",
-				LastName:           "Freak",
-				Username:           "tomjones",
-				RoleID:             cerebrum.AccessRole(1),
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "newPass",
-				Address:            "Address",
-				Phone:              "123456",
-				Mobile:             "345678",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				Email:      "tomjones@mail.com",
+				FirstName:  "Z",
+				LastName:   "Freak",
+				Username:   "tomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "newPass",
+				Address:    "Address",
+				Phone:      "123456",
+				Mobile:     "345678",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 3,
@@ -303,6 +290,7 @@ func TestUpdate(t *testing.T) {
 			}
 			tt.expectedData.CreatedAt = user.CreatedAt
 			tt.expectedData.LastLogin = user.LastLogin
+			tt.expectedData.LastPasswordChange = user.LastPasswordChange
 			tt.expectedData.DeletedAt = user.DeletedAt
 			err := udb.Update(db, tt.expectedData)
 			assert.Equal(t, tt.expectedErr, err != nil)
@@ -345,16 +333,14 @@ func TestList(t *testing.T) {
 			},
 			expectedData: []cerebrum.User{
 				{
-					Email:              "tomjones@mail.com",
-					FirstName:          "Tom",
-					LastName:           "Jones",
-					Username:           "tomjones",
-					RoleID:             cerebrum.AccessRole(1),
-					CompanyID:          1,
-					LocationID:         1,
-					Password:           "newPass",
-					LastPasswordChange: someTime,
-					LastLogin:          someTime,
+					Email:      "tomjones@mail.com",
+					FirstName:  "Tom",
+					LastName:   "Jones",
+					Username:   "tomjones",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "newPass",
 					Base: cerebrum.Base{
 						Model: gorm.Model{
 							ID: 1,
@@ -362,17 +348,15 @@ func TestList(t *testing.T) {
 					},
 				},
 				{
-					Email:              "johnzone@mail.com",
-					FirstName:          "John",
-					LastName:           "Zone",
-					Username:           "johnzone",
-					RoleID:             cerebrum.AccessRole(1),
-					CompanyID:          1,
-					LocationID:         1,
-					Password:           "hunter2",
-					Token:              "loginrefresh",
-					LastPasswordChange: someTime,
-					LastLogin:          someTime,
+					Email:      "johnzone@mail.com",
+					FirstName:  "John",
+					LastName:   "Zone",
+					Username:   "johnzone",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
 					Base: cerebrum.Base{
 						Model: gorm.Model{
 							ID: 2,
@@ -394,17 +378,15 @@ func TestList(t *testing.T) {
 			},
 			expectedData: []cerebrum.User{
 				{
-					Email:              "johnzone@mail.com",
-					FirstName:          "John",
-					LastName:           "Zone",
-					Username:           "johnzone",
-					RoleID:             cerebrum.AccessRole(1),
-					CompanyID:          1,
-					LocationID:         1,
-					Password:           "hunter2",
-					Token:              "loginrefresh",
-					LastPasswordChange: someTime,
-					LastLogin:          someTime,
+					Email:      "johnzone@mail.com",
+					FirstName:  "John",
+					LastName:   "Zone",
+					Username:   "johnzone",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
 					Base: cerebrum.Base{
 						Model: gorm.Model{
 							ID: 2,
@@ -432,6 +414,9 @@ func TestList(t *testing.T) {
 				for i, v := range users {
 					tt.expectedData[i].CreatedAt = v.CreatedAt
 					tt.expectedData[i].UpdatedAt = v.UpdatedAt
+					tt.expectedData[i].LastLogin = v.LastLogin
+					tt.expectedData[i].LastPasswordChange = v.LastPasswordChange
+					tt.expectedData[i].Role = superAdmin
 				}
 				assert.Equal(t, tt.expectedData, users)
 			}
@@ -453,16 +438,14 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			id:   2,
 			expectedData: &cerebrum.User{
-				Email:              "tomjones@mail.com",
-				FirstName:          "Tom",
-				LastName:           "Jones",
-				Username:           "tomjones",
-				RoleID:             cerebrum.AccessRole(1),
-				CompanyID:          1,
-				LocationID:         1,
-				Password:           "newPass",
-				LastPasswordChange: someTime,
-				LastLogin:          someTime,
+				Email:      "tomjones@mail.com",
+				FirstName:  "Tom",
+				LastName:   "Jones",
+				Username:   "tomjones",
+				RoleID:     cerebrum.AccessRole(100),
+				CompanyID:  1,
+				LocationID: 1,
+				Password:   "newPass",
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 2,

@@ -43,7 +43,7 @@ func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
 // View returns single user by ID
 func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 	var user = new(cerebrum.User)
-	if err := db.Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, err
 	} else if err != nil {
 		log.Panicln(fmt.Sprintf("db connection error %v", err))
@@ -62,9 +62,9 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 	var users []cerebrum.User
 	// Inner Join users with Role
 	if qp != nil {
-		db.Offset(p.Offset).Limit(p.Limit).Find(&users).Where(qp.Query, qp.ID).Order("lastname asc")
+		db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Where(qp.Query, qp.ID).Order("lastname asc")
 	} else {
-		db.Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc")
+		db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc")
 	}
 	return users, db.Error
 }

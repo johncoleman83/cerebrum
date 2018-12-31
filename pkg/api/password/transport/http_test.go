@@ -11,7 +11,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
 	"github.com/jinzhu/gorm"
@@ -21,30 +21,30 @@ import (
 
 func TestChangePassword(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		id         string
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		req            string
+		expectedStatus int
+		id             string
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "NaN",
-			wantStatus: http.StatusBadRequest,
-			id:         "abc",
+			name:           "NaN",
+			expectedStatus: http.StatusBadRequest,
+			id:             "abc",
 		},
 		{
-			name:       "Fail on Bind",
-			req:        `{"new_password":"new","old_password":"my_old_password", "new_password_confirm":"new"}`,
-			wantStatus: http.StatusBadRequest,
-			id:         "1",
+			name:           "Fail on Bind",
+			req:            `{"new_password":"new","old_password":"my_old_password", "new_password_confirm":"new"}`,
+			expectedStatus: http.StatusBadRequest,
+			id:             "1",
 		},
 		{
-			name:       "Different passwords",
-			req:        `{"new_password":"new_password","old_password":"my_old_password", "new_password_confirm":"new_password_cf"}`,
-			wantStatus: http.StatusBadRequest,
-			id:         "1",
+			name:           "Different passwords",
+			req:            `{"new_password":"new_password","old_password":"my_old_password", "new_password_confirm":"new_password_cf"}`,
+			expectedStatus: http.StatusBadRequest,
+			id:             "1",
 		},
 		{
 			name: "Fail on RBAC",
@@ -54,8 +54,8 @@ func TestChangePassword(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			id:         "1",
-			wantStatus: http.StatusForbidden,
+			id:             "1",
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Success",
@@ -87,7 +87,7 @@ func TestChangePassword(t *testing.T) {
 					return "hashedPassword"
 				},
 			},
-			wantStatus: http.StatusOK,
+			expectedStatus: http.StatusOK,
 		},
 	}
 
@@ -111,7 +111,7 @@ func TestChangePassword(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }

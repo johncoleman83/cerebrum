@@ -20,8 +20,8 @@ type User struct {
 	CompanyID  uint `json:"company_id"`
 	LocationID uint `json:"location_id"`
 
-	Role   Role       `json:"role,omitempty" gorm:"foreignkey:ID;association_foreignkey:RoleID;auto_preload;"`
-	RoleID AccessRole `json:"-" gorm:"auto_preload"`
+	Role   Role       `json:"role,omitempty" gorm:"foreignkey:ID;association_foreignkey:RoleID;"`
+	RoleID AccessRole `json:"-"`
 
 	Token string `json:"-"`
 
@@ -38,7 +38,15 @@ type AuthUser struct {
 	LocationID uint
 	Username   string
 	Email      string
-	Role       AccessRole `gorm:"auto_preload"`
+	Role       AccessRole
+}
+
+// BeforeCreate hooks into insert operations, setting createdAt and updatedAt to current time
+func (u *User) BeforeCreate() error {
+	now := time.Now()
+	u.LastLogin = now
+	u.LastPasswordChange = now
+	return nil
 }
 
 // ChangePassword updates user's password related fields

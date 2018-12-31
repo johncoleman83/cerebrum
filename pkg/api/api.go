@@ -1,16 +1,12 @@
-// Copyright 2017 Emir Ribic. All rights reserved.
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file.
-
-// CEREBRUM - Go(lang) restful starter kit
+// CEREBRUM
 //
 // API Docs for CEREBRUM v1
 //
 // 	 Terms Of Service:  N/A
 //     Schemes: http
-//     Version: 2.0.0
+//     Version: 1.0.0
 //     License: MIT http://opensource.org/licenses/MIT
-//     Contact: Emir Ribic <ribice@gmail.com> https://ribice.ba
+//     Contact: David John Coleman II <me@davidjohncoleman.com> https://davidjohncoleman.com
 //     Host: localhost:8080
 //
 //     Consumes:
@@ -20,10 +16,10 @@
 //     - application/json
 //
 //     Security:
-//     - bearer: []
+//     - Bearer: []
 //
 //     SecurityDefinitions:
-//     bearer:
+//     Bearer:
 //          type: apiKey
 //          name: Authorization
 //          in: header

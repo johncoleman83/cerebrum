@@ -6,7 +6,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 )
@@ -151,8 +151,8 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  uint              	 `json:"company_id" validate:"required"`
-	LocationID uint              	 `json:"location_id" validate:"required"`
+	CompanyID  uint                `json:"company_id" validate:"required"`
+	LocationID uint                `json:"location_id" validate:"required"`
 	RoleID     cerebrum.AccessRole `json:"role_id" validate:"required"`
 }
 
@@ -192,7 +192,7 @@ func (h *HTTP) create(c echo.Context) error {
 
 type listResponse struct {
 	Users []cerebrum.User `json:"users"`
-	Page  int          `json:"page"`
+	Page  int             `json:"page"`
 }
 
 func (h *HTTP) list(c echo.Context) error {
@@ -201,7 +201,7 @@ func (h *HTTP) list(c echo.Context) error {
 		return err
 	}
 
-	result, err := h.svc.List(c, p.Transform())
+	result, err := h.svc.List(c, p.NewPagination())
 
 	if err != nil {
 		return err

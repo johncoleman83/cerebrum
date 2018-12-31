@@ -7,9 +7,25 @@ list:
 
 .PHONY: help # show all make targets with descriptions
 help:
+	@echo "--------------------"
+	@echo "-------help---------"
+	@echo "--------------------"
 	@echo "TARGETS: DESCRIPTION"
 	@echo "--------------------"
 	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/\1: \2/' | expand -t20
+
+.PHONY: branch # start off a new clean git branch from origin/master head commit
+branch:
+ifdef NAME
+	git checkout master
+	git fetch origin master
+	git reset --hard origin/master
+	git checkout -b $(NAME)
+else
+	@echo 'Usage: $ make NAME=XXXXX branch'
+	@echo 'where NAME is any valid new git branch'
+	@make help
+endif
 
 .PHONY: setup # a "one click" type start from scratch to refresh the db bootstrap & serve the application
 setup: refresh serve
@@ -32,12 +48,15 @@ docker:
 bootstrap:
 	go run cmd/bootstrap/main.go
 
-.PHONY: bootstrap # login to mysql dev container to inspect
+.PHONY: mysql # login to mysql dev container to inspect
 mysql:
 	docker exec -it $(DEV_CONTAINER) mysql -u root
 
 .PHONY: test # run all tests
-test: test_go clean_test lint
+test:
+	@make test_go
+	@make ENV=test clean
+	@make lint
 
 .PHONY: test_go # run all go file tests
 test_go:
@@ -48,15 +67,19 @@ lint:
 	golint pkg/...
 	golint cmd/...
 
-.PHONY: clean_all # clean all test and dev docker containers
-clean_all: clean_test clean_dev
-
-.PHONY: clean_dev # remove all dev docker containers
-clean_dev:
+.PHONY: clean # removes docker containers from the environmental variable ENV such as `test`
+clean:
+ifeq ($(ENV),dev)
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker rm
-
-.PHONY: clean_test # remove all test docker containers
-clean_test:
+else ifeq ($(ENV),test)
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db_no_ | cut -f1 | xargs docker stop
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db_no_ | cut -f1 | xargs docker rm
+else ifeq ($(ENV),all)
+	@make ENV=dev clean
+	@make ENV=test clean
+else
+	@echo 'Usage: $ make ENV=XXXXX clean'
+	@echo 'where ENV could be `test`, `dev`, `git` or `all`'
+	@make help
+endif

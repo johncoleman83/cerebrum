@@ -12,84 +12,39 @@
 
 Gorsk is a Golang starter kit for developing RESTful services. It is designed to help you kickstart your project, skipping the 'setting-up part' and jumping straight to writing business logic.
 
-Previously Gorsk was built using [Gin](https://github.com/gin-gonic/gin). Gorsk using Gin is available [HERE](https://github.com/ribice/gorsk-gin).
-
-
-The GORSK starter kit provided:
-
-* Fully featured RESTful endpoints for authentication, changing password and CRUD operations on the user entity
-* JWT authentication and session
-* Application configuration via config file (yaml)
-* RBAC (role-based access control)
-* Structured logging
-* Great performance
-* Partial update (PATCH) handling using reflection
-* Request marshaling and data validation
-* API Docs using SwaggerUI
-* Mocking using stdlib
-* Complete test coverage
-* Containerized database query tests
-
-The following dependencies are used in this project (generated using [Glice](https://github.com/ribice/glice)):
+## Dependencies
 
 ```bash
-|-------------------------------------|--------------------------------------------|--------------|
-|             DEPENDENCY              |                  REPOURL                   |   LICENSE    |
-|-------------------------------------|--------------------------------------------|--------------|
-| github.com/labstack/echo            | https://github.com/labstack/echo           | MIT          |
-| github.com/jinzhu/gorm              | https://github.com/jinzhu/gorm             | MIT          |
-| github.com/dgrijalva/jwt-go         | https://github.com/dgrijalva/jwt-go        | MIT          |
-| github.com/rs/zerolog               | https://github.com/rs/zerolog              | MIT          |
-| golang.org/x/crypto/bcrypt          | https://github.com/golang/crypto           |              |
-| gopkg.in/yaml.v2                    | https://github.com/go-yaml/yaml            |              |
-| gopkg.in/go-playground/validator.v8 | https://github.com/go-playground/validator | MIT          |
-| github.com/nbutton23/zxcvbn-go      | https://github.com/nbutton23/zxcvbn-go     | MIT          |
-| github.com/ory/dockertest           | https://github.com/ory/dockertest          | Apache       |
-| github.com/stretchr/testify         | https://github.com/stretchr/testify        | Other        |
-|-------------------------------------|--------------------------------------------|--------------|
+|------------------------------------|--------------|
+|              PACKAGE               |    LICENSE   |
+|------------------------------------|--------------|
+| github.com/labstack/echo           | MIT          |
+| github.com/jinzhu/gorm             | MIT          |
+| github.com/dgrijalva/jwt-go        | MIT          |
+| github.com/rs/zerolog              | MIT          |
+| github.com/go-playground/validator | MIT          |
+| github.com/nbutton23/zxcvbn-go     | MIT          |
+| github.com/stretchr/testify        | MIT          |
+|------------------------------------|--------------|
+| github.com/go-yaml/yaml            | Apache       |
+| github.com/ory/dockertest          | Apache       |
+|------------------------------------|--------------|
 ```
 
-1. Echo - HTTP 'framework'.
-2. GORM - Golang ORM
-3. lib/mysql - mysql driver (part of GORM)
-4. JWT-Go - JWT Authentication
-5. Zerolog - Structured logging
-6. Bcrypt - Password hashing
-7. Yaml - Unmarshalling YAML config file
-8. Validator - Request validation.
-9. zxcvbn-go - Password strength checker
-10. DockerTest - Testing database queries
-11. Testify/Assert - Asserting test results
+## Development
 
-Most of these can easily be replaced with your own choices since their usage is abstracted and localized.
+use make to help with development
 
-## Getting started
-
-Using Gorsk requires having Go 1.7 or above. Once you downloaded Gorsk (either using Git or go get) you need to configure the following:
-
-1. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessery data, with a new account username/password admin/admin.
-
-* if you start a postgres docker container with:
+* just run make help to see all make support
   ```
-  docker run --name some_postgress_name --env POSTGRES_PASSWORD=postgres --env POSTGRES_USER=postgres --publish 5432:5432 --detach postgres:alpine
-  ```
-  set the psn to:
-  ```
-  postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+  make help
   ```
 
-* if you start with mysql:
-  ```
-  $ docker-compose up --detach
-  ```
+## Swagger
 
-2. Run the app using:
+Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
-```bash
-go run cmd/api/main.go
-```
-
-3. Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
+## Endpoints
 
 The application runs as an HTTP server at port 8080. It provides the following RESTful endpoints:
 
@@ -166,21 +121,6 @@ Follows this [project layout](https://github.com/golang-standards/project-layout
 7. Transport package contains HTTP handlers. The package receives the requests, marshals, validates then passes it to the corresponding service.
 
 8. Utl directory contains helper packages and models. Packages such as mock, middleware, configuration, server are located here.
-
-## Make
-
-* use make to help with development
-
-```
-make refresh
-```
-
-* clean up stuff
-```
-make clean_dev
-make clean_test
-```
-
 
 ## Tests
 

@@ -62,6 +62,32 @@ The application runs as an HTTP server at port 8080. It provides the following R
 
 * When sending the Authorization header use this format: `Authorization: Bearer TOKEN_HASH`
 
+## Project Structure
+
+* Started with the [project structure](https://github.com/ribice/gorsk#project-structure) from gorsk
+
+* trying to maintain [golang-standards](https://github.com/golang-standards/project-layout) for project layout
+
+## Tests
+
+* trouble with DB connection, then add this to docker-compose and remove synchronous db testing:
+```
+  db_test:
+    image: mysql:latest
+    container_name: cerebrum_mysql_test_db_no_0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=cerebrum_mysql_test_db
+      - MYSQL_USER=mysql_test_user
+      - MYSQL_PASSWORD=mysql_test_password
+    ports:
+      - 3307:3306
+```
+
+## Support
+
 ### Implementing CRUD of another table
 
 Let's say you have a table named 'cars' that handles employee's cars. To implement CRUD on this table you need:
@@ -92,58 +118,11 @@ Similarly to implementing APIs relying only on a database, you can implement oth
 
 ### Running database queries in transaction
 
-To use a transaction, before interacting with db create a new transaction:
-
-```go
-err := s.db.RunInTransaction(func (tx *pg.Tx) error{
-    // Application service here
-})
-````
-
-Instead of passing database client as `s.db` , inside this function pass it as `tx`. Handle the error accordingly.
-
-## Project Structure
-
-Follows this [project layout](https://github.com/golang-standards/project-layout)
-
-1. Root directory contains things not related to code directly, e.g. docker-compose, CI/CD, readme, bash scripts etc. It should also contain vendor folder, Gopkg.toml and Gopkg.lock if dep is being used.
-
-2. Cmd package contains code for starting applications (main packages). The directory name for each application should match the name of the executable you want to have. Gorsk is structured as a monolith application but can be easily restructured to contain multiple microservices. An application may produce multiple binaries, therefore Gorsk uses the Go convention of placing main package as a subdirectory of the cmd package. As an example, scheduler applications binary would be located under cmd/cron. It also loads the necessery configuration and passes it to the service initializers.
-
-3. Rest of the code is located under /pkg. The pkg directory contains `utl` and 'microservice' directories.
-
-4. Microservice directories, like api (naming corresponds to `cmd/` folder naming) contains multiple folders for each domain it interacts with, for example: user, car, appointment etc.
-
-5. Domain directories, like user, contain all application/business logic and two additional directories: platform and transport.
-
-6. Platform folder contains various packages that provide support for things like databases, authentication or even marshaling. Most of the packages located under platform are decoupled by using interfaces. Every platform has its own package, for example, postgres, elastic, redis, memcache etc.
-
-7. Transport package contains HTTP handlers. The package receives the requests, marshals, validates then passes it to the corresponding service.
-
-8. Utl directory contains helper packages and models. Packages such as mock, middleware, configuration, server are located here.
-
-## Tests
-
-* trouble with DB connection, then add this to docker-compose and remove synchronous db testing:
-```
-  db_test:
-    image: mysql:latest
-    container_name: cerebrum_mysql_test_db_no_0
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_DATABASE=cerebrum_mysql_test_db
-      - MYSQL_USER=mysql_test_user
-      - MYSQL_PASSWORD=mysql_test_password
-    ports:
-      - 3307:3306
-```
-
+* http://gorm.io/docs/transactions.html
 
 ## License
 
-gorsk is licensed under the MIT license. Check the [LICENSE](LICENSE.md) file for details.
+Currently licensed under MIT, check the [LICENSE](LICENSE.md) file for details.
 
 ## Author
 

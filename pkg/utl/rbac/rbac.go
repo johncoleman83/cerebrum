@@ -1,8 +1,8 @@
 package rbac
 
 import (
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new RBAC service
@@ -22,17 +22,17 @@ func checkBool(b bool) error {
 
 // User returns user data stored in jwt token
 func (s *Service) User(c echo.Context) *cerebrum.AuthUser {
-	id := c.Get("id").(int)
-	companyID := c.Get("company_id").(int)
-	locationID := c.Get("location_id").(int)
+	id := c.Get("id").(uint)
+	companyID := c.Get("company_id").(uint)
+	locationID := c.Get("location_id").(uint)
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
 	role := c.Get("role").(cerebrum.AccessRole)
 	return &cerebrum.AuthUser{
-		ID:         uint(id),
+		ID:         id,
 		Username:   user,
-		CompanyID:  uint(companyID),
-		LocationID: uint(locationID),
+		CompanyID:  companyID,
+		LocationID: locationID,
 		Email:      email,
 		Role:       role,
 	}
@@ -50,7 +50,7 @@ func (s *Service) EnforceUser(c echo.Context, ID uint) error {
 	if s.isAdmin(c) {
 		return nil
 	}
-	return checkBool(uint(c.Get("id").(int)) == ID)
+	return checkBool(c.Get("id").(uint) == ID)
 }
 
 // EnforceCompany checks whether the request to apply change to company data
@@ -63,7 +63,7 @@ func (s *Service) EnforceCompany(c echo.Context, ID uint) error {
 	if err := s.EnforceRole(c, cerebrum.CompanyAdminRole); err != nil {
 		return err
 	}
-	return checkBool(uint(c.Get("company_id").(int)) == ID)
+	return checkBool(c.Get("company_id").(uint) == ID)
 }
 
 // EnforceLocation checks whether the request to change location data
@@ -75,7 +75,7 @@ func (s *Service) EnforceLocation(c echo.Context, ID uint) error {
 	if err := s.EnforceRole(c, cerebrum.LocationAdminRole); err != nil {
 		return err
 	}
-	return checkBool(uint(c.Get("location_id").(int)) == ID)
+	return checkBool(c.Get("location_id").(uint) == ID)
 }
 
 func (s *Service) isAdmin(c echo.Context) bool {

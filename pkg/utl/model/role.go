@@ -22,7 +22,7 @@ const (
 
 // Role model
 type Role struct {
-	ID          AccessRole `json:"id"`
+	ID          AccessRole `json:"id" gorm:"foreignkey:RoleID;association_foreignkey:ID;"`
 	AccessLevel AccessRole `json:"access_level"`
 	Name        string     `json:"name"`
 }

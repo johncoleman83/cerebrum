@@ -24,23 +24,23 @@ import (
 
 func TestLogin(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		wantResp   *cerebrum.AuthToken
-		udb        *mockdb.User
-		jwt        *mock.JWT
-		sec        *mock.Secure
+		name           string
+		req            string
+		expectedStatus int
+		expectedResp   *cerebrum.AuthToken
+		udb            *mockdb.User
+		jwt            *mock.JWT
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Invalid request",
-			req:        `{"username":"juzernejm"}`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Invalid request",
+			req:            `{"username":"juzernejm"}`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:       "Fail on FindByUsername",
-			req:        `{"username":"juzernejm","password":"hunter123"}`,
-			wantStatus: http.StatusInternalServerError,
+			name:           "Fail on FindByUsername",
+			req:            `{"username":"juzernejm","password":"hunter123"}`,
+			expectedStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
@@ -48,9 +48,9 @@ func TestLogin(t *testing.T) {
 			},
 		},
 		{
-			name:       "Success",
-			req:        `{"username":"juzernejm","password":"hunter123"}`,
-			wantStatus: http.StatusOK,
+			name:           "Success",
+			req:            `{"username":"juzernejm","password":"hunter123"}`,
+			expectedStatus: http.StatusOK,
 			udb: &mockdb.User{
 				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -75,7 +75,7 @@ func TestLogin(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantResp: &cerebrum.AuthToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339), RefreshToken: "refreshtoken"},
+			expectedResp: &cerebrum.AuthToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339), RefreshToken: "refreshtoken"},
 		},
 	}
 
@@ -91,32 +91,32 @@ func TestLogin(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.AuthToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				tt.wantResp.RefreshToken = response.RefreshToken
-				assert.Equal(t, tt.wantResp, response)
+				tt.expectedResp.RefreshToken = response.RefreshToken
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestRefresh(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		wantResp   *cerebrum.RefreshToken
-		udb        *mockdb.User
-		jwt        *mock.JWT
+		name           string
+		req            string
+		expectedStatus int
+		expectedResp   *cerebrum.RefreshToken
+		udb            *mockdb.User
+		jwt            *mock.JWT
 	}{
 		{
-			name:       "Fail on FindByToken",
-			req:        "refreshtoken",
-			wantStatus: http.StatusInternalServerError,
+			name:           "Fail on FindByToken",
+			req:            "refreshtoken",
+			expectedStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
 				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
@@ -124,9 +124,9 @@ func TestRefresh(t *testing.T) {
 			},
 		},
 		{
-			name:       "Success",
-			req:        "refreshtoken",
-			wantStatus: http.StatusOK,
+			name:           "Success",
+			req:            "refreshtoken",
+			expectedStatus: http.StatusOK,
 			udb: &mockdb.User{
 				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -140,7 +140,7 @@ func TestRefresh(t *testing.T) {
 					return "jwttokenstring", mock.TestTime(2018).Format(time.RFC3339), nil
 				},
 			},
-			wantResp: &cerebrum.RefreshToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339)},
+			expectedResp: &cerebrum.RefreshToken{Token: "jwttokenstring", Expires: mock.TestTime(2018).Format(time.RFC3339)},
 		},
 	}
 
@@ -156,30 +156,30 @@ func TestRefresh(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.RefreshToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestMe(t *testing.T) {
 	cases := []struct {
-		name       string
-		wantStatus int
-		wantResp   *cerebrum.User
-		header     string
-		udb        *mockdb.User
-		rbac       *mock.RBAC
+		name           string
+		expectedStatus int
+		expectedResp   *cerebrum.User
+		header         string
+		udb            *mockdb.User
+		rbac           *mock.RBAC
 	}{
 		{
-			name:       "Fail on user view",
-			wantStatus: http.StatusInternalServerError,
+			name:           "Fail on user view",
+			expectedStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
 				ViewFn: func(*gorm.DB, uint) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
@@ -193,8 +193,8 @@ func TestMe(t *testing.T) {
 			header: mock.HeaderValid(),
 		},
 		{
-			name:       "Success",
-			wantStatus: http.StatusOK,
+			name:           "Success",
+			expectedStatus: http.StatusOK,
 			udb: &mockdb.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
@@ -217,7 +217,7 @@ func TestMe(t *testing.T) {
 				},
 			},
 			header: mock.HeaderValid(),
-			wantResp: &cerebrum.User{
+			expectedResp: &cerebrum.User{
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID: 1,
@@ -252,14 +252,14 @@ func TestMe(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }

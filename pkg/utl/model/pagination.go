@@ -6,14 +6,20 @@ const (
 	paginationMaxLimit     = 1000
 )
 
+// Pagination holds paginations data
+type Pagination struct {
+	Limit  int `json:"limit,omitempty"`
+	Offset int `json:"offset,omitempty"`
+}
+
 // PaginationReq holds pagination http fields and tags
 type PaginationReq struct {
 	Limit int `query:"limit"`
 	Page  int `query:"page" validate:"min=0"`
 }
 
-// Transform checks and converts http pagination into database pagination model
-func (p *PaginationReq) Transform() *Pagination {
+// NewPagination checks and converts http pagination into database pagination model
+func (p *PaginationReq) NewPagination() *Pagination {
 	if p.Limit < 1 {
 		p.Limit = paginationDefaultLimit
 	}
@@ -23,10 +29,4 @@ func (p *PaginationReq) Transform() *Pagination {
 	}
 
 	return &Pagination{Limit: p.Limit, Offset: p.Page * p.Limit}
-}
-
-// Pagination holds paginations data
-type Pagination struct {
-	Limit  int `json:"limit,omitempty"`
-	Offset int `json:"offset,omitempty"`
 }

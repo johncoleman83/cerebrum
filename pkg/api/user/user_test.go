@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 			FirstName: "John",
 			LastName:  "Doe",
 			Username:  "JohnDoe",
-			RoleID:    1,
+			RoleID:    cerebrum.AccessRole(100),
 			Password:  "Thranduil8822",
 		}},
 	},
@@ -47,7 +47,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
-				RoleID:    1,
+				RoleID:    cerebrum.AccessRole(100),
 				Password:  "Thranduil8822",
 			}},
 			udb: &mockdb.User{
@@ -78,7 +78,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
-				RoleID:    1,
+				RoleID:    cerebrum.AccessRole(100),
 				Password:  "h4$h3d",
 			}}}
 	for _, tt := range cases {
@@ -347,7 +347,7 @@ func TestDelete(t *testing.T) {
 						LastName:  "Doe",
 						Role: cerebrum.Role{
 							AccessLevel: cerebrum.AdminRole,
-							ID:          2,
+							ID:          cerebrum.AdminRole,
 							Name:        "Admin",
 						},
 					}, nil
@@ -438,7 +438,7 @@ func TestUpdate(t *testing.T) {
 						},
 						CompanyID:  1,
 						LocationID: 2,
-						RoleID:     3,
+						RoleID:     cerebrum.AccessRole(200),
 						FirstName:  "Joanna",
 						LastName:   "Doep",
 						Mobile:     "334455",
@@ -475,7 +475,7 @@ func TestUpdate(t *testing.T) {
 				},
 				CompanyID:  1,
 				LocationID: 2,
-				RoleID:     3,
+				RoleID:     cerebrum.AccessRole(200),
 				FirstName:  "John",
 				LastName:   "Doe",
 				Mobile:     "123456",
@@ -495,7 +495,7 @@ func TestUpdate(t *testing.T) {
 						},
 						CompanyID:  1,
 						LocationID: 2,
-						RoleID:     3,
+						RoleID:     cerebrum.AccessRole(200),
 						FirstName:  "Joanna",
 						LastName:   "Doep",
 						Mobile:     "334455",

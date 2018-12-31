@@ -6,7 +6,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 
 	"github.com/labstack/echo"
 )
@@ -59,18 +59,17 @@ var (
 // Password change request
 // swagger:model pwChange
 type changeReq struct {
-	ID                 uint    `json:"-"`
+	ID                 uint   `json:"-"`
 	OldPassword        string `json:"old_password" validate:"required,min=8"`
 	NewPassword        string `json:"new_password" validate:"required,min=8"`
 	NewPasswordConfirm string `json:"new_password_confirm" validate:"required"`
 }
 
 func (h *HTTP) change(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
-	idUint := uint(id)
 
 	p := new(changeReq)
 	if err := c.Bind(p); err != nil {
@@ -81,7 +80,7 @@ func (h *HTTP) change(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if err := h.svc.Change(c, idUint, p.OldPassword, p.NewPassword); err != nil {
+	if err := h.svc.Change(c, uint(id), p.OldPassword, p.NewPassword); err != nil {
 		return err
 	}
 

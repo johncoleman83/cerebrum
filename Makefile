@@ -1,4 +1,6 @@
 # cerebrum make
+DEV_CONTAINER := $(shell docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1)
+
 .PHONY: list # show all make targets
 list:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' #| sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | xargs
@@ -29,6 +31,10 @@ docker:
 .PHONY: bootstrap # bootstrap the db with dev models
 bootstrap:
 	go run cmd/bootstrap/main.go
+
+.PHONY: bootstrap # login to mysql dev container to inspect
+mysql:
+	docker exec -it $(DEV_CONTAINER) mysql -u root
 
 .PHONY: test # run all tests
 test: test_go clean_test lint

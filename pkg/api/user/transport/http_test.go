@@ -23,23 +23,23 @@ import (
 
 func TestCreate(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		wantResp   *cerebrum.User
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		req            string
+		expectedStatus int
+		expectedResp   *cerebrum.User
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Fail on validation",
-			req:        `{"first_name":"John","last_name":"Doe","username":"ju","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Fail on validation",
+			req:            `{"first_name":"John","last_name":"Doe","username":"ju","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:       "Fail on non-matching passwords",
-			req:        `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter1234","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Fail on non-matching passwords",
+			req:            `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter1234","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
@@ -49,7 +49,7 @@ func TestCreate(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			wantStatus: http.StatusBadRequest,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on RBAC",
@@ -59,7 +59,7 @@ func TestCreate(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			wantStatus: http.StatusForbidden,
+			expectedStatus: http.StatusForbidden,
 		},
 
 		{
@@ -83,7 +83,7 @@ func TestCreate(t *testing.T) {
 					return "h4$h3d"
 				},
 			},
-			wantResp: &cerebrum.User{
+			expectedResp: &cerebrum.User{
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID:        1,
@@ -98,7 +98,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 2,
 			},
-			wantStatus: http.StatusOK,
+			expectedStatus: http.StatusOK,
 		},
 	}
 
@@ -115,14 +115,14 @@ func TestCreate(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
@@ -133,18 +133,18 @@ func TestList(t *testing.T) {
 		Page  int             `json:"page"`
 	}
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		wantResp   *listResponse
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		req            string
+		expectedStatus int
+		expectedResp   *listResponse
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Invalid request",
-			req:        `?limit=2222&page=-1`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Invalid request",
+			req:            `?limit=2222&page=-1`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on query list",
@@ -159,7 +159,7 @@ func TestList(t *testing.T) {
 						Email:      "john@mail.com",
 					}
 				}},
-			wantStatus: http.StatusForbidden,
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Success",
@@ -192,8 +192,8 @@ func TestList(t *testing.T) {
 								CompanyID:  2,
 								LocationID: 3,
 								Role: cerebrum.Role{
-									ID:          1,
-									AccessLevel: 1,
+									ID:          cerebrum.SuperAdminRole,
+									AccessLevel: cerebrum.SuperAdminRole,
 									Name:        "SUPER_ADMIN",
 								},
 							},
@@ -211,8 +211,8 @@ func TestList(t *testing.T) {
 								CompanyID:  1,
 								LocationID: 2,
 								Role: cerebrum.Role{
-									ID:          2,
-									AccessLevel: 2,
+									ID:          cerebrum.AdminRole,
+									AccessLevel: cerebrum.AdminRole,
 									Name:        "ADMIN",
 								},
 							},
@@ -221,8 +221,8 @@ func TestList(t *testing.T) {
 					return nil, cerebrum.ErrGeneric
 				},
 			},
-			wantStatus: http.StatusOK,
-			wantResp: &listResponse{
+			expectedStatus: http.StatusOK,
+			expectedResp: &listResponse{
 				Users: []cerebrum.User{
 					{
 						Base: cerebrum.Base{
@@ -238,8 +238,8 @@ func TestList(t *testing.T) {
 						CompanyID:  2,
 						LocationID: 3,
 						Role: cerebrum.Role{
-							ID:          1,
-							AccessLevel: 1,
+							ID:          cerebrum.SuperAdminRole,
+							AccessLevel: cerebrum.SuperAdminRole,
 							Name:        "SUPER_ADMIN",
 						},
 					},
@@ -257,8 +257,8 @@ func TestList(t *testing.T) {
 						CompanyID:  1,
 						LocationID: 2,
 						Role: cerebrum.Role{
-							ID:          2,
-							AccessLevel: 2,
+							ID:          cerebrum.AdminRole,
+							AccessLevel: cerebrum.AdminRole,
 							Name:        "ADMIN",
 						},
 					},
@@ -279,32 +279,32 @@ func TestList(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(listResponse)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestView(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		wantStatus int
-		wantResp   *cerebrum.User
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		req            string
+		expectedStatus int
+		expectedResp   *cerebrum.User
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Invalid request",
-			req:        `a`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Invalid request",
+			req:            `a`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on RBAC",
@@ -314,7 +314,7 @@ func TestView(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			wantStatus: http.StatusForbidden,
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Success",
@@ -340,8 +340,8 @@ func TestView(t *testing.T) {
 					}, nil
 				},
 			},
-			wantStatus: http.StatusOK,
-			wantResp: &cerebrum.User{
+			expectedStatus: http.StatusOK,
+			expectedResp: &cerebrum.User{
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID:        1,
@@ -369,39 +369,39 @@ func TestView(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestUpdate(t *testing.T) {
 	cases := []struct {
-		name       string
-		req        string
-		id         string
-		wantStatus int
-		wantResp   *cerebrum.User
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		req            string
+		id             string
+		expectedStatus int
+		expectedResp   *cerebrum.User
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Invalid request",
-			id:         `a`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Invalid request",
+			id:             `a`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:       "Fail on validation",
-			id:         `1`,
-			req:        `{"first_name":"j","last_name":"okocha","mobile":"123456","phone":"321321","address":"home"}`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Fail on validation",
+			id:             `1`,
+			req:            `{"first_name":"j","last_name":"okocha","mobile":"123456","phone":"321321","address":"home"}`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on RBAC",
@@ -412,7 +412,7 @@ func TestUpdate(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			wantStatus: http.StatusForbidden,
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Success",
@@ -446,8 +446,8 @@ func TestUpdate(t *testing.T) {
 					return nil
 				},
 			},
-			wantStatus: http.StatusOK,
-			wantResp: &cerebrum.User{
+			expectedStatus: http.StatusOK,
+			expectedResp: &cerebrum.User{
 				Base: cerebrum.Base{
 					Model: gorm.Model{
 						ID:        1,
@@ -482,31 +482,31 @@ func TestUpdate(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			if tt.wantResp != nil {
+			if tt.expectedResp != nil {
 				response := new(cerebrum.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, tt.wantResp, response)
+				assert.Equal(t, tt.expectedResp, response)
 			}
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }
 
 func TestDelete(t *testing.T) {
 	cases := []struct {
-		name       string
-		id         string
-		wantStatus int
-		udb        *mockdb.User
-		rbac       *mock.RBAC
-		sec        *mock.Secure
+		name           string
+		id             string
+		expectedStatus int
+		udb            *mockdb.User
+		rbac           *mock.RBAC
+		sec            *mock.Secure
 	}{
 		{
-			name:       "Invalid request",
-			id:         `a`,
-			wantStatus: http.StatusBadRequest,
+			name:           "Invalid request",
+			id:             `a`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on RBAC",
@@ -525,7 +525,7 @@ func TestDelete(t *testing.T) {
 					return echo.ErrForbidden
 				},
 			},
-			wantStatus: http.StatusForbidden,
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Success",
@@ -547,7 +547,7 @@ func TestDelete(t *testing.T) {
 					return nil
 				},
 			},
-			wantStatus: http.StatusOK,
+			expectedStatus: http.StatusOK,
 		},
 	}
 
@@ -567,7 +567,7 @@ func TestDelete(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-			assert.Equal(t, tt.wantStatus, res.StatusCode)
+			assert.Equal(t, tt.expectedStatus, res.StatusCode)
 		})
 	}
 }

@@ -37,7 +37,15 @@ use make to help with development
 
 * just run make help to see all make support
   ```
-  make help
+  $ make help
+  ```
+
+* login with bootstrap data
+  ```
+  $ curl -X POST "http://localhost:8080/login" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -d "{ \"password\": \"admin\", \"username\": \"admin\"}"
   ```
 
 ## Swagger

@@ -15,7 +15,7 @@ server:
   write_timeout_seconds: 5
 
 jwt:
-  secret: jwtrealm # Change this value
+  secret: kP7iUolk16bg5yuPX5TLMTcXHZC9RwKuR2hHgmQPtXlziiSDsB # Change this value
   duration_minutes: 15
   refresh_duration_minutes: 15
   max_refresh_minutes: 1440

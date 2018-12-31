@@ -211,13 +211,12 @@ func (h *HTTP) list(c echo.Context) error {
 }
 
 func (h *HTTP) view(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
-	idUint := uint(id)
 
-	result, err := h.svc.View(c, idUint)
+	result, err := h.svc.View(c, uint(id))
 	if err != nil {
 		return err
 	}
@@ -237,11 +236,10 @@ type updateReq struct {
 }
 
 func (h *HTTP) update(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
-	idUint := uint(id)
 
 	req := new(updateReq)
 	if err := c.Bind(req); err != nil {
@@ -249,7 +247,7 @@ func (h *HTTP) update(c echo.Context) error {
 	}
 
 	usr, err := h.svc.Update(c, &user.Update{
-		ID:        idUint,
+		ID:        uint(id),
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Mobile:    req.Mobile,
@@ -265,13 +263,12 @@ func (h *HTTP) update(c echo.Context) error {
 }
 
 func (h *HTTP) delete(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		return cerebrum.ErrBadRequest
 	}
-	idUint := uint(id)
 
-	if err := h.svc.Delete(c, idUint); err != nil {
+	if err := h.svc.Delete(c, uint(id)); err != nil {
 		return err
 	}
 

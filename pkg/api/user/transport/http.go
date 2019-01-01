@@ -38,12 +38,12 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: limit
 	//   in: query
 	//   description: number of results
-	//   type: int
+	//   type: integer
 	//   required: false
 	// - name: page
 	//   in: query
 	//   description: page number
-	//   type: int
+	//   type: integer
 	//   required: false
 	// responses:
 	//   "200":
@@ -66,7 +66,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: uint
+	//   type: integer
 	//   required: true
 	// responses:
 	//   "200":
@@ -91,7 +91,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: uint
+	//   type: integer
 	//   required: true
 	// - name: request
 	//   in: body
@@ -120,7 +120,7 @@ func NewHTTP(svc user.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: uint
+	//   type: integer
 	//   required: true
 	// responses:
 	//   "200":

@@ -52,6 +52,8 @@ use make to help with development
 
 Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
+* docs: https://goswagger.io/use/spec.html#parsing-rules
+
 ## Endpoints
 
 The application runs as an HTTP server at port 8080. It provides the following RESTful endpoints:

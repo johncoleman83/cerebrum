@@ -23,4 +23,4 @@ jwt:
 
 application:
   min_password_strength: 3
-  swagger_ui_path: assets/swagger
+  swagger_ui_path: third_party/swaggerui/dist

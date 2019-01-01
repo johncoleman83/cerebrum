@@ -24,18 +24,68 @@ ifdef NAME
 else
 	@echo 'Usage: $ make NAME=XXXXX branch'
 	@echo 'where NAME is any valid new git branch'
-	@make help
+	@echo 'run `$$ make help` for more info'
 endif
 
 .PHONY: setup # a "one click" type start from scratch to refresh the db bootstrap & serve the application
 setup: refresh serve
 
 .PHONY: refresh # refresh all docker db's and bootstrap a new dev db
-refresh: clean_dev clean_test docker bootstrap
+refresh:
+	@make ENV=all clean
+	@make docker
+	@make bootstrap
 
 .PHONY: serve # starts backend server, executes $ go run cmd/api/main.go
 serve:
 	go run cmd/api/main.go
+
+.PHONY: swagger # entry point to generate swagger support docs
+swagger:
+ifeq ($(CMD),spec)
+	@make TYPE=$(TYPE) swagger_spec
+else ifeq ($(CMD),client)
+	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
+else ifeq ($(CMD),server)
+	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
+else
+	@echo 'Usage: $ make CMD=XXXXX TYPE=XXXXX swagger'
+	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
+	@echo 'run `$$ make help` for more info'
+endif
+
+.PHONY: swagger_spec # generate swagger spec using inline comments, use env variable TYPE to specify the output file type
+swagger_spec:
+ifdef TYPE
+	cd cmd/api/ && \
+		~/go/bin/swagger generate \
+		--output=../../logs/swagger.log spec \
+		--scan-models \
+		--output=../../third_party/swaggerui/dist/swagger.$(TYPE)
+else
+	@echo 'Usage: $ make CMD=spec TYPE=XXXXX swagger'
+	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
+	@echo 'run `$$ make help` for more info'
+endif
+
+
+.PHONY: swagger_ui # generate swagger client or server side template files, must already have a valid swagger.yaml file
+swagger_ui:
+ifdef TYPE
+	~/go/bin/swagger generate \
+		--output=logs/swagger.log $(CMD) \
+		--target=cmd/api/ \
+		--spec=third_party/swaggerui/spec/swagger.$(TYPE) \
+		--api-package=../../third_party/swaggerui/api \
+		--client-package=../../third_party/swaggerui/client \
+		--model-package=../../third_party/swaggerui/model \
+		--server-package=../../third_party/swaggerui/server \
+		--name=cerebrum
+else
+	@echo 'Usage: $ make CMD=XXXXX TYPE=XXXXX swagger'
+	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
+	@echo 'run `$$ make help` for more info'
+endif
 
 .PHONY: docker # start docker dependencies, executes $ docker-compose up
 docker:
@@ -81,5 +131,5 @@ else ifeq ($(ENV),all)
 else
 	@echo 'Usage: $ make ENV=XXXXX clean'
 	@echo 'where ENV could be `test`, `dev`, `git` or `all`'
-	@make help
+	@echo 'run `$$ make help` for more info'
 endif

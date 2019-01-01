@@ -733,9 +733,7 @@
   },
   "security": [
     {
-      "ApiKeyAuth": [
-        "[]"
-      ]
+      "ApiKeyAuth": []
     }
   ]
 }

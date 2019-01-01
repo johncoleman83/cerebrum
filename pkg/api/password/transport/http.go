@@ -29,7 +29,7 @@ func NewHTTP(svc password.Service, er *echo.Group) {
 	// - name: id
 	//   in: path
 	//   description: id of user
-	//   type: uint
+	//   type: integer
 	//   required: true
 	// - name: request
 	//   in: body

@@ -2,7 +2,6 @@ package mysqldb_test
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 	"time"
 
@@ -466,11 +465,14 @@ func TestDelete(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			userBefore, err := udb.View(db, tt.id)
-			assert.Equal(t, nil, err, "user should exist in db store")
+			userBefore := new(cerebrum.User)
+			if err := db.Unscoped().Where("id = ?", tt.id).First(&userBefore).Error; err != nil {
+				assert.Equal(t, nil, err, "user should exist in db store")
+			}
+			assert.Nil(t, userBefore.DeletedAt, "before user is deleted their deleted_at field should be set to NULL")
 
-			err = udb.Delete(db, userBefore)
-			assert.Equal(t, nil, err, "should not error on delete")
+			err := udb.Delete(db, userBefore)
+			assert.Nil(t, err, fmt.Sprintf("should not error on delete, error: %v", err))
 
 			userAfter, err := udb.View(db, tt.id)
 			emptyUser := new(cerebrum.User)
@@ -481,11 +483,9 @@ func TestDelete(t *testing.T) {
 			assert.Equal(t, emptyUser, userAfter, "the response to find deleted user should be empty user")
 
 			if err := db.Unscoped().Where("id = ?", tt.id).First(&emptyUser).Error; err != nil {
-				t.Error(err)
+				assert.Nil(t, err, fmt.Sprintf("user should exist in db store and should be accessible with db.Unscopped(), error: %v", err))
 			}
-			actual := emptyUser.DeletedAt.UTC()
-			actualFormatted := time.Date(actual.Year(), actual.Month(), actual.Day(), 0, 0, 0, 0, actual.Location())
-			assert.Equal(t, 0, strings.Index(actualFormatted.String(), "2018-"), "the user should be have a time set for deleted_at")
+			assert.NotNil(t, emptyUser.DeletedAt, "the user should be have a time set for deleted_at at the same time as when the user was deleted")
 		})
 	}
 	db.Close()

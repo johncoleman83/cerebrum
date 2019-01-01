@@ -61,7 +61,7 @@ ifdef TYPE
 		~/go/bin/swagger generate \
 		--output=../../logs/swagger.log spec \
 		--scan-models \
-		--output=../../third_party/swaggerui/spec/swagger.$(TYPE)
+		--output=../../third_party/swaggerui/dist/swagger.$(TYPE)
 else
 	@echo 'Usage: $ make CMD=spec TYPE=XXXXX swagger'
 	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'

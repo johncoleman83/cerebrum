@@ -1,0 +1,13 @@
+description: Users model response
+schema:
+  properties:
+    page:
+      format: int64
+      type: integer
+      x-go-name: Page
+    users:
+      items:
+        $ref: '#/definitions/User'
+      type: array
+      x-go-name: Users
+  type: object

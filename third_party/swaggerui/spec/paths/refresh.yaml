@@ -1,0 +1,22 @@
+get:
+  description: Refreshes jwt token by checking at database whether refresh token
+    exists.
+  operationId: refresh
+  parameters:
+  - description: refresh token
+    in: path
+    name: token
+    required: true
+    type: string
+  responses:
+    "200":
+      $ref: '#/responses/refreshResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Refreshes jwt token.
+  tags:
+  - auth

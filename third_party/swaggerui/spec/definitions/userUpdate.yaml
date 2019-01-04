@@ -1,0 +1,20 @@
+description: User update request
+properties:
+  address:
+    type: string
+    x-go-name: Address
+  first_name:
+    type: string
+    x-go-name: FirstName
+  last_name:
+    type: string
+    x-go-name: LastName
+  mobile:
+    type: string
+    x-go-name: Mobile
+  phone:
+    type: string
+    x-go-name: Phone
+type: object
+x-go-name: updateReq
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport

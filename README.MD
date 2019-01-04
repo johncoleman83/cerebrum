@@ -31,7 +31,20 @@ Gorsk is a Golang starter kit for developing RESTful services. It is designed to
 |------------------------------------|--------------|
 ```
 
+## Project Structure
+
+* Started with the [project structure](https://github.com/ribice/gorsk#project-structure) from gorsk
+
+* trying to maintain [golang-standards](https://github.com/golang-standards/project-layout) for project layout
+
+
 ## Development
+
+ensure that you have properly setup dependencies
+
+```
+$ make deps
+```
 
 use make to help with development
 
@@ -40,7 +53,9 @@ use make to help with development
   $ make help
   ```
 
-* login with bootstrap data
+* after setup and successfully running `make serve` use [swagger](https://github.com/johncoleman83/cerebrum#swagger) to test endpoints.
+
+* or use `curl` to login with bootstrap data
   ```
   $ curl -X POST "http://localhost:8080/login" \
       -H "accept: application/json" \
@@ -71,12 +86,6 @@ The application runs as an HTTP server at port 8080. It provides the following R
 * You can log in as admin to the application by sending a post request to localhost:8080/login with username `admin` and password `admin` in JSON body.
 
 * When sending the Authorization header use this format: `Authorization: Bearer TOKEN_HASH`
-
-## Project Structure
-
-* Started with the [project structure](https://github.com/ribice/gorsk#project-structure) from gorsk
-
-* trying to maintain [golang-standards](https://github.com/golang-standards/project-layout) for project layout
 
 ## Tests
 
@@ -137,3 +146,4 @@ Currently licensed under MIT, check the [LICENSE](LICENSE.md) file for details.
 ## Author
 
 [David John Coleman II](https://davidjohncoleman.com)
+**[Initial Commit by GORSK](https://www.ribice.ba/refactoring-gorsk/)**

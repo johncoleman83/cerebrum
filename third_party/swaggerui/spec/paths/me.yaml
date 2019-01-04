@@ -1,0 +1,10 @@
+get:
+  operationId: meReq
+  responses:
+    "200":
+      $ref: '#/responses/userResp'
+    "500":
+      $ref: '#/responses/err'
+  summary: Gets user's info from session.
+  tags:
+  - auth

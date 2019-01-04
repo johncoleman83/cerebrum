@@ -1,0 +1,10 @@
+contact:
+  email: me@davidjohncoleman.com
+  name: David John Coleman II
+  url: https://davidjohncoleman.com
+description: API Docs for CEREBRUM v1
+license:
+  name: MIT
+  url: http://opensource.org/licenses/MIT
+title: CEREBRUM - go playground
+version: 1.0.0

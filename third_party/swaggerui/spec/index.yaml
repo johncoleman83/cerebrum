@@ -1,0 +1,23 @@
+swagger: "2.0"
+host: localhost:8080
+schemes:
+- http
+consumes:
+- application/json
+security:
+- ApiKeyAuth: []
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+definitions:
+  $ref: ./definitions/index.yaml
+info:
+  $ref: ./info/index.yaml
+paths:
+  $ref: ./paths/index.yaml
+produces:
+- application/json
+responses:
+  $ref: ./responses/index.yaml

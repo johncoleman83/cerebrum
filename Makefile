@@ -7,28 +7,24 @@ list:
 
 .PHONY: help # show all make targets with descriptions
 help:
-	@echo "--------------------"
-	@echo "-------help---------"
-	@echo "--------------------"
-	@echo "TARGETS: DESCRIPTION"
-	@echo "--------------------"
+	@echo "-----------------------"
+	@echo "|         help        |"
+	@echo "-----------------------"
+	@echo "| TARGET: DESCRIPTION |"
+	@echo "-----------------------"
 	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/\1: \2/' | expand -t20
 
-.PHONY: branch # start off a new clean git branch from origin/master head commit
-branch:
-ifdef NAME
-	git checkout master
-	git fetch origin master
-	git reset --hard origin/master
-	git checkout -b $(NAME)
-else
-	@echo 'Usage: $ make NAME=XXXXX branch'
-	@echo 'where NAME is any valid new git branch'
-	@echo 'run `$$ make help` for more info'
-endif
+.PHONY: deps # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
+deps:
+	@echo 'install these dependencies of the specified version or newer'
+	@echo 'docker 18.09.0'
+	@echo 'golang version go1.11.4 darwin/amd64'
+	@echo 'npm 6.5.0'
+	@echo 'multi-file-swagger: https://github.com/mohsen1/multi-file-swagger-example'
+	@echo 'golang/dep: https://github.com/golang/dep'
 
 .PHONY: setup # a "one click" type start from scratch to refresh the db bootstrap & serve the application
-setup: refresh serve
+setup: deps refresh serve
 
 .PHONY: refresh # refresh all docker db's and bootstrap a new dev db
 refresh:
@@ -40,9 +36,11 @@ refresh:
 serve:
 	go run cmd/api/main.go
 
-.PHONY: swagger # entry point to generate swagger support docs
+.PHONY: swagger # entry point to generate swagger support docs using multi-file-swagger or (outdated) go-swagger -- https://github.com/go-swagger/go-swagger
 swagger:
-ifeq ($(CMD),spec)
+ifeq ($(CMD),compile)
+	@make TYPE=$(TYPE) swagger_compile
+else ifeq ($(CMD),go_spec)
 	@make TYPE=$(TYPE) swagger_spec
 else ifeq ($(CMD),client)
 	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
@@ -54,22 +52,36 @@ else
 	@echo 'run `$$ make help` for more info'
 endif
 
-.PHONY: swagger_spec # generate swagger spec using inline comments, use env variable TYPE to specify the output file type
-swagger_spec:
+.PHONY: swagger_compile # compile swagger spec file from swagger directories. Usage: make CMD=compile TYPE=XXXXX swagger
+swagger_compile:
+ifdef TYPE
+	cd third_party/swaggerui/spec && \
+		multi-file-swagger -o $(TYPE) index.yaml > compiled/index.$(TYPE) && \
+		cp -rf compiled/index.$(TYPE) ../dist/spec.yaml && \
+		cd -
+else
+	@echo 'Usage: $ make CMD=compile TYPE=XXXXX swagger'
+	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
+	@echo 'run `$$ make help` for more info'
+endif
+
+.PHONY: swagger_go_spec # generate swagger spec using inline comments. Usage: make CMD=go_spec TYPE=XXXXX swagger
+swagger_go_spec:
 ifdef TYPE
 	cd cmd/api/ && \
 		~/go/bin/swagger generate \
 		--output=../../logs/swagger.log spec \
 		--scan-models \
-		--output=../../third_party/swaggerui/dist/swagger.$(TYPE)
+		--output=../../third_party/swaggerui/dist/spec/composed/index.$(TYPE) && \
+		cd -
 else
-	@echo 'Usage: $ make CMD=spec TYPE=XXXXX swagger'
+	@echo 'Usage: $ make CMD=go_spec TYPE=XXXXX swagger'
 	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
 	@echo 'run `$$ make help` for more info'
 endif
 
 
-.PHONY: swagger_ui # generate swagger client or server side template files, must already have a valid swagger.yaml file
+.PHONY: swagger_ui # generate swagger client or server side template files, must already have a valid swagger.yaml file. Usage: make CMD=[client|server] TYPE=XXXXX swagger
 swagger_ui:
 ifdef TYPE
 	~/go/bin/swagger generate \
@@ -87,7 +99,7 @@ else
 	@echo 'run `$$ make help` for more info'
 endif
 
-.PHONY: docker # start docker dependencies, executes $ docker-compose up
+.PHONY: docker # start docker dev dependencies, executes $ docker-compose up
 docker:
 	docker-compose up --detach
 	@echo "... zzz"

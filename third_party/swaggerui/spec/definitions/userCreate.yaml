@@ -1,0 +1,33 @@
+description: User create request
+properties:
+  company_id:
+    format: uint64
+    type: integer
+    x-go-name: CompanyID
+  email:
+    type: string
+    x-go-name: Email
+  first_name:
+    type: string
+    x-go-name: FirstName
+  last_name:
+    type: string
+    x-go-name: LastName
+  location_id:
+    format: uint64
+    type: integer
+    x-go-name: LocationID
+  password:
+    type: string
+    x-go-name: Password
+  password_confirm:
+    type: string
+    x-go-name: PasswordConfirm
+  role_id:
+    $ref: '#/definitions/AccessRole'
+  username:
+    type: string
+    x-go-name: Username
+type: object
+x-go-name: createReq
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport

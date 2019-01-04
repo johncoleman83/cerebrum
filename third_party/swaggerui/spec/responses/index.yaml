@@ -1,0 +1,17 @@
+err:
+  description: Error response
+errMsg:
+  description: Error response with message
+  headers:
+    message:
+      type: string
+loginResp:
+  $ref: ./loginResp.yaml
+ok:
+  description: Success response
+refreshResp:
+  $ref: ./refreshResp.yaml
+userListResp:
+  $ref: ./userListResp.yaml
+userResp:
+  $ref: ./userResp.yaml

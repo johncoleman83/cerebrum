@@ -1,0 +1,14 @@
+description: Password change request
+properties:
+  new_password:
+    type: string
+    x-go-name: NewPassword
+  new_password_confirm:
+    type: string
+    x-go-name: NewPasswordConfirm
+  old_password:
+    type: string
+    x-go-name: OldPassword
+type: object
+x-go-name: changeReq
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/password/transport

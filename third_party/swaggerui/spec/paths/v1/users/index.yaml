@@ -1,0 +1,44 @@
+get:
+  description: Returns list of users. Depending on the user role requesting it,
+    it may return all users for SuperAdmin/Admin users, all company/location users
+    for Company/Location admins, and an error for non-admin users.
+  operationId: listUsers
+  parameters:
+  - description: number of results
+    in: query
+    name: limit
+    type: integer
+  - description: page number
+    in: query
+    name: page
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/userListResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Returns list of users.
+  tags:
+  - users
+post:
+  operationId: userCreate
+  responses:
+    "200":
+      $ref: '#/responses/userResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/errMsg'
+    "500":
+      $ref: '#/responses/err'
+  summary: Creates new user account.
+  tags:
+  - users

@@ -1,0 +1,13 @@
+description: Login response
+schema:
+  properties:
+    expires:
+      type: string
+      x-go-name: Expires
+    refresh_token:
+      type: string
+      x-go-name: RefreshToken
+    token:
+      type: string
+      x-go-name: Token
+  type: object

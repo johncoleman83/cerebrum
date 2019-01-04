@@ -1,0 +1,78 @@
+delete:
+  description: Deletes a user with requested ID.
+  operationId: userDelete
+  parameters:
+  - description: id of user
+    in: path
+    name: id
+    required: true
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/ok'
+    "400":
+      $ref: '#/responses/err'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Deletes a user
+  tags:
+  - users
+get:
+  description: Returns a single user by its ID.
+  operationId: getUser
+  parameters:
+  - description: id of user
+    in: path
+    name: id
+    required: true
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/userResp'
+    "400":
+      $ref: '#/responses/err'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "404":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Returns a single user.
+  tags:
+  - users
+patch:
+  description: Updates user's contact information -> first name, last name, mobile,
+    phone, address.
+  operationId: userUpdate
+  parameters:
+  - description: id of user
+    in: path
+    name: id
+    required: true
+    type: integer
+  - description: Request body
+    in: body
+    name: request
+    required: true
+    schema:
+      $ref: '#/definitions/userUpdate'
+  responses:
+    "200":
+      $ref: '#/responses/userResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Updates user's contact information
+  tags:
+  - users

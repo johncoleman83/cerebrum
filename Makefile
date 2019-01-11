@@ -14,6 +14,10 @@ help:
 	@echo "-----------------------"
 	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/\1: \2/' | expand -t20
 
+.PHONY: godoc # run godoc server and site on port 6060 to see package docs
+godoc:
+	godoc -play=true -index -http=:6060
+
 .PHONY: deps # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
 deps:
 	@echo 'install these dependencies of the specified version or newer'

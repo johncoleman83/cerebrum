@@ -1,0 +1,12 @@
+/login:
+  $ref: ./login.yaml
+/me:
+  $ref: ./me.yaml
+/refresh/{token}:
+  $ref: ./refresh.yaml
+/v1/password/{id}:
+  $ref: ./v1/password.yaml
+/v1/users:
+  $ref: ./v1/users/index.yaml
+/v1/users/{id}:
+  $ref: ./v1/users/id.yaml

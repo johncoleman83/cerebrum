@@ -1,0 +1,18 @@
+AccessRole:
+  $ref: ./AccessRole.yaml
+HTTP:
+  $ref: ./HTTP.yaml
+Role:
+  $ref: ./Role.yaml
+User:
+  $ref: ./User.yaml
+credentials:
+  $ref: ./credentials.yaml
+listResponse:
+  $ref: ./listResponse.yaml
+pwChange:
+  $ref: ./pwChange.yaml
+userCreate:
+  $ref: ./userCreate.yaml
+userUpdate:
+  $ref: ./userUpdate.yaml

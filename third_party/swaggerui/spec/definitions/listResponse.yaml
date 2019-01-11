@@ -1,0 +1,12 @@
+properties:
+  page:
+    format: int64
+    type: integer
+    x-go-name: Page
+  users:
+    items:
+      $ref: '#/definitions/User'
+    type: array
+    x-go-name: Users
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport

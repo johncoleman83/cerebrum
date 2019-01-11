@@ -1,0 +1,4 @@
+description: AccessRole represents access role type
+format: uint64
+type: integer
+x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model

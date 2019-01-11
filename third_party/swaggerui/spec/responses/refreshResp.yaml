@@ -1,0 +1,10 @@
+description: Token refresh response
+schema:
+  properties:
+    expires:
+      type: string
+      x-go-name: Expires
+    token:
+      type: string
+      x-go-name: Token
+  type: object

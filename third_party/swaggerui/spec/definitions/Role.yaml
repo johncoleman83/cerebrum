@@ -1,0 +1,11 @@
+description: Role model
+properties:
+  access_level:
+    $ref: '#/definitions/AccessRole'
+  id:
+    $ref: '#/definitions/AccessRole'
+  name:
+    type: string
+    x-go-name: Name
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model

@@ -1,0 +1,3 @@
+description: HTTP represents password http transport service
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/password/transport

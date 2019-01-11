@@ -1,0 +1,23 @@
+post:
+  operationId: login
+  parameters:
+  - in: body
+    name: Body
+    schema:
+      $ref: '#/definitions/credentials'
+  responses:
+    "200":
+      $ref: '#/responses/loginResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/errMsg'
+    "403":
+      $ref: '#/responses/err'
+    "404":
+      $ref: '#/responses/errMsg'
+    "500":
+      $ref: '#/responses/err'
+  summary: Logs in user by username and password.
+  tags:
+  - auth

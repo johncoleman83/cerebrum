@@ -1,5 +1,5 @@
 consumes:
-- application/json
+  - application/json
 definitions:
   AccessRole:
     description: AccessRole represents access role type
@@ -196,17 +196,17 @@ paths:
         schema:
           $ref: '#/definitions/credentials'
       responses:
-        "200":
+        '200':
           $ref: '#/responses/loginResp'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/errMsg'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "404":
+        '404':
           $ref: '#/responses/errMsg'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Logs in user by username and password.
       tags:
@@ -215,9 +215,9 @@ paths:
     get:
       operationId: meReq
       responses:
-        "200":
+        '200':
           $ref: '#/responses/userResp'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Gets user's info from session.
       tags:
@@ -234,13 +234,13 @@ paths:
         required: true
         type: string
       responses:
-        "200":
+        '200':
           $ref: '#/responses/refreshResp'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Refreshes jwt token.
       tags:
@@ -263,15 +263,15 @@ paths:
         schema:
           $ref: '#/definitions/pwChange'
       responses:
-        "200":
+        '200':
           $ref: '#/responses/ok'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Changes user's password.
       tags:
@@ -292,15 +292,15 @@ paths:
         name: page
         type: integer
       responses:
-        "200":
+        '200':
           $ref: '#/responses/userListResp'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Returns list of users.
       tags:
@@ -308,15 +308,15 @@ paths:
     post:
       operationId: userCreate
       responses:
-        "200":
+        '200':
           $ref: '#/responses/userResp'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/errMsg'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Creates new user account.
       tags:
@@ -332,15 +332,15 @@ paths:
         required: true
         type: integer
       responses:
-        "200":
+        '200':
           $ref: '#/responses/ok'
-        "400":
+        '400':
           $ref: '#/responses/err'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Deletes a user
       tags:
@@ -355,17 +355,17 @@ paths:
         required: true
         type: integer
       responses:
-        "200":
+        '200':
           $ref: '#/responses/userResp'
-        "400":
+        '400':
           $ref: '#/responses/err'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "404":
+        '404':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Returns a single user.
       tags:
@@ -387,21 +387,21 @@ paths:
         schema:
           $ref: '#/definitions/userUpdate'
       responses:
-        "200":
+        '200':
           $ref: '#/responses/userResp'
-        "400":
+        '400':
           $ref: '#/responses/errMsg'
-        "401":
+        '401':
           $ref: '#/responses/err'
-        "403":
+        '403':
           $ref: '#/responses/err'
-        "500":
+        '500':
           $ref: '#/responses/err'
       summary: Updates user's contact information
       tags:
       - users
 produces:
-- application/json
+  - application/json
 responses:
   err:
     description: Error response
@@ -511,12 +511,12 @@ responses:
           x-go-name: Username
       type: object
 schemes:
-- http
+  - http
 security:
-- ApiKeyAuth: []
+  - ApiKeyAuth: []
 securityDefinitions:
   ApiKeyAuth:
     in: header
     name: Authorization
     type: apiKey
-swagger: "2.0"
+swagger: '2.0'

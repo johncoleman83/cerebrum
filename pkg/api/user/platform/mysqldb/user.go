@@ -12,18 +12,18 @@ import (
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
-// NewUser returns a new user database instance
-func NewUser() *User {
-	return &User{}
-}
-
-// User represents the client for user table
-type User struct{}
-
 // Custom errors
 var (
 	ErrAlreadyExists = echo.NewHTTPError(http.StatusInternalServerError, "Username or email already exists.")
 )
+
+// User represents the client for user table
+type User struct{}
+
+// NewUser returns a new user database instance
+func NewUser() *User {
+	return &User{}
+}
 
 // Create creates a new user on database
 func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {

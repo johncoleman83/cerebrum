@@ -1,3 +1,5 @@
+// Package datastore creates an ORM connection to the
+// databse and persistence layer
 package datastore
 
 import (

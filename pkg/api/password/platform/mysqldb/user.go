@@ -5,16 +5,17 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
+
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
-// NewUser returns a new user database instance
+// User represents the client for user table
+type User struct{}
+
+// NewUser returns a new user client for db interface
 func NewUser() *User {
 	return &User{}
 }
-
-// User represents the client for user table
-type User struct{}
 
 // View returns single user by ID
 func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {

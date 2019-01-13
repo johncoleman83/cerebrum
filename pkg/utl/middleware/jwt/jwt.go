@@ -1,3 +1,4 @@
+// Package jwt contains logic for using JSON web tokens
 package jwt
 
 import (
@@ -5,12 +6,23 @@ import (
 	"strings"
 	"time"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
+
+// Service provides a Json-Web-Token authentication implementation
+type Service struct {
+	// Secret key used for signing.
+	key []byte
+
+	// Duration for which the jwt token is valid.
+	duration time.Duration
+
+	// JWT signing algorithm
+	algo jwt.SigningMethod
+}
 
 // New generates new JWT service necessery for auth middleware
 func New(secret, algo string, d int) *Service {
@@ -23,18 +35,6 @@ func New(secret, algo string, d int) *Service {
 		algo:     signingMethod,
 		duration: time.Duration(d) * time.Minute,
 	}
-}
-
-// Service provides a Json-Web-Token authentication implementation
-type Service struct {
-	// Secret key used for signing.
-	key []byte
-
-	// Duration for which the jwt token is valid.
-	duration time.Duration
-
-	// JWT signing algorithm
-	algo jwt.SigningMethod
 }
 
 // MWFunc makes JWT implement the Middleware interface.

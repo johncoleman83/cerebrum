@@ -2,7 +2,8 @@ package mock
 
 import (
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // RBAC Mock

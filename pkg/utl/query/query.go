@@ -1,8 +1,10 @@
+// Package query contains support functions for making db queries
 package query
 
 import (
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // List prepares data for list queries

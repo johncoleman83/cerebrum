@@ -3,8 +3,9 @@ package auth
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
+
 	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/mysqldb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new iam service

@@ -1,3 +1,4 @@
+// Package secure contains support for application security
 package secure
 
 import (

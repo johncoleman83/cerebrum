@@ -1,3 +1,4 @@
+// Package structs is for working with structs
 package structs
 
 import (

@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // JWT mock

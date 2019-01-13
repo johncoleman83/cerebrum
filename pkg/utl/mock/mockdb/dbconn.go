@@ -41,6 +41,7 @@ func getTestConfig(t *testing.T) *config.Configuration {
 	return cfg
 }
 
+// buildDockerOptions builds a struct with docker options to run a new container
 func buildDockerOptions(DB *config.Database) *dockertest.RunOptions {
 	randomString := support.NewRandomString(25)
 	containerName := fmt.Sprintf("cerebrum_mysql_test_db_no_%s", randomString)
@@ -58,6 +59,8 @@ func buildDockerOptions(DB *config.Database) *dockertest.RunOptions {
 	}
 }
 
+// loopPingDB should be executed after a mysql db docker container is run and it attempts
+// to verify that mysql has started up in the docker container
 func loopPingDB(t *testing.T, pool *dockertest.Pool, cfg *config.Configuration) {
 	dsn := datastore.FormatDSN(cfg.DB)
 	log.Println("pinging db in the docker test container to verify mysql has started up\nDSN: " + dsn)

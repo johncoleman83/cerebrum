@@ -4,15 +4,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jinzhu/gorm"
+	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
-
-	"github.com/jinzhu/gorm"
-	"github.com/labstack/echo"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestAuthenticate(t *testing.T) {

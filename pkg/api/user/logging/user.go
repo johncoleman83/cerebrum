@@ -4,9 +4,18 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
+
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
+
+const packageName = "user"
+
+// LogService represents user logging service
+type LogService struct {
+	user.Service
+	logger cerebrum.Logger
+}
 
 // New creates new user logging service
 func New(svc user.Service, logger cerebrum.Logger) *LogService {
@@ -16,21 +25,13 @@ func New(svc user.Service, logger cerebrum.Logger) *LogService {
 	}
 }
 
-// LogService represents user logging service
-type LogService struct {
-	user.Service
-	logger cerebrum.Logger
-}
-
-const name = "user"
-
 // Create logging
 func (ls *LogService) Create(c echo.Context, req cerebrum.User) (resp *cerebrum.User, err error) {
 	req.Password = "xxx-redacted-xxx"
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
-			name, "Create user request", err,
+			packageName, "Create user request", err,
 			map[string]interface{}{
 				"req":  req,
 				"resp": resp,
@@ -46,7 +47,7 @@ func (ls *LogService) List(c echo.Context, req *cerebrum.Pagination) (resp []cer
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
-			name, "List user request", err,
+			packageName, "List user request", err,
 			map[string]interface{}{
 				"req":  req,
 				"resp": resp,
@@ -62,7 +63,7 @@ func (ls *LogService) View(c echo.Context, req uint) (resp *cerebrum.User, err e
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
-			name, "View user request", err,
+			packageName, "View user request", err,
 			map[string]interface{}{
 				"req":  req,
 				"resp": resp,
@@ -78,7 +79,7 @@ func (ls *LogService) Delete(c echo.Context, req uint) (err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
-			name, "Delete user request", err,
+			packageName, "Delete user request", err,
 			map[string]interface{}{
 				"req":  req,
 				"took": time.Since(begin),
@@ -93,7 +94,7 @@ func (ls *LogService) Update(c echo.Context, req *user.Update) (resp *cerebrum.U
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
-			name, "Update user request", err,
+			packageName, "Update user request", err,
 			map[string]interface{}{
 				"req":  req,
 				"resp": resp,

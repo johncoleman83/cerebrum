@@ -1,3 +1,4 @@
+// Package config is used for loading the environmental configurations
 package config
 
 import (
@@ -12,57 +13,6 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 )
-
-func expectedFiles() map[string]bool {
-	return map[string]bool{
-		"conf.development.yaml": true,
-		"conf.testing.yaml":     true,
-		"conf.staging.yaml":     true,
-		"conf.production.yaml":  true,
-	}
-}
-
-// checks if path has expected name format
-func isExpectedConfigPath(cfgPath string) error {
-	fileName := cfgPath[strings.LastIndex(cfgPath, "/")+1:]
-	files := expectedFiles()
-	if val, status := files[fileName]; !(val && status) {
-		return fmt.Errorf("filename must be recognized")
-	}
-	if _, errPath := os.Stat(cfgPath); errPath != nil {
-		return fmt.Errorf("error finding the path, %s", cfgPath)
-	}
-	log.Printf("config file: %s", cfgPath)
-	return nil
-}
-
-func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
-	bytes, errRead := ioutil.ReadFile(cfgPath)
-	if errRead != nil {
-		return nil, fmt.Errorf("error reading config file, %v", errRead)
-	}
-	var cfg = new(Configuration)
-	if errYaml := yaml.Unmarshal(bytes, cfg); errYaml != nil {
-		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", errYaml)
-	}
-	return cfg, nil
-}
-
-// LoadConfigFromFlags returns Configuration struct compiled from flags
-func LoadConfigFromFlags() (*Configuration, error) {
-	cfgPath := flag.String("config", support.DevelopmentConfigPath(), "Path to config file")
-	flag.Parse()
-
-	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
-		return nil, errName
-	}
-	return readFileAndBuildStruct(*cfgPath)
-}
-
-// LoadConfigFrom returns Configuration struct compile from input path
-func LoadConfigFrom(path string) (*Configuration, error) {
-	return readFileAndBuildStruct(path)
-}
 
 // Configuration holds data necessery for configuring application
 type Configuration struct {
@@ -105,4 +55,60 @@ type JWT struct {
 type Application struct {
 	MinPasswordStr int    `yaml:"min_password_strength,omitempty"`
 	SwaggerUIPath  string `yaml:"swagger_ui_path,omitempty"`
+}
+
+// expectedFiles is a safeguard to ensure that the proper files
+// are being used to load environmental config data
+func expectedFiles() map[string]bool {
+	return map[string]bool{
+		"conf.development.yaml": true,
+		"conf.testing.yaml":     true,
+		"conf.staging.yaml":     true,
+		"conf.production.yaml":  true,
+	}
+}
+
+// isExpectedConfigPath checks that the input path has expected name format
+func isExpectedConfigPath(cfgPath string) error {
+	fileName := cfgPath[strings.LastIndex(cfgPath, "/")+1:]
+	files := expectedFiles()
+	if val, status := files[fileName]; !(val && status) {
+		return fmt.Errorf("filename must be recognized")
+	}
+	if _, errPath := os.Stat(cfgPath); errPath != nil {
+		return fmt.Errorf("error finding the path, %s", cfgPath)
+	}
+	log.Printf("config file: %s", cfgPath)
+	return nil
+}
+
+// readFileAndBuildStruct reads the input file and builds a config struct
+// that is serialized from all the data in the config rile
+func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
+	bytes, errRead := ioutil.ReadFile(cfgPath)
+	if errRead != nil {
+		return nil, fmt.Errorf("error reading config file, %v", errRead)
+	}
+	var cfg = new(Configuration)
+	if errYaml := yaml.Unmarshal(bytes, cfg); errYaml != nil {
+		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", errYaml)
+	}
+	return cfg, nil
+}
+
+// LoadConfigFromFlags returns Configuration struct compiled from flags
+// or it uses the default DevelopmentConfigPath() from the support package
+func LoadConfigFromFlags() (*Configuration, error) {
+	cfgPath := flag.String("config", support.DevelopmentConfigPath(), "Path to config file")
+	flag.Parse()
+
+	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
+		return nil, errName
+	}
+	return readFileAndBuildStruct(*cfgPath)
+}
+
+// LoadConfigFrom returns Configuration struct compiled from input path
+func LoadConfigFrom(path string) (*Configuration, error) {
+	return readFileAndBuildStruct(path)
 }

@@ -1,4 +1,4 @@
-package mysqldb
+package store
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ var (
 // User represents the client for user table
 type User struct{}
 
-// NewUser returns a new user database instance
+// NewUser returns a new user client for db interface
 func NewUser() *User {
 	return &User{}
 }
@@ -52,9 +52,28 @@ func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 	return user, nil
 }
 
-// Update updates user's contact info
-func (u *User) Update(db *gorm.DB, user *cerebrum.User) error {
-	return db.Save(user).Error
+// FindByUsername queries for single user by username
+func (u *User) FindByUsername(db *gorm.DB, uname string) (*cerebrum.User, error) {
+	var user = new(cerebrum.User)
+	if err := db.Set("gorm:auto_preload", true).Where("username = ?", uname).First(&user).Error; gorm.IsRecordNotFoundError(err) {
+		return user, err
+	} else if err != nil {
+		log.Panicln(fmt.Sprintf("db connection error %v", err))
+		return user, err
+	}
+	return user, nil
+}
+
+// FindByToken queries for single user by token
+func (u *User) FindByToken(db *gorm.DB, token string) (*cerebrum.User, error) {
+	var user = new(cerebrum.User)
+	if err := db.Set("gorm:auto_preload", true).Where("token = ?", token).First(&user).Error; gorm.IsRecordNotFoundError(err) {
+		return user, err
+	} else if err != nil {
+		log.Panicln(fmt.Sprintf("db connection error %v", err))
+		return user, err
+	}
+	return user, nil
 }
 
 // List returns list of all users retrievable for the current user, depending on role
@@ -67,6 +86,11 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 		db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc")
 	}
 	return users, db.Error
+}
+
+// Update updates user's info
+func (u *User) Update(db *gorm.DB, user *cerebrum.User) error {
+	return db.Save(user).Error
 }
 
 // Delete sets deleted_at for a user

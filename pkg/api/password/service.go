@@ -4,7 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
-	"github.com/johncoleman83/cerebrum/pkg/api/password/platform/mysqldb"
+	"github.com/johncoleman83/cerebrum/pkg/api/store"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
@@ -51,5 +51,5 @@ func New(db *gorm.DB, udb UserDB, rbac RBAC, sec Securer) *Password {
 
 // Initialize initalizes password application service with defaults
 func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *Password {
-	return New(db, mysqldb.NewUser(), rbac, sec)
+	return New(db, store.NewUser(), rbac, sec)
 }

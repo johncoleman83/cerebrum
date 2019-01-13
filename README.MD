@@ -48,7 +48,7 @@ $ make deps
 
 use make to help with development
 
-* just run make help to see all make support
+* just run make help to see all the automated support with `make`
   ```
   $ make help
   ```
@@ -67,7 +67,9 @@ use make to help with development
 
 Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
-* docs: https://goswagger.io/use/spec.html#parsing-rules
+* use `make` or [multi-file-swagger](https://www.npmjs.com/package/multi-file-swagger) to generate the swagger `.yaml` spec file.
+* more docs on creating a swagger server: https://goswagger.io/use/spec.html#parsing-rules
+* this application uses the latest distribution from [github.com/swagger-api/swagger-ui](https://github.com/swagger-api/swagger-ui/tree/master/dist)
 
 ## Endpoints
 

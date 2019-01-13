@@ -20,7 +20,7 @@ godoc:
 
 .PHONY: deps # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
 deps:
-	@echo 'install these dependencies of the specified version or newer'
+	@echo 'if you have not already, install these dependencies of the specified version or newer'
 	@echo 'docker 18.09.0'
 	@echo 'golang version go1.11.4 darwin/amd64'
 	@echo 'npm 6.5.0'
@@ -44,8 +44,6 @@ serve:
 swagger:
 ifeq ($(CMD),compile)
 	@make TYPE=$(TYPE) swagger_compile
-else ifeq ($(CMD),go_spec)
-	@make TYPE=$(TYPE) swagger_spec
 else ifeq ($(CMD),client)
 	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
 else ifeq ($(CMD),server)
@@ -68,22 +66,6 @@ else
 	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
 	@echo 'run `$$ make help` for more info'
 endif
-
-.PHONY: swagger_go_spec # generate swagger spec using inline comments. Usage: make CMD=go_spec TYPE=XXXXX swagger
-swagger_go_spec:
-ifdef TYPE
-	cd cmd/api/ && \
-		~/go/bin/swagger generate \
-		--output=../../logs/swagger.log spec \
-		--scan-models \
-		--output=../../third_party/swaggerui/dist/spec/composed/index.$(TYPE) && \
-		cd -
-else
-	@echo 'Usage: $ make CMD=go_spec TYPE=XXXXX swagger'
-	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
-	@echo 'run `$$ make help` for more info'
-endif
-
 
 .PHONY: swagger_ui # generate swagger client or server side template files, must already have a valid swagger.yaml file. Usage: make CMD=[client|server] TYPE=XXXXX swagger
 swagger_ui:

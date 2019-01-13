@@ -78,6 +78,7 @@ func TestView(t *testing.T) {
 					tt.expectedData.UpdatedAt = user.UpdatedAt
 					tt.expectedData.LastLogin = user.LastLogin
 					tt.expectedData.LastPasswordChange = user.LastPasswordChange
+					tt.expectedData.Role = superAdmin
 					assert.Equal(t, tt.expectedData, user)
 				}
 			}
@@ -139,6 +140,7 @@ func TestFindByUsername(t *testing.T) {
 				tt.expectedData.UpdatedAt = user.UpdatedAt
 				tt.expectedData.LastLogin = user.LastLogin
 				tt.expectedData.LastPasswordChange = user.LastPasswordChange
+				tt.expectedData.Role = superAdmin
 				assert.Equal(t, tt.expectedData, user)
 
 			}
@@ -201,6 +203,7 @@ func TestFindByToken(t *testing.T) {
 				tt.expectedData.UpdatedAt = user.UpdatedAt
 				tt.expectedData.LastLogin = user.LastLogin
 				tt.expectedData.LastPasswordChange = user.LastPasswordChange
+				tt.expectedData.Role = superAdmin
 				assert.Equal(t, tt.expectedData, user)
 
 			}
@@ -271,7 +274,6 @@ func TestUpdate(t *testing.T) {
 			tt.expectedData.CreatedAt = user.CreatedAt
 			tt.expectedData.LastLogin = user.LastLogin
 			tt.expectedData.LastPasswordChange = user.LastPasswordChange
-			tt.expectedData.DeletedAt = user.DeletedAt
 			err := udb.Update(db, tt.expectedData)
 			assert.Equal(t, tt.expectedErr, err != nil)
 			if tt.expectedData != nil {

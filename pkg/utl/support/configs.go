@@ -37,7 +37,7 @@ func isExpectedConfigPath(cfgPath string) error {
 	if val, status := files[fileName]; !(val && status) {
 		return fmt.Errorf("filename must be recognized")
 	}
-	if _, errPath := os.Stat(cfgPath); errPath != nil {
+	if _, err := os.Stat(cfgPath); err != nil {
 		return fmt.Errorf("error finding the path, %s", cfgPath)
 	}
 	log.Printf("config file: %s", cfgPath)

@@ -4,9 +4,6 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
-	"os"
-	"strings"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -54,46 +51,17 @@ type Application struct {
 	SwaggerUIPath  string `yaml:"swagger_ui_path,omitempty"`
 }
 
-// expectedFiles is a safeguard to ensure that the proper files
-// are being used to load environmental config data
-func expectedFiles() map[string]bool {
-	return map[string]bool{
-		"conf.development.yaml": true,
-		"conf.testing.yaml":     true,
-		"conf.staging.yaml":     true,
-		"conf.production.yaml":  true,
-	}
-}
-
-// isExpectedConfigPath checks that the input path has expected name format
-func isExpectedConfigPath(cfgPath string) error {
-	fileName := cfgPath[strings.LastIndex(cfgPath, "/")+1:]
-	files := expectedFiles()
-	if val, status := files[fileName]; !(val && status) {
-		return fmt.Errorf("filename must be recognized")
-	}
-	if _, errPath := os.Stat(cfgPath); errPath != nil {
-		return fmt.Errorf("error finding the path, %s", cfgPath)
-	}
-	log.Printf("config file: %s", cfgPath)
-	return nil
-}
-
-// readFileAndBuildStruct reads the input file and builds a config struct
+// LoadConfigFrom returns Configuration struct compile from input path
+// reads the input file and builds a config struct
 // that is serialized from all the data in the config rile
-func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
-	bytes, errRead := ioutil.ReadFile(cfgPath)
-	if errRead != nil {
-		return nil, fmt.Errorf("error reading config file, %v", errRead)
+func LoadConfigFrom(cfgPath string) (*Configuration, error) {
+	bytes, err := ioutil.ReadFile(cfgPath)
+	if err != nil {
+		return nil, fmt.Errorf("error reading config file, %v", err)
 	}
 	var cfg = new(Configuration)
-	if errYaml := yaml.Unmarshal(bytes, cfg); errYaml != nil {
-		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", errYaml)
+	if err = yaml.Unmarshal(bytes, cfg); err != nil {
+		return nil, fmt.Errorf("unable to decode config yaml into struct, %v", err)
 	}
 	return cfg, nil
-}
-
-// LoadConfigFrom returns Configuration struct compile from input path
-func LoadConfigFrom(path string) (*Configuration, error) {
-	return readFileAndBuildStruct(path)
 }

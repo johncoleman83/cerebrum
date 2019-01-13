@@ -3,8 +3,9 @@ package user
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/api/user/platform/mysqldb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+
+	"github.com/johncoleman83/cerebrum/pkg/api/store"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // Service represents user application interface
@@ -23,7 +24,7 @@ func New(db *gorm.DB, udb UDB, rbac RBAC, sec Securer) *User {
 
 // Initialize initalizes User application service with defaults
 func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *User {
-	return New(db, mysqldb.NewUser(), rbac, sec)
+	return New(db, store.NewUser(), rbac, sec)
 }
 
 // User represents user application service

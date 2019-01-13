@@ -3,8 +3,9 @@ package auth
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
-	"github.com/johncoleman83/cerebrum/pkg/api/auth/platform/mysqldb"
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
+
+	"github.com/johncoleman83/cerebrum/pkg/api/store"
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // New creates new iam service
@@ -20,7 +21,7 @@ func New(db *gorm.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Aut
 
 // Initialize initializes auth application service
 func Initialize(db *gorm.DB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
-	return New(db, mysqldb.NewUser(), j, sec, rbac)
+	return New(db, store.NewUser(), j, sec, rbac)
 }
 
 // Service represents auth service interface

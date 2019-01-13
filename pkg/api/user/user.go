@@ -1,11 +1,11 @@
-// Package user contains user application services
 package user
 
 import (
+	"github.com/labstack/echo"
+
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/query"
 	"github.com/johncoleman83/cerebrum/pkg/utl/structs"
-	"github.com/labstack/echo"
 )
 
 // Create creates a new user account

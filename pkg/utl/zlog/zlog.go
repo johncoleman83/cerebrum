@@ -1,10 +1,10 @@
+// Package zlog contains support for zlog
 package zlog
 
 import (
 	"os"
 
 	"github.com/labstack/echo"
-
 	"github.com/rs/zerolog"
 )
 

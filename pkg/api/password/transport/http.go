@@ -21,33 +21,6 @@ func NewHTTP(svc password.Service, er *echo.Group) {
 	h := HTTP{svc}
 	pr := er.Group("/password")
 
-	// swagger:operation PATCH /v1/password/{id} password pwChange
-	// ---
-	// summary: Changes user's password.
-	// description: If user's old passowrd is correct, it will be replaced with new password.
-	// parameters:
-	// - name: id
-	//   in: path
-	//   description: id of user
-	//   type: integer
-	//   required: true
-	// - name: request
-	//   in: body
-	//   description: Request body
-	//   required: true
-	//   schema:
-	//     "$ref": "#/definitions/pwChange"
-	// responses:
-	//   "200":
-	//     "$ref": "#/responses/ok"
-	//   "400":
-	//     "$ref": "#/responses/errMsg"
-	//   "401":
-	//     "$ref": "#/responses/err"
-	//   "403":
-	//     "$ref": "#/responses/err"
-	//   "500":
-	//     "$ref": "#/responses/err"
 	pr.PATCH("/:id", h.change)
 }
 
@@ -56,8 +29,7 @@ var (
 	ErrPasswordsNotMaching = echo.NewHTTPError(http.StatusBadRequest, "passwords do not match")
 )
 
-// Password change request
-// swagger:model pwChange
+// changeReq type for password change request
 type changeReq struct {
 	ID                 uint   `json:"-"`
 	OldPassword        string `json:"old_password" validate:"required,min=8"`
@@ -65,6 +37,34 @@ type changeReq struct {
 	NewPasswordConfirm string `json:"new_password_confirm" validate:"required"`
 }
 
+// change Changes user's password;
+// If user's old passowrd is correct, it will be replaced with new password
+//
+// usage: PATCH /v1/password/{id} password pwChange
+//
+// parameters:
+// - name: id
+//   in: path
+//   description: id of user
+//   type: integer
+//   required: true
+// - name: request
+//   in: body
+//   description: Request body
+//   required: true
+//   schema:
+//     "$ref": "#/definitions/pwChange"
+// responses:
+//   "200":
+//     "$ref": "#/responses/ok"
+//   "400":
+//     "$ref": "#/responses/errMsg"
+//   "401":
+//     "$ref": "#/responses/err"
+//   "403":
+//     "$ref": "#/responses/err"
+//   "500":
+//     "$ref": "#/responses/err"
 func (h *HTTP) change(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

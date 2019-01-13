@@ -3,9 +3,9 @@ package auth
 import (
 	"net/http"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/model"
-
 	"github.com/labstack/echo"
+
+	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
 // Custom errors

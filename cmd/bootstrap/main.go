@@ -1,4 +1,6 @@
-package main
+// Package bootstrap is used to bootstrap a DB for
+// work in a development environment
+package bootstrap
 
 import (
 	"fmt"
@@ -13,6 +15,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
 )
 
+// buildQueries creates some SQL queries into a string slice
 func buildQueries() [7]string {
 	return [7]string{
 		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
@@ -25,6 +28,7 @@ func buildQueries() [7]string {
 	}
 }
 
+// main bootstrap a db
 func main() {
 	queries := buildQueries()
 	cfg, err := config.LoadConfigFromFlags()

@@ -1,3 +1,4 @@
+// Package main is the entry point to start the cerebrum server
 package main
 
 import (
@@ -5,6 +6,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 )
 
+// main cerebrum server
 func main() {
 	cfg, err := config.LoadConfigFromFlags()
 	if err != nil {

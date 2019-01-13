@@ -1,13 +1,7 @@
-// CEREBRUM - go playground
+// Package api contains all methodology for
+// interacting with the persistence layer
 //
 // API Docs for CEREBRUM v1
-//
-//     Terms Of Service:  N/A
-//     Schemes: http
-//     Version: 1.0.0
-//     License: MIT http://opensource.org/licenses/MIT
-//     Contact: David John Coleman II <me@davidjohncoleman.com> https://davidjohncoleman.com
-//     Host: localhost:8080
 //
 //     Consumes:
 //     - application/json
@@ -24,5 +18,4 @@
 //          name: Authorization
 //          in: header
 //
-// swagger:meta
 package api

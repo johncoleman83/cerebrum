@@ -1,4 +1,6 @@
-package main
+// Package testing is used only to execute golang commands
+// for test uses, it is like a go playground
+package testing
 
 import (
 	"fmt"
@@ -20,6 +22,7 @@ var (
 	basepath   = filepath.Dir(b)
 )
 
+// main testing go playground
 func main() {
 	fmt.Println(basepath)
 	fmt.Println("^^ basepath")

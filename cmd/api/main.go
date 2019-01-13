@@ -4,11 +4,16 @@ package main
 import (
 	"github.com/johncoleman83/cerebrum/pkg/api"
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
 
 // main cerebrum server
 func main() {
-	cfg, err := config.LoadConfigFromFlags()
+	cfgPath, err := support.ExtractPathFromFlags()
+	if err != nil {
+		panic(err.Error())
+	}
+	cfg, err := config.LoadConfigFrom(cfgPath)
 	if err != nil {
 		panic(err.Error())
 	}

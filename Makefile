@@ -107,7 +107,7 @@ endif
 docker:
 	docker-compose up --detach
 	@echo "... zzz"
-	@echo "going to sleep to mysql enough time to startup"
+	@echo "going to sleep to allow mysql enough time to startup"
 	sleep 10
 
 .PHONY: bootstrap # bootstrap the db with dev models

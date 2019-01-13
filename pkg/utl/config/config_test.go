@@ -22,12 +22,17 @@ func TestLoad(t *testing.T) {
 			expectedErr: true,
 		},
 		{
-			name:        "Fail on wrong file format",
+			name:        "Fail on existing path, but bad formatted file name",
 			path:        "testdata/config.invalid.yaml",
 			expectedErr: true,
 		},
 		{
-			name: "Success",
+			name:        "Fail on existing path, good formatted name, but bad formatted file",
+			path:        "testdata/conf.testing.yaml",
+			expectedErr: true,
+		},
+		{
+			name: "Success LoadConfigFrom() with testing data",
 			path: support.TestingConfigPath(),
 			expectedData: &config.Configuration{
 				DB: &config.Database{

@@ -2,14 +2,11 @@
 package config
 
 import (
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -96,19 +93,7 @@ func readFileAndBuildStruct(cfgPath string) (*Configuration, error) {
 	return cfg, nil
 }
 
-// LoadConfigFromFlags returns Configuration struct compiled from flags
-// or it uses the default DevelopmentConfigPath() from the support package
-func LoadConfigFromFlags() (*Configuration, error) {
-	cfgPath := flag.String("config", support.DevelopmentConfigPath(), "Path to config file")
-	flag.Parse()
-
-	if errName := isExpectedConfigPath(*cfgPath); errName != nil {
-		return nil, errName
-	}
-	return readFileAndBuildStruct(*cfgPath)
-}
-
-// LoadConfigFrom returns Configuration struct compiled from input path
+// LoadConfigFrom returns Configuration struct compile from input path
 func LoadConfigFrom(path string) (*Configuration, error) {
 	return readFileAndBuildStruct(path)
 }

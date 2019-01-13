@@ -10,6 +10,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
@@ -31,7 +32,11 @@ func buildQueries() [7]string {
 // main bootstrap a db
 func main() {
 	queries := buildQueries()
-	cfg, err := config.LoadConfigFromFlags()
+	cfgPath, err := support.ExtractPathFromFlags()
+	if err != nil {
+		panic(err.Error())
+	}
+	cfg, err := config.LoadConfigFrom(cfgPath)
 	checkErr(err)
 	if cfg == nil {
 		log.Fatal("unknown error loading yaml file")

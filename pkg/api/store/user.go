@@ -1,3 +1,5 @@
+// Package store contains the components necessary for api services
+// to interact with the database
 package store
 
 import (

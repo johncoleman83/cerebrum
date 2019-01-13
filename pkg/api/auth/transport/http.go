@@ -1,3 +1,4 @@
+// Package transport contians HTTP service for authentication
 package transport
 
 import (

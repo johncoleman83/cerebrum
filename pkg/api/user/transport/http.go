@@ -1,3 +1,4 @@
+// Package transport contains the HTTP service for user interactions
 package transport
 
 import (

@@ -1,4 +1,3 @@
-// Package user contains user application services
 package user
 
 import (

@@ -15,6 +15,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
 
 var (
@@ -26,25 +27,33 @@ var (
 func main() {
 	fmt.Println(basepath)
 	fmt.Println("^^ basepath")
-	cfg, errConfig := config.LoadConfigFromFlags()
-	checkErr(errConfig)
+	cfgPath, err := support.ExtractPathFromFlags()
+	if err != nil {
+		panic(err.Error())
+	}
+	cfg, err := config.LoadConfigFrom(cfgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if cfg == nil {
 		log.Fatal("unknown error loading yaml file")
 	}
 	dsn := datastore.FormatDSN(cfg.DB)
-	dbSQL, errSQL := sql.Open(cfg.DB.Dialect, dsn)
-	if errSQL != nil {
+	dbSQL, err := sql.Open(cfg.DB.Dialect, dsn)
+	if err != nil {
 		fmt.Println("************************")
 		fmt.Println("ERROR!!!!")
-		fmt.Println(errSQL)
+		fmt.Println(err)
 	} else {
 		fmt.Println("************************")
 		fmt.Println("SUCCESSSSSFUL Going to Ping!!!")
 		fmt.Println(dbSQL.Ping())
 	}
 	dbSQL.Close()
-	db, errDB := datastore.NewMySQLGormDb(cfg.DB)
-	checkErr(errDB)
+	db, err := datastore.NewMySQLGormDb(cfg.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	user := &cerebrum.User{}
 	if err := db.Where("id = ?", 4).First(&user).Error; gorm.IsRecordNotFoundError(err) {
@@ -65,10 +74,4 @@ func main() {
 	fmt.Println(res)
 	fmt.Println(userTwo)
 	db.Close()
-}
-
-func checkErr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
 }

@@ -32,18 +32,27 @@ func TestCreate(t *testing.T) {
 		sec            *mock.Secure
 	}{
 		{
-			name:           "Fail on validation",
-			req:            `{"first_name":"John","last_name":"Doe","username":"ju","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
+			name:           "Fail on bad params",
+			req:            `{"firstname":"John","lastname":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			expectedStatus: 400,
+		},
+		{
+			name:           "Fail on validation with short username",
+			req:            `{"first_name":"John","last_name":"Doe","username":"ss","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
+			name:           "Fail on validation of email",
+			req:            `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe$gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			expectedStatus: http.StatusBadRequest,
+		}, {
 			name:           "Fail on non-matching passwords",
-			req:            `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter1234","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":300}`,
+			req:            `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter1234","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":50}`,
+			req:  `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return echo.ErrForbidden

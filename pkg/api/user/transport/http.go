@@ -14,6 +14,7 @@ import (
 
 // Custom errors
 var (
+	ErrUnknownRole         = echo.NewHTTPError(http.StatusBadRequest, "role is unknown")
 	ErrPasswordsNotMaching = echo.NewHTTPError(http.StatusBadRequest, "passwords do not match")
 )
 
@@ -70,8 +71,8 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if r.RoleID < cerebrum.SuperAdminRole || r.RoleID > cerebrum.UserRole {
-		return cerebrum.ErrBadRequest
+	if _, ok := cerebrum.ValidRoles[cerebrum.AccessRole(r.RoleID)]; ok == false {
+		return ErrUnknownRole
 	}
 
 	usr, err := h.svc.Create(c, cerebrum.User{

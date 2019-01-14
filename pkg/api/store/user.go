@@ -34,8 +34,10 @@ func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
 	if err := db.Where(
 		"lower(username) = ? or lower(email) = ?",
 		strings.ToLower(user.Username),
-		strings.ToLower(user.Email)).First(&checkUser).Error; !gorm.IsRecordNotFoundError(err) {
+		strings.ToLower(user.Email)).First(&checkUser).Error; err == nil {
 		return nil, ErrAlreadyExists
+	} else if !gorm.IsRecordNotFoundError(err) {
+		return nil, err
 	}
 	if err := db.Create(&user).Error; err != nil {
 		return nil, err

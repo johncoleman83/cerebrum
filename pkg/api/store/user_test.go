@@ -357,7 +357,6 @@ func TestFindByToken(t *testing.T) {
 	}
 }
 
-// TODO fix these List tests
 func TestList(t *testing.T) {
 	cases := []struct {
 		name         string
@@ -441,12 +440,83 @@ func TestList(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:        "Success, should return empty list if the query searches for non-existing id",
+			expectedErr: false,
+			pg: &cerebrum.Pagination{
+				Limit:  100,
+				Offset: 0,
+			},
+			qp: &cerebrum.ListQuery{
+				ID:    99,
+				Query: "company_id = ?",
+			},
+			expectedData: []cerebrum.User{},
+		},
+		{
+			name:        "Success, should return all 3 records if no query is made",
+			expectedErr: false,
+			pg: &cerebrum.Pagination{
+				Limit:  100,
+				Offset: 0,
+			},
+			qp: nil,
+			expectedData: []cerebrum.User{
+				{
+					Email:      "tomjones@mail.com",
+					FirstName:  "Tom",
+					LastName:   "Jones",
+					Username:   "tomjones",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "newPass",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 1,
+						},
+					},
+				},
+				{
+					Email:      "johnzone@mail.com",
+					FirstName:  "John",
+					LastName:   "Zone",
+					Username:   "johnzone",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+				},
+				{
+					Email:      "sarahsmith@mail.com",
+					FirstName:  "Sarah",
+					LastName:   "Smith",
+					Username:   "sarahsmith",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  3,
+					LocationID: 3,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	container := mockdb.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, &cases[0].expectedData[0], &cases[0].expectedData[1]); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
 		t.Error(err)
 	}
 

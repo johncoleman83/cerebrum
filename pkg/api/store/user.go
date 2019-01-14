@@ -86,15 +86,13 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 	var users []cerebrum.User
 	// Inner Join users with Role
 	if qp != nil {
-		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Where(qp.Query, qp.ID).Order("lastname asc").Error; gorm.IsRecordNotFoundError(err) {
-			return users, ErrRecordNotFound
-		} else if err != nil {
+		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Where(qp.Query, qp.ID).Find(&users).Order("lastname asc").Error; err != nil {
+			log.Panicln(fmt.Sprintf("db connection error %v", err))
 			return users, err
 		}
 	} else {
-		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc").Error; gorm.IsRecordNotFoundError(err) {
-			return users, ErrRecordNotFound
-		} else if err != nil {
+		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc").Error; err != nil {
+			log.Panicln(fmt.Sprintf("db connection error %v", err))
 			return users, err
 		}
 	}

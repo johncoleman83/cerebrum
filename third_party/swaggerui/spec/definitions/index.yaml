@@ -1,17 +1,19 @@
 AccessRole:
   $ref: ./AccessRole.yaml
-HTTP:
-  $ref: ./HTTP.yaml
-Role:
-  $ref: ./Role.yaml
-User:
-  $ref: ./User.yaml
 credentials:
   $ref: ./credentials.yaml
+HTTP:
+  $ref: ./HTTP.yaml
 listResponse:
   $ref: ./listResponse.yaml
 pwChange:
   $ref: ./pwChange.yaml
+Register:
+  $ref: ./Register.yaml
+Role:
+  $ref: ./Role.yaml
+User:
+  $ref: ./User.yaml
 userCreate:
   $ref: ./userCreate.yaml
 userUpdate:

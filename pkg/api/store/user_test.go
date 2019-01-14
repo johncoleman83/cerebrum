@@ -171,7 +171,7 @@ func TestView(t *testing.T) {
 		expectedData *cerebrum.User
 	}{
 		{
-			name:        "User should not not exist and not return error",
+			name:        "User should not not exist and return a 404 not found error",
 			expectedErr: true,
 			id:          1000,
 		},
@@ -208,9 +208,10 @@ func TestView(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			user, err := udb.View(db, tt.id)
-			fmt.Println(err)
-			fmt.Println(tt.expectedErr)
 			assert.Equal(t, tt.expectedErr, err != nil)
+			if tt.expectedErr == true {
+				assert.Equal(t, "code=404, message=user not found", err.Error(), "error should be `code=404, message=user not found`")
+			}
 			if tt.expectedData != nil {
 				if user == nil {
 					t.Errorf("response was nil due to: %v", err)
@@ -601,7 +602,7 @@ func TestDelete(t *testing.T) {
 			emptyUser := new(cerebrum.User)
 			assert.Equal(t, true, err != nil, "there should be an error when accessing deleted records")
 			if err != nil {
-				assert.Equal(t, "record not found", err.Error(), "error should be `record not found`")
+				assert.Equal(t, "code=404, message=user not found", err.Error(), "error should be `code=404, message=user not found`")
 			}
 			assert.Equal(t, emptyUser, userAfter, "the response to find deleted user should be empty user")
 

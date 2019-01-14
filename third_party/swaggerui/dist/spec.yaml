@@ -17,10 +17,82 @@ definitions:
     format: uint64
     type: integer
     x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+  credentials:
+    properties:
+      password:
+        type: string
+        x-go-name: Password
+      username:
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/auth/transport
   HTTP:
     description: HTTP represents password http transport service
     type: object
     x-go-package: github.com/johncoleman83/cerebrum/pkg/api/password/transport
+  listResponse:
+    properties:
+      page:
+        format: int64
+        type: integer
+        x-go-name: Page
+      users:
+        items:
+          $ref: '#/definitions/User'
+        type: array
+        x-go-name: Users
+    type: object
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport
+  pwChange:
+    description: Password change request
+    properties:
+      new_password:
+        type: string
+        x-go-name: NewPassword
+      new_password_confirm:
+        type: string
+        x-go-name: NewPasswordConfirm
+      old_password:
+        type: string
+        x-go-name: OldPassword
+    type: object
+    x-go-name: changeReq
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/password/transport
+  Register:
+    description: User represents user domain model
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      first_name:
+        type: string
+        x-go-name: FirstName
+      last_name:
+        type: string
+        x-go-name: LastName
+      username:
+        type: string
+        x-go-name: Username
+      password:
+        type: string
+        x-go-name: Password
+      password_confirm:
+        type: string
+        x-go-name: PasswordConfirm
+      company_id:
+        format: uint64
+        type: integer
+        x-go-name: CompanyID
+      location_id:
+        format: uint64
+        type: integer
+        x-go-name: LocationID
+      role_id:
+        x-go-name: RoleID
+        $ref: '#/definitions/AccessRole'
+    type: object
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport
   Role:
     description: Role model
     properties:
@@ -92,44 +164,6 @@ definitions:
         x-go-name: Username
     type: object
     x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
-  credentials:
-    properties:
-      password:
-        type: string
-        x-go-name: Password
-      username:
-        type: string
-        x-go-name: Username
-    type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/auth/transport
-  listResponse:
-    properties:
-      page:
-        format: int64
-        type: integer
-        x-go-name: Page
-      users:
-        items:
-          $ref: '#/definitions/User'
-        type: array
-        x-go-name: Users
-    type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport
-  pwChange:
-    description: Password change request
-    properties:
-      new_password:
-        type: string
-        x-go-name: NewPassword
-      new_password_confirm:
-        type: string
-        x-go-name: NewPasswordConfirm
-      old_password:
-        type: string
-        x-go-name: OldPassword
-    type: object
-    x-go-name: changeReq
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/api/password/transport
   userCreate:
     description: User create request
     properties:
@@ -319,6 +353,16 @@ paths:
       tags:
         - users
     post:
+      description: >-
+        Creates a new user -> first name, last name, email, username, password,
+        password confirm, company id, location id, role id.
+      parameters:
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/Register'
       operationId: userCreate
       responses:
         '200':

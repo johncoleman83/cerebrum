@@ -16,7 +16,8 @@ import (
 
 // Custom errors
 var (
-	ErrAlreadyExists = echo.NewHTTPError(http.StatusInternalServerError, "Username or email already exists.")
+	ErrAlreadyExists  = echo.NewHTTPError(http.StatusBadRequest, "username or email already exists")
+	ErrRecordNotFound = echo.NewHTTPError(http.StatusNotFound, "user not found")
 )
 
 // User represents the client for user table
@@ -33,8 +34,10 @@ func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
 	if err := db.Where(
 		"lower(username) = ? or lower(email) = ?",
 		strings.ToLower(user.Username),
-		strings.ToLower(user.Email)).First(&checkUser).Error; !gorm.IsRecordNotFoundError(err) {
+		strings.ToLower(user.Email)).First(&checkUser).Error; err == nil {
 		return nil, ErrAlreadyExists
+	} else if !gorm.IsRecordNotFoundError(err) {
+		return nil, err
 	}
 	if err := db.Create(&user).Error; err != nil {
 		return nil, err
@@ -46,7 +49,7 @@ func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
 func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 	var user = new(cerebrum.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
-		return user, err
+		return user, ErrRecordNotFound
 	} else if err != nil {
 		log.Panicln(fmt.Sprintf("db connection error %v", err))
 		return user, err
@@ -58,7 +61,7 @@ func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 func (u *User) FindByUsername(db *gorm.DB, uname string) (*cerebrum.User, error) {
 	var user = new(cerebrum.User)
 	if err := db.Set("gorm:auto_preload", true).Where("username = ?", uname).First(&user).Error; gorm.IsRecordNotFoundError(err) {
-		return user, err
+		return user, ErrRecordNotFound
 	} else if err != nil {
 		log.Panicln(fmt.Sprintf("db connection error %v", err))
 		return user, err
@@ -70,7 +73,7 @@ func (u *User) FindByUsername(db *gorm.DB, uname string) (*cerebrum.User, error)
 func (u *User) FindByToken(db *gorm.DB, token string) (*cerebrum.User, error) {
 	var user = new(cerebrum.User)
 	if err := db.Set("gorm:auto_preload", true).Where("token = ?", token).First(&user).Error; gorm.IsRecordNotFoundError(err) {
-		return user, err
+		return user, ErrRecordNotFound
 	} else if err != nil {
 		log.Panicln(fmt.Sprintf("db connection error %v", err))
 		return user, err
@@ -83,11 +86,17 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 	var users []cerebrum.User
 	// Inner Join users with Role
 	if qp != nil {
-		db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Where(qp.Query, qp.ID).Order("lastname asc")
+		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Where(qp.Query, qp.ID).Find(&users).Order("lastname asc").Error; err != nil {
+			log.Panicln(fmt.Sprintf("db connection error %v", err))
+			return users, err
+		}
 	} else {
-		db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc")
+		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Find(&users).Order("lastname asc").Error; err != nil {
+			log.Panicln(fmt.Sprintf("db connection error %v", err))
+			return users, err
+		}
 	}
-	return users, db.Error
+	return users, nil
 }
 
 // Update updates user's info

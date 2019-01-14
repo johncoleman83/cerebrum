@@ -1,6 +1,6 @@
-// Package bootstrap is used to bootstrap a DB for
+// Package main is used to bootstrap a DB for
 // work in a development environment
-package bootstrap
+package main
 
 import (
 	"fmt"
@@ -17,8 +17,8 @@ import (
 )
 
 // buildQueries creates some SQL queries into a string slice
-func buildQueries() [7]string {
-	return [7]string{
+func buildQueries() []string {
+	return []string{
 		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
 		"INSERT INTO locations VALUES (1, now(), now(), NULL, 'admin_location', true, 'admin_address', 1);",
 		"INSERT INTO roles VALUES (100, 100, 'SUPER_ADMIN');",
@@ -46,7 +46,7 @@ func main() {
 
 	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
 
-	for _, v := range queries[0 : len(queries)-1] {
+	for _, v := range queries[0:len(queries)] {
 		db.Exec(v)
 	}
 

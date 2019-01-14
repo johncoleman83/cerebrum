@@ -20,6 +20,15 @@ const (
 	UserRole AccessRole = 200
 )
 
+// ValidRoles contains all valid rols
+var ValidRoles = map[AccessRole]bool{
+	SuperAdminRole:    true,
+	AdminRole:         true,
+	CompanyAdminRole:  true,
+	LocationAdminRole: true,
+	UserRole:          true,
+}
+
 // Role model
 type Role struct {
 	ID          AccessRole `json:"id" gorm:"foreignkey:RoleID;association_foreignkey:ID;"`

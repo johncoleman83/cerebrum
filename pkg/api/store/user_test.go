@@ -171,7 +171,7 @@ func TestView(t *testing.T) {
 		expectedData *cerebrum.User
 	}{
 		{
-			name:        "User should not not exist and not return error",
+			name:        "User should not not exist and return a 404 not found error",
 			expectedErr: true,
 			id:          1000,
 		},
@@ -208,9 +208,10 @@ func TestView(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			user, err := udb.View(db, tt.id)
-			fmt.Println(err)
-			fmt.Println(tt.expectedErr)
 			assert.Equal(t, tt.expectedErr, err != nil)
+			if tt.expectedErr == true {
+				assert.Equal(t, "code=404, message=user not found", err.Error(), "error should be `code=404, message=user not found`")
+			}
 			if tt.expectedData != nil {
 				if user == nil {
 					t.Errorf("response was nil due to: %v", err)
@@ -356,7 +357,6 @@ func TestFindByToken(t *testing.T) {
 	}
 }
 
-// TODO fix these List tests
 func TestList(t *testing.T) {
 	cases := []struct {
 		name         string
@@ -440,12 +440,83 @@ func TestList(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:        "Success, should return empty list if the query searches for non-existing id",
+			expectedErr: false,
+			pg: &cerebrum.Pagination{
+				Limit:  100,
+				Offset: 0,
+			},
+			qp: &cerebrum.ListQuery{
+				ID:    99,
+				Query: "company_id = ?",
+			},
+			expectedData: []cerebrum.User{},
+		},
+		{
+			name:        "Success, should return all 3 records if no query is made",
+			expectedErr: false,
+			pg: &cerebrum.Pagination{
+				Limit:  100,
+				Offset: 0,
+			},
+			qp: nil,
+			expectedData: []cerebrum.User{
+				{
+					Email:      "tomjones@mail.com",
+					FirstName:  "Tom",
+					LastName:   "Jones",
+					Username:   "tomjones",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "newPass",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 1,
+						},
+					},
+				},
+				{
+					Email:      "johnzone@mail.com",
+					FirstName:  "John",
+					LastName:   "Zone",
+					Username:   "johnzone",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  1,
+					LocationID: 1,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+				},
+				{
+					Email:      "sarahsmith@mail.com",
+					FirstName:  "Sarah",
+					LastName:   "Smith",
+					Username:   "sarahsmith",
+					RoleID:     cerebrum.AccessRole(100),
+					CompanyID:  3,
+					LocationID: 3,
+					Password:   "hunter2",
+					Token:      "loginrefresh",
+					Base: cerebrum.Base{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	container := mockdb.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, &cases[0].expectedData[0], &cases[0].expectedData[1]); err != nil {
+	if err := mockdb.InsertMultiple(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
 		t.Error(err)
 	}
 
@@ -601,7 +672,7 @@ func TestDelete(t *testing.T) {
 			emptyUser := new(cerebrum.User)
 			assert.Equal(t, true, err != nil, "there should be an error when accessing deleted records")
 			if err != nil {
-				assert.Equal(t, "record not found", err.Error(), "error should be `record not found`")
+				assert.Equal(t, "code=404, message=user not found", err.Error(), "error should be `code=404, message=user not found`")
 			}
 			assert.Equal(t, emptyUser, userAfter, "the response to find deleted user should be empty user")
 

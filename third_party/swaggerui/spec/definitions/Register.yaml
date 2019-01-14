@@ -1,0 +1,33 @@
+description: User represents user domain model
+properties:
+  email:
+    type: string
+    x-go-name: Email
+  first_name:
+    type: string
+    x-go-name: FirstName
+  last_name:
+    type: string
+    x-go-name: LastName
+  username:
+    type: string
+    x-go-name: Username
+  password:
+    type: string
+    x-go-name: Password
+  password_confirm:
+    type: string
+    x-go-name: PasswordConfirm
+  company_id:
+    format: uint64
+    type: integer
+    x-go-name: CompanyID
+  location_id:
+    format: uint64
+    type: integer
+    x-go-name: LocationID
+  role_id:
+    x-go-name: RoleID
+    $ref: '#/definitions/AccessRole'
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport

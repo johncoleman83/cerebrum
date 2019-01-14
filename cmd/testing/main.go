@@ -1,6 +1,6 @@
-// Package testing is used only to execute golang commands
+// Package main is used only to execute golang commands
 // for test uses, it is like a go playground
-package testing
+package main
 
 import (
 	"fmt"

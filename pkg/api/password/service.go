@@ -13,14 +13,6 @@ type Service interface {
 	Change(echo.Context, uint, string, string) error
 }
 
-// Password represents password application service
-type Password struct {
-	db   *gorm.DB
-	udb  UserDB
-	rbac RBAC
-	sec  Securer
-}
-
 // UserDB represents user repository interface
 type UserDB interface {
 	View(*gorm.DB, uint) (*cerebrum.User, error)
@@ -37,6 +29,14 @@ type Securer interface {
 // RBAC represents role-based-access-control interface
 type RBAC interface {
 	EnforceUser(echo.Context, uint) error
+}
+
+// Password represents password application service
+type Password struct {
+	db   *gorm.DB
+	udb  UserDB
+	rbac RBAC
+	sec  Securer
 }
 
 // New creates new password application service

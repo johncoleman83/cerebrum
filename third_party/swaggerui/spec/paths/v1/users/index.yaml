@@ -27,6 +27,15 @@ get:
   tags:
   - users
 post:
+  description: Creates a new user -> first name, last name, email, username,
+    password, password confirm, company id, location id, role id.
+  parameters:
+  - description: Request body
+    in: body
+    name: request
+    required: true
+    schema:
+      $ref: '#/definitions/Register'
   operationId: userCreate
   responses:
     "200":

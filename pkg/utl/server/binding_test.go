@@ -36,8 +36,8 @@ func TestBind(t *testing.T) {
 		},
 		{
 			name:         "Success",
-			req:          `{"name":"John"}`,
-			expectedData: &Req{Name: "John"},
+			req:          `{"name":"IShouldBind"}`,
+			expectedData: &Req{Name: "IShouldBind"},
 		},
 	}
 	b := server.NewBinder()

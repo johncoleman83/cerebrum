@@ -11,6 +11,11 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Custom errors
+var (
+	ErrPasswordsNotMaching = echo.NewHTTPError(http.StatusBadRequest, "passwords do not match")
+)
+
 // HTTP represents password http transport service
 type HTTP struct {
 	svc password.Service
@@ -23,11 +28,6 @@ func NewHTTP(svc password.Service, er *echo.Group) {
 
 	pr.PATCH("/:id", h.change)
 }
-
-// Custom errors
-var (
-	ErrPasswordsNotMaching = echo.NewHTTPError(http.StatusBadRequest, "passwords do not match")
-)
 
 // changeReq type for password change request
 type changeReq struct {

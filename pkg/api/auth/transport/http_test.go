@@ -16,7 +16,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/auth/transport"
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 )
@@ -27,7 +27,7 @@ func TestLogin(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *cerebrum.AuthToken
-		udb            *mockdb.User
+		udb            *mockstore.User
 		jwt            *mock.JWT
 		sec            *mock.Secure
 	}{
@@ -40,7 +40,7 @@ func TestLogin(t *testing.T) {
 			name:           "Fail on FindByUsername",
 			req:            `{"username":"juzernejm","password":"hunter123"}`,
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
@@ -50,7 +50,7 @@ func TestLogin(t *testing.T) {
 			name:           "Success",
 			req:            `{"username":"juzernejm","password":"hunter123"}`,
 			expectedStatus: http.StatusOK,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "hunter123",
@@ -109,14 +109,14 @@ func TestRefresh(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *cerebrum.RefreshToken
-		udb            *mockdb.User
+		udb            *mockstore.User
 		jwt            *mock.JWT
 	}{
 		{
 			name:           "Fail on FindByToken",
 			req:            "refreshtoken",
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
@@ -126,10 +126,10 @@ func TestRefresh(t *testing.T) {
 			name:           "Success",
 			req:            "refreshtoken",
 			expectedStatus: http.StatusOK,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
-						Username: "johndoe",
+						Username: "bugsbunny",
 						Active:   true,
 					}, nil
 				},
@@ -173,13 +173,13 @@ func TestMe(t *testing.T) {
 		expectedStatus int
 		expectedResp   *cerebrum.User
 		header         string
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 	}{
 		{
 			name:           "Fail on user view",
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(*gorm.DB, uint) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
@@ -194,7 +194,7 @@ func TestMe(t *testing.T) {
 		{
 			name:           "Success",
 			expectedStatus: http.StatusOK,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
@@ -204,9 +204,9 @@ func TestMe(t *testing.T) {
 						},
 						CompanyID:  2,
 						LocationID: 3,
-						Email:      "john@mail.com",
-						FirstName:  "John",
-						LastName:   "Doe",
+						Email:      "bugs@mail.com",
+						FirstName:  "Bugs",
+						LastName:   "Bunny",
 					}, nil
 				},
 			},
@@ -224,9 +224,9 @@ func TestMe(t *testing.T) {
 				},
 				CompanyID:  2,
 				LocationID: 3,
-				Email:      "john@mail.com",
-				FirstName:  "John",
-				LastName:   "Doe",
+				Email:      "bugs@mail.com",
+				FirstName:  "Bugs",
+				LastName:   "Bunny",
 			},
 		},
 	}

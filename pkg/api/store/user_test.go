@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
@@ -33,10 +33,10 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate ID",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "tomjones",
+				Email:      "newname@mail.com",
+				FirstName:  "New",
+				LastName:   "Name",
+				Username:   "newname",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -52,10 +52,10 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate email but new id",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:      "johndoe@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "asdf",
+				Email:      "alreadyused@mail.com",
+				FirstName:  "Never",
+				LastName:   "Used",
+				Username:   "neverused",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -71,10 +71,10 @@ func TestCreate(t *testing.T) {
 			name:        "Fail on insert duplicate username but new id",
 			expectedErr: true,
 			req: cerebrum.User{
-				Email:      "asdf@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "johndoe",
+				Email:      "brandnewmail@mail.com",
+				FirstName:  "BrandNew",
+				LastName:   "Name",
+				Username:   "alreadyused",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -90,10 +90,10 @@ func TestCreate(t *testing.T) {
 			name:        "Success",
 			expectedErr: false,
 			req: cerebrum.User{
-				Email:      "newtomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "newtomjones",
+				Email:      "successfullyNew@mail.com",
+				FirstName:  "Succeeding",
+				LastName:   "Always",
+				Username:   "successfullyNew",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -105,10 +105,10 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			expectedData: &cerebrum.User{
-				Email:      "newtomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "newtomjones",
+				Email:      "successfullyNew@mail.com",
+				FirstName:  "Succeeding",
+				LastName:   "Always",
+				Username:   "successfullyNew",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -122,19 +122,19 @@ func TestCreate(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
 	duplicateUser := &cerebrum.User{
-		Email:    "johndoe@mail.com",
-		Username: "johndoe",
+		Email:    "alreadyused@mail.com",
+		Username: "alreadyused",
 		Base: cerebrum.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
 	}
-	if err := mockdb.InsertMultiple(db, superAdmin, duplicateUser); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, duplicateUser); err != nil {
 		t.Error(err)
 	}
 
@@ -180,10 +180,10 @@ func TestView(t *testing.T) {
 			id:          2,
 			expectedErr: false,
 			expectedData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Tom",
-				LastName:   "Jones",
-				Username:   "tomjones",
+				Email:      "MrRogers@mail.com",
+				FirstName:  "Mr",
+				LastName:   "Rogers",
+				Username:   "MrRogers",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -196,10 +196,10 @@ func TestView(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -246,12 +246,12 @@ func TestFindByUsername(t *testing.T) {
 		},
 		{
 			name:     "Success",
-			username: "tomjones",
+			username: "indianajones",
 			expectedData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Tom",
+				Email:      "indianajones@mail.com",
+				FirstName:  "Indiana",
 				LastName:   "Jones",
-				Username:   "tomjones",
+				Username:   "indianajones",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -263,10 +263,10 @@ func TestFindByUsername(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -310,10 +310,10 @@ func TestFindByToken(t *testing.T) {
 			name:  "Success",
 			token: "loginrefresh",
 			expectedData: &cerebrum.User{
-				Email:      "johndoe@mail.com",
-				FirstName:  "John",
-				LastName:   "Doe",
-				Username:   "johndoe",
+				Email:      "CharlieDarwin@mail.com",
+				FirstName:  "Charles",
+				LastName:   "Darwin",
+				Username:   "CharlieDarwin",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
@@ -326,10 +326,10 @@ func TestFindByToken(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -378,10 +378,10 @@ func TestList(t *testing.T) {
 			},
 			expectedData: []cerebrum.User{
 				{
-					Email:      "tomjones@mail.com",
-					FirstName:  "Tom",
-					LastName:   "Jones",
-					Username:   "tomjones",
+					Email:      "ElizabethSmart@mail.com",
+					FirstName:  "Elizabeth",
+					LastName:   "Smart",
+					Username:   "ElizabethSmart",
 					RoleID:     cerebrum.AccessRole(100),
 					CompanyID:  1,
 					LocationID: 1,
@@ -393,10 +393,10 @@ func TestList(t *testing.T) {
 					},
 				},
 				{
-					Email:      "johnzone@mail.com",
-					FirstName:  "John",
-					LastName:   "Zone",
-					Username:   "johnzone",
+					Email:      "amandacena@mail.com",
+					FirstName:  "Amanda",
+					LastName:   "Cena",
+					Username:   "amandacena",
 					RoleID:     cerebrum.AccessRole(100),
 					CompanyID:  1,
 					LocationID: 1,
@@ -423,10 +423,10 @@ func TestList(t *testing.T) {
 			},
 			expectedData: []cerebrum.User{
 				{
-					Email:      "johnzone@mail.com",
-					FirstName:  "John",
-					LastName:   "Zone",
-					Username:   "johnzone",
+					Email:      "amandacena@mail.com",
+					FirstName:  "Amanda",
+					LastName:   "Cena",
+					Username:   "amandacena",
 					RoleID:     cerebrum.AccessRole(100),
 					CompanyID:  1,
 					LocationID: 1,
@@ -463,10 +463,10 @@ func TestList(t *testing.T) {
 			qp: nil,
 			expectedData: []cerebrum.User{
 				{
-					Email:      "tomjones@mail.com",
-					FirstName:  "Tom",
-					LastName:   "Jones",
-					Username:   "tomjones",
+					Email:      "ElizabethSmart@mail.com",
+					FirstName:  "Elizabeth",
+					LastName:   "Smart",
+					Username:   "ElizabethSmart",
 					RoleID:     cerebrum.AccessRole(100),
 					CompanyID:  1,
 					LocationID: 1,
@@ -478,10 +478,10 @@ func TestList(t *testing.T) {
 					},
 				},
 				{
-					Email:      "johnzone@mail.com",
-					FirstName:  "John",
-					LastName:   "Zone",
-					Username:   "johnzone",
+					Email:      "amandacena@mail.com",
+					FirstName:  "Amanda",
+					LastName:   "Cena",
+					Username:   "amandacena",
 					RoleID:     cerebrum.AccessRole(100),
 					CompanyID:  1,
 					LocationID: 1,
@@ -513,10 +513,10 @@ func TestList(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
 		t.Error(err)
 	}
 
@@ -559,23 +559,24 @@ func TestUpdate(t *testing.T) {
 						ID: 2,
 					},
 				},
-				FirstName: "Z",
-				LastName:  "Freak",
-				Address:   "Address",
+				Email:     "iamold@village.com",
+				FirstName: "OldName",
+				LastName:  "Antiques",
+				Address:   "1908 VintageHouse",
 				Phone:     "123456",
 				Mobile:    "345678",
-				Username:  "newUsername",
+				Username:  "OldSchool",
 			},
 			expectedData: &cerebrum.User{
-				Email:      "tomjones@mail.com",
-				FirstName:  "Z",
-				LastName:   "Freak",
-				Username:   "tomjones",
+				Email:      "refresh@mail.com",
+				FirstName:  "Cool",
+				LastName:   "Hip",
+				Username:   "offthehook",
 				RoleID:     cerebrum.AccessRole(100),
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Address:    "Address",
+				Address:    "2020 forme",
 				Phone:      "123456",
 				Mobile:     "345678",
 				Base: cerebrum.Base{
@@ -585,10 +586,10 @@ func TestUpdate(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, cases[0].usr); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, cases[0].usr); err != nil {
 		t.Error(err)
 	}
 
@@ -648,10 +649,10 @@ func TestDelete(t *testing.T) {
 		},
 	}
 
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, pool, resource := container.DB, container.Pool, container.Resource
 
-	if err := mockdb.InsertMultiple(db, superAdmin, cases[0].expectedData); err != nil {
+	if err := mockstore.InsertMultiple(db, superAdmin, cases[0].expectedData); err != nil {
 		t.Error(err)
 	}
 

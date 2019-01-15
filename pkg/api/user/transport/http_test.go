@@ -13,7 +13,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/user/transport"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
 	"github.com/jinzhu/gorm"
@@ -27,32 +27,32 @@ func TestCreate(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *cerebrum.User
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
 		{
 			name:           "Fail on bad params",
-			req:            `{"firstname":"John","lastname":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
-			expectedStatus: 400,
+			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation with short username",
-			req:            `{"first_name":"John","last_name":"Doe","username":"ss","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
+			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation of email",
-			req:            `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe$gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		}, {
 			name:           "Fail on non-matching passwords",
-			req:            `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter1234","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"John","last_name":"Doe","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
+			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return echo.ErrForbidden
@@ -62,7 +62,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "Fail on RBAC",
-			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return echo.ErrForbidden
@@ -73,13 +73,13 @@ func TestCreate(t *testing.T) {
 
 		{
 			name: "Success",
-			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
 					return nil
 				},
 			},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				CreateFn: func(db *gorm.DB, usr cerebrum.User) (*cerebrum.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
@@ -100,10 +100,10 @@ func TestCreate(t *testing.T) {
 						UpdatedAt: mock.TestTime(2018),
 					},
 				},
-				FirstName:  "John",
-				LastName:   "Doe",
-				Username:   "juzernejm",
-				Email:      "johndoe@gmail.com",
+				FirstName:  "Edwin",
+				LastName:   "Abbott",
+				Username:   "edwinabbott",
+				Email:      "edwinabbott@gmail.com",
 				CompanyID:  1,
 				LocationID: 2,
 			},
@@ -146,7 +146,7 @@ func TestList(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *listResponse
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -165,7 +165,7 @@ func TestList(t *testing.T) {
 						CompanyID:  2,
 						LocationID: 3,
 						Role:       cerebrum.UserRole,
-						Email:      "john@mail.com",
+						Email:      "barnabus@mail.com",
 					}
 				}},
 			expectedStatus: http.StatusForbidden,
@@ -180,10 +180,10 @@ func TestList(t *testing.T) {
 						CompanyID:  2,
 						LocationID: 3,
 						Role:       cerebrum.SuperAdminRole,
-						Email:      "john@mail.com",
+						Email:      "pingpong@mail.com",
 					}
 				}},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ListFn: func(db *gorm.DB, q *cerebrum.ListQuery, p *cerebrum.Pagination) ([]cerebrum.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
 						return []cerebrum.User{
@@ -195,9 +195,9 @@ func TestList(t *testing.T) {
 										UpdatedAt: mock.TestTime(2002),
 									},
 								},
-								FirstName:  "John",
-								LastName:   "Doe",
-								Email:      "john@mail.com",
+								FirstName:  "ilove",
+								LastName:   "futbol",
+								Email:      "futbol@mail.com",
 								CompanyID:  2,
 								LocationID: 3,
 								Role: cerebrum.Role{
@@ -241,9 +241,9 @@ func TestList(t *testing.T) {
 								UpdatedAt: mock.TestTime(2002),
 							},
 						},
-						FirstName:  "John",
-						LastName:   "Doe",
-						Email:      "john@mail.com",
+						FirstName:  "ilove",
+						LastName:   "futbol",
+						Email:      "futbol@mail.com",
 						CompanyID:  2,
 						LocationID: 3,
 						Role: cerebrum.Role{
@@ -306,7 +306,7 @@ func TestView(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *cerebrum.User
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -333,7 +333,7 @@ func TestView(t *testing.T) {
 					return nil
 				},
 			},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
@@ -343,9 +343,9 @@ func TestView(t *testing.T) {
 								UpdatedAt: mock.TestTime(2000),
 							},
 						},
-						FirstName: "John",
-						LastName:  "Doe",
-						Username:  "JohnDoe",
+						FirstName: "Rocinante",
+						LastName:  "deLaMancha",
+						Username:  "RocinantedeLaMancha",
 					}, nil
 				},
 			},
@@ -358,9 +358,9 @@ func TestView(t *testing.T) {
 						UpdatedAt: mock.TestTime(2000),
 					},
 				},
-				FirstName: "John",
-				LastName:  "Doe",
-				Username:  "JohnDoe",
+				FirstName: "Rocinante",
+				LastName:  "deLaMancha",
+				Username:  "RocinantedeLaMancha",
 			},
 		},
 	}
@@ -397,7 +397,7 @@ func TestUpdate(t *testing.T) {
 		id             string
 		expectedStatus int
 		expectedResp   *cerebrum.User
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -432,7 +432,7 @@ func TestUpdate(t *testing.T) {
 					return nil
 				},
 			},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
@@ -442,9 +442,9 @@ func TestUpdate(t *testing.T) {
 								UpdatedAt: mock.TestTime(2000),
 							},
 						},
-						FirstName: "John",
-						LastName:  "Doe",
-						Username:  "JohnDoe",
+						FirstName: "Nawj",
+						LastName:  "Eode",
+						Username:  "nawjeode",
 						Address:   "Work",
 						Phone:     "332223",
 					}, nil
@@ -466,7 +466,7 @@ func TestUpdate(t *testing.T) {
 				},
 				FirstName: "jj",
 				LastName:  "okocha",
-				Username:  "JohnDoe",
+				Username:  "nawjeode",
 				Phone:     "321321",
 				Address:   "home",
 				Mobile:    "991991",
@@ -508,7 +508,7 @@ func TestDelete(t *testing.T) {
 		name           string
 		id             string
 		expectedStatus int
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -520,7 +520,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Fail on RBAC",
 			id:   `1`,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Role: cerebrum.Role{
@@ -539,7 +539,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Success",
 			id:   `1`,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Role: cerebrum.Role{

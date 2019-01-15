@@ -10,7 +10,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/password/transport"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"
 
@@ -25,7 +25,7 @@ func TestChangePassword(t *testing.T) {
 		req            string
 		expectedStatus int
 		id             string
-		udb            *mockdb.User
+		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -66,7 +66,7 @@ func TestChangePassword(t *testing.T) {
 				},
 			},
 			id: "1",
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "oldPassword",

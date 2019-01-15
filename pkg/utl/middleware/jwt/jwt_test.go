@@ -92,8 +92,8 @@ func TestGenerateToken(t *testing.T) {
 				Base: cerebrum.Base{Model: gorm.Model{
 					ID: 1,
 				}},
-				Username: "johndoe",
-				Email:    "johndoe@mail.com",
+				Username: "PrincessWarrior",
+				Email:    "PrincessWarrior@mail.com",
 				Role: cerebrum.Role{
 					AccessLevel: cerebrum.SuperAdminRole,
 				},

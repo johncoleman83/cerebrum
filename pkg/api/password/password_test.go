@@ -9,7 +9,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
@@ -23,7 +23,7 @@ func TestChange(t *testing.T) {
 		name        string
 		args        args
 		expectedErr bool
-		udb         *mockdb.User
+		udb         *mockstore.User
 		rbac        *mock.RBAC
 		sec         *mock.Secure
 	}{
@@ -44,7 +44,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					if id != 1 {
 						return nil, nil
@@ -61,7 +61,7 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "HashedPassword",
@@ -82,7 +82,7 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "HashedPassword",
@@ -105,7 +105,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",

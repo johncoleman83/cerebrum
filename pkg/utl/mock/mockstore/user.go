@@ -1,4 +1,4 @@
-package mockdb
+package mockstore
 
 import (
 	"github.com/jinzhu/gorm"

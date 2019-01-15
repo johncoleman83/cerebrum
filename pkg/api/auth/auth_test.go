@@ -10,7 +10,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 )
 
@@ -24,7 +24,7 @@ func TestAuthenticate(t *testing.T) {
 		args         args
 		expectedData *cerebrum.AuthToken
 		expectedErr  bool
-		udb          *mockdb.User
+		udb          *mockstore.User
 		jwt          *mock.JWT
 		sec          *mock.Secure
 	}{
@@ -32,7 +32,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on finding user",
 			args:        args{user: "juzernejm"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
@@ -42,7 +42,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on wrong password",
 			args:        args{user: "juzernejm", pass: "notHashedPassword"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
@@ -59,7 +59,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Inactive user",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
@@ -78,7 +78,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on token generation",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
@@ -102,7 +102,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on updating last login",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
@@ -131,7 +131,7 @@ func TestAuthenticate(t *testing.T) {
 		{
 			name: "Success",
 			args: args{user: "juzernejm", pass: "pass"},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: user,
@@ -185,14 +185,14 @@ func TestRefresh(t *testing.T) {
 		args         args
 		expectedData *cerebrum.RefreshToken
 		expectedErr  bool
-		udb          *mockdb.User
+		udb          *mockstore.User
 		jwt          *mock.JWT
 	}{
 		{
 			name:        "Fail on finding token",
 			args:        args{token: "refreshtoken"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return nil, cerebrum.ErrGeneric
 				},
@@ -202,7 +202,7 @@ func TestRefresh(t *testing.T) {
 			name:        "Fail on token generation",
 			args:        args{token: "refreshtoken"},
 			expectedErr: true,
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "username",
@@ -221,7 +221,7 @@ func TestRefresh(t *testing.T) {
 		{
 			name: "Success",
 			args: args{token: "refreshtoken"},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				FindByTokenFn: func(db *gorm.DB, token string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "username",
@@ -256,7 +256,7 @@ func TestMe(t *testing.T) {
 	cases := []struct {
 		name         string
 		expectedData *cerebrum.User
-		udb          *mockdb.User
+		udb          *mockstore.User
 		rbac         *mock.RBAC
 		expectedErr  bool
 	}{
@@ -267,7 +267,7 @@ func TestMe(t *testing.T) {
 					return &cerebrum.AuthUser{ID: 9}
 				},
 			},
-			udb: &mockdb.User{
+			udb: &mockstore.User{
 				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Base: cerebrum.Base{
@@ -277,8 +277,8 @@ func TestMe(t *testing.T) {
 								UpdatedAt: mock.TestTime(2000),
 							},
 						},
-						FirstName: "John",
-						LastName:  "Doe",
+						FirstName: "Blazing",
+						LastName:  "Saddles",
 						Role: cerebrum.Role{
 							AccessLevel: cerebrum.UserRole,
 						},
@@ -293,8 +293,8 @@ func TestMe(t *testing.T) {
 						UpdatedAt: mock.TestTime(2000),
 					},
 				},
-				FirstName: "John",
-				LastName:  "Doe",
+				FirstName: "Blazing",
+				LastName:  "Saddles",
 				Role: cerebrum.Role{
 					AccessLevel: cerebrum.UserRole,
 				},

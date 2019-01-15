@@ -16,6 +16,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
 )
 
+const (
+	AdminUsername = "admin"
+	AdminPassword = "admin"
+)
+
 // buildQueries creates some SQL queries into a string slice
 func buildQueries() []string {
 	return []string{
@@ -52,8 +57,8 @@ func main() {
 
 	sec := secure.New(1, nil)
 
-	userInsert := `INSERT INTO users (id, created_at, updated_at, last_password_change, last_login, first_name, last_name, username, password, email, active, role_id, company_id, location_id) VALUES (1, now(), now(), now(), now(), 'Admin', 'Admin', 'admin', '%s', 'johndoe@mail.com', true, 100, 1, 1);`
-	db.Exec(fmt.Sprintf(userInsert, sec.Hash("admin")))
+	userInsert := `INSERT INTO users (id, created_at, updated_at, last_password_change, last_login, first_name, last_name, username, password, email, active, role_id, company_id, location_id) VALUES (1, now(), now(), now(), now(), 'Rocinante', 'DeLaMancha', '%s', '%s', 'rocinante@mail.com', true, 100, 1, 1);`
+	db.Exec(fmt.Sprintf(userInsert, AdminUsername, sec.Hash(AdminPassword)))
 	fmt.Println(fmt.Sprintf("bootstrap finished with %d errors", len(db.GetErrors())))
 }
 

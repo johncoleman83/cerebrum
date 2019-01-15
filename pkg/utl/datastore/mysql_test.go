@@ -9,11 +9,11 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockdb"
+	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 )
 
 func TestNew(t *testing.T) {
-	container := mockdb.NewMySQLDockerTestContainer(t)
+	container := mockstore.NewMySQLDockerTestContainer(t)
 	db, cfg, pool, resource := container.DB, container.Configuration, container.Pool, container.Resource
 
 	dsn := datastore.FormatDSN(cfg.DB)

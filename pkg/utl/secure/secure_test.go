@@ -22,14 +22,14 @@ func TestPassword(t *testing.T) {
 		},
 		{
 			name:     "Password matches input fields",
-			pass:     "johndoe92",
-			inputs:   []string{"John", "Doe"},
+			pass:     "copycat99",
+			inputs:   []string{"Copy", "Cat"},
 			expected: false,
 		},
 		{
 			name:     "Secure password",
-			pass:     "callgophers",
-			inputs:   []string{"John", "Doe"},
+			pass:     "averysecretlockbox",
+			inputs:   []string{"Donna", "Lively"},
 			expected: true,
 		},
 	}
@@ -50,7 +50,7 @@ func TestHashAndMatch(t *testing.T) {
 	}{
 		{
 			name:     "Success",
-			pass:     "gamepad",
+			pass:     "grimleygamepad",
 			expected: true,
 		},
 	}

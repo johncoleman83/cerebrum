@@ -26,6 +26,7 @@ deps:
 	@echo 'npm 6.5.0'
 	@echo 'multi-file-swagger: https://github.com/mohsen1/multi-file-swagger-example'
 	@echo 'golang/dep: https://github.com/golang/dep'
+	go get -t -v ./...
 
 .PHONY: setup # a "one click" type start from scratch to refresh the db bootstrap & serve the application
 setup: deps refresh serve

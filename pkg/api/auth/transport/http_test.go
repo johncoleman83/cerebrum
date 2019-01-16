@@ -54,7 +54,6 @@ func TestLogin(t *testing.T) {
 				FindByUsernameFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Password: "hunter123",
-						Active:   true,
 					}, nil
 				},
 				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
@@ -130,7 +129,6 @@ func TestRefresh(t *testing.T) {
 				FindByTokenFn: func(*gorm.DB, string) (*cerebrum.User, error) {
 					return &cerebrum.User{
 						Username: "bugsbunny",
-						Active:   true,
 					}, nil
 				},
 			},

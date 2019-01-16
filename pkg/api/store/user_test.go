@@ -606,14 +606,12 @@ func TestUpdate(t *testing.T) {
 			tt.expectedData.LastPasswordChange = user.LastPasswordChange
 			err := udb.Update(db, tt.expectedData)
 			assert.Equal(t, tt.expectedErr, err != nil)
-			if tt.expectedData != nil {
-				user = &cerebrum.User{}
-				if err := db.First(user, tt.usr.ID).Error; err != nil {
-					t.Error(err)
-				}
-				tt.expectedData.UpdatedAt = user.UpdatedAt
-				assert.Equal(t, tt.expectedData, user)
+			user = &cerebrum.User{}
+			if err := db.First(user, tt.usr.ID).Error; err != nil {
+				t.Error(err)
 			}
+			tt.expectedData.UpdatedAt = user.UpdatedAt
+			assert.Equal(t, tt.expectedData, user)
 		})
 	}
 	db.Close()
@@ -680,7 +678,7 @@ func TestDelete(t *testing.T) {
 			if err := db.Unscoped().Where("id = ?", tt.id).First(&emptyUser).Error; err != nil {
 				assert.Nil(t, err, fmt.Sprintf("user should exist in db store and should be accessible with db.Unscopped(), error: %v", err))
 			}
-			assert.NotNil(t, emptyUser.DeletedAt, "the user should be have a time set for deleted_at at the same time as when the user was deleted")
+			assert.NotNil(t, emptyUser.DeletedAt, "the user should have a time set for deleted_at at the same time as when the user was deleted")
 		})
 	}
 	db.Close()

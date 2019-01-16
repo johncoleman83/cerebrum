@@ -1,6 +1,8 @@
 package user
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo"
 
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
@@ -8,10 +10,18 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/structs"
 )
 
+// Custom errors
+var (
+	ErrInsecurePassword = echo.NewHTTPError(http.StatusBadRequest, "insecure password")
+)
+
 // Create creates a new user account
 func (u *User) Create(c echo.Context, req cerebrum.User) (*cerebrum.User, error) {
 	if err := u.rbac.AccountCreate(c, req.RoleID, req.CompanyID, req.LocationID); err != nil {
 		return nil, err
+	}
+	if ok := u.sec.Password(req.Password, req.FirstName, req.LastName, req.Username, req.Email); !ok {
+		return nil, ErrInsecurePassword
 	}
 	req.Password = u.sec.Hash(req.Password)
 	return u.udb.Create(u.db, req)

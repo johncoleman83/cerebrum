@@ -56,25 +56,6 @@ func TestAuthenticate(t *testing.T) {
 			},
 		},
 		{
-			name:        "Inactive user",
-			args:        args{user: "juzernejm", pass: "pass"},
-			expectedErr: true,
-			udb: &mockstore.User{
-				FindByUsernameFn: func(db *gorm.DB, user string) (*cerebrum.User, error) {
-					return &cerebrum.User{
-						Username: user,
-						Password: "pass",
-						Active:   false,
-					}, nil
-				},
-			},
-			sec: &mock.Secure{
-				HashMatchesPasswordFn: func(string, string) bool {
-					return true
-				},
-			},
-		},
-		{
 			name:        "Fail on token generation",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
@@ -83,7 +64,6 @@ func TestAuthenticate(t *testing.T) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "pass",
-						Active:   true,
 					}, nil
 				},
 			},
@@ -107,7 +87,6 @@ func TestAuthenticate(t *testing.T) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "pass",
-						Active:   true,
 					}, nil
 				},
 				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
@@ -136,7 +115,6 @@ func TestAuthenticate(t *testing.T) {
 					return &cerebrum.User{
 						Username: user,
 						Password: "password",
-						Active:   true,
 					}, nil
 				},
 				UpdateFn: func(db *gorm.DB, u *cerebrum.User) error {
@@ -207,7 +185,6 @@ func TestRefresh(t *testing.T) {
 					return &cerebrum.User{
 						Username: "username",
 						Password: "password",
-						Active:   true,
 						Token:    token,
 					}, nil
 				},
@@ -226,7 +203,6 @@ func TestRefresh(t *testing.T) {
 					return &cerebrum.User{
 						Username: "username",
 						Password: "password",
-						Active:   true,
 						Token:    token,
 					}, nil
 				},

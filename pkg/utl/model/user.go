@@ -25,10 +25,8 @@ type User struct {
 
 	Token string `json:"-"`
 
-	LastLogin          time.Time `json:"last_login,omitempty"`
-	LastPasswordChange time.Time `json:"last_password_change,omitempty"`
-
-	Active bool `json:"active"`
+	LastLogin          time.Time `json:"last_login,omitempty" gorm:"default:CURRENT_TIMESTAMP"`
+	LastPasswordChange time.Time `json:"last_password_change,omitempty" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 // AuthUser represents data stored in JWT token for user
@@ -39,14 +37,6 @@ type AuthUser struct {
 	Username   string
 	Email      string
 	Role       AccessRole
-}
-
-// BeforeCreate hooks into insert operations, setting createdAt and updatedAt to current time
-func (u *User) BeforeCreate() error {
-	now := time.Now()
-	u.LastLogin = now
-	u.LastPasswordChange = now
-	return nil
 }
 
 // ChangePassword updates user's password related fields

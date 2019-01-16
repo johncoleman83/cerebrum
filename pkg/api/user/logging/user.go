@@ -27,13 +27,14 @@ func New(svc user.Service, logger cerebrum.Logger) *LogService {
 
 // Create logging
 func (ls *LogService) Create(c echo.Context, req cerebrum.User) (resp *cerebrum.User, err error) {
-	req.Password = "xxx-redacted-xxx"
+	dupe := req
+	dupe.Password = "xxx-redacted-xxx"
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
 			packageName, "Create user request", err,
 			map[string]interface{}{
-				"req":  req,
+				"req":  dupe,
 				"resp": resp,
 				"took": time.Since(begin),
 			},

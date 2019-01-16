@@ -11,6 +11,7 @@ import (
 // Securer represents security interface
 type Securer interface {
 	Hash(string) string
+	Password(string, ...string) bool
 }
 
 // UDB represents user repository interface

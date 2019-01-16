@@ -22,6 +22,24 @@ const (
 	adminPassword = "zvuEFGa84598705027345SDfhlasdfasjzqGRFs"
 )
 
+func createUser(cfg *config.Configuration, sec *secure.Service, r cerebrum.AccessRole, e, f, l, u, p string) cerebrum.User {
+	user := cerebrum.User{
+		Email:      e,
+		FirstName:  f,
+		LastName:   l,
+		Username:   u,
+		RoleID:     r,
+		CompanyID:  1,
+		LocationID: 1,
+		Password:   p,
+	}
+	if ok := sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email); !ok {
+		log.Fatal(fmt.Sprintf("Password %v is not strong enough", user.Password))
+	}
+	user.Password = sec.Hash(user.Password)
+	return user
+}
+
 // buildQueries creates some SQL queries into a string slice
 func buildQueries() []string {
 	return []string{
@@ -52,32 +70,53 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	queries := buildQueries()
 	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
-
 	for _, v := range queries[0:len(queries)] {
 		db.Exec(v)
 	}
-
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
-	user := cerebrum.User{
-		Email:      "rocinante@mail.com",
-		FirstName:  "Rocinante",
-		LastName:   "DeLaMancha",
-		Username:   adminUsername,
-		RoleID:     cerebrum.AccessRole(100),
-		CompanyID:  1,
-		LocationID: 1,
-		Password:   adminPassword,
-	}
-	if !sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email) {
-		log.Fatal(fmt.Sprintf("Password %v is not strong enough", user.Password))
-	}
-	user.Password = sec.Hash(user.Password)
-	if err := db.Create(&user).Error; err != nil {
+	adminUser := createUser(
+		cfg,
+		sec,
+		cerebrum.AccessRole(100),
+		"rocinante@mail.com",
+		"Rocinante",
+		"DeLaMancha",
+		adminUsername,
+		adminPassword)
+	if err := db.Create(&adminUser).Error; err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(fmt.Sprintf("bootstrap finished with %d db errors", len(db.GetErrors())))
+	var checkUser = new(cerebrum.User)
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", adminUser.ID).First(&checkUser).Error; err != nil {
+		log.Fatal(err)
+	}
+	if ok := sec.HashMatchesPassword(checkUser.Password, adminPassword); !ok {
+		log.Println("ADMIN PASSWORD DOES NOT MATCH")
+	}
+	log.Println("ADMIN PASSWORD DOES MATCH!!")
+	userUser := createUser(
+		cfg,
+		sec,
+		cerebrum.AccessRole(100),
+		"user1@mail.com",
+		"user1_first",
+		"user1_last",
+		"user1",
+		adminPassword)
+	if err := db.Create(&userUser).Error; err != nil {
+		log.Fatal(err)
+	}
+	checkUser = new(cerebrum.User)
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", userUser.ID).First(&checkUser).Error; err != nil {
+		log.Fatal(err)
+	}
+	if ok := sec.HashMatchesPassword(checkUser.Password, adminPassword); !ok {
+		log.Println("USER PASSWORD DOES NOT MATCH")
+	}
+	log.Println("USER PASSWORD DOES MATCH!!")
 }
 
 func createSchema(db *gorm.DB, models ...interface{}) {

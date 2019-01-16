@@ -63,7 +63,6 @@ func (h *HTTP) create(c echo.Context) error {
 	r := new(createReq)
 
 	if err := c.Bind(r); err != nil {
-
 		return err
 	}
 
@@ -71,7 +70,7 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if _, ok := cerebrum.ValidRoles[cerebrum.AccessRole(r.RoleID)]; ok == false {
+	if _, ok := cerebrum.ValidRoles[cerebrum.AccessRole(r.RoleID)]; !ok {
 		return ErrUnknownRole
 	}
 

@@ -4,7 +4,6 @@ package cerebrum
 type Location struct {
 	Base
 	Name    string `json:"name"`
-	Active  bool   `json:"active"`
 	Address string `json:"address"`
 
 	CompanyID uint `json:"company_id"`

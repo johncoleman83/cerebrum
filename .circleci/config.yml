@@ -20,7 +20,7 @@ jobs:
     working_directory: /go/src/github.com/johncoleman83/cerebrum
     steps:
       - checkout
-
+      - setup_remote_docker
       # specify any bash command here prefixed with `run: `
       - run:
           name: install_dependencies

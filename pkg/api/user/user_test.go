@@ -26,21 +26,57 @@ func TestCreate(t *testing.T) {
 		udb          *mockstore.User
 		rbac         *mock.RBAC
 		sec          *mock.Secure
-	}{{
-		name: "Fail on is lower role",
-		rbac: &mock.RBAC{
-			AccountCreateFn: func(echo.Context, cerebrum.AccessRole, uint, uint) error {
-				return cerebrum.ErrGeneric
+	}{
+		{
+			name: "Fail on is lower role",
+			args: args{req: cerebrum.User{
+				FirstName: "Braxton",
+				LastName:  "Young",
+				Username:  "BraxtonYoung",
+				RoleID:    cerebrum.AccessRole(100),
+				Password:  "Thranduil8822",
+				Email:     "byoung@gmail.com",
 			}},
-		expectedErr: true,
-		args: args{req: cerebrum.User{
-			FirstName: "Braxton",
-			LastName:  "Young",
-			Username:  "BraxtonYoung",
-			RoleID:    cerebrum.AccessRole(100),
-			Password:  "Thranduil8822",
-		}},
-	},
+			rbac: &mock.RBAC{
+				AccountCreateFn: func(echo.Context, cerebrum.AccessRole, uint, uint) error {
+					return cerebrum.ErrGeneric
+				},
+			},
+			sec: &mock.Secure{
+				HashFn: func(string) string {
+					return "h4$h3d"
+				},
+				PasswordFn: func(string, ...string) bool {
+					return true
+				},
+			},
+			expectedErr: true,
+		},
+		{
+			name: "Fail on is invalid password",
+			args: args{req: cerebrum.User{
+				FirstName: "Tina",
+				LastName:  "Turner",
+				Username:  "TinaTurner",
+				RoleID:    cerebrum.AccessRole(200),
+				Password:  "TinaTurnerMakesItRain",
+				Email:     "tinaturner@gmail.com",
+			}},
+			rbac: &mock.RBAC{
+				AccountCreateFn: func(echo.Context, cerebrum.AccessRole, uint, uint) error {
+					return nil
+				},
+			},
+			sec: &mock.Secure{
+				HashFn: func(string) string {
+					return "h4$h3d"
+				},
+				PasswordFn: func(string, ...string) bool {
+					return false
+				},
+			},
+			expectedErr: true,
+		},
 		{
 			name: "Success",
 			args: args{req: cerebrum.User{
@@ -49,6 +85,7 @@ func TestCreate(t *testing.T) {
 				Username:  "OprahWinfrey",
 				RoleID:    cerebrum.AccessRole(100),
 				Password:  "Thranduil8822",
+				Email:     "owinfrey@gmail.com",
 			}},
 			udb: &mockstore.User{
 				CreateFn: func(db *gorm.DB, u cerebrum.User) (*cerebrum.User, error) {
@@ -66,6 +103,9 @@ func TestCreate(t *testing.T) {
 				HashFn: func(string) string {
 					return "h4$h3d"
 				},
+				PasswordFn: func(string, ...string) bool {
+					return true
+				},
 			},
 			expectedData: &cerebrum.User{
 				Base: cerebrum.Base{
@@ -80,6 +120,7 @@ func TestCreate(t *testing.T) {
 				Username:  "OprahWinfrey",
 				RoleID:    cerebrum.AccessRole(100),
 				Password:  "h4$h3d",
+				Email:     "owinfrey@gmail.com",
 			}}}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {

@@ -23,11 +23,11 @@ func (p *Password) Change(c echo.Context, userID uint, oldPass, newPass string) 
 		return err
 	}
 
-	if !p.sec.HashMatchesPassword(u.Password, oldPass) {
+	if ok := p.sec.HashMatchesPassword(u.Password, oldPass); !ok {
 		return ErrIncorrectPassword
 	}
 
-	if !p.sec.Password(newPass, u.FirstName, u.LastName, u.Username, u.Email) {
+	if ok := p.sec.Password(newPass, u.FirstName, u.LastName, u.Username, u.Email); !ok {
 		return ErrInsecurePassword
 	}
 

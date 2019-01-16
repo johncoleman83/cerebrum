@@ -10,22 +10,19 @@ import (
 
 // Custom errors
 var (
-	ErrInvalidCredentials = echo.NewHTTPError(http.StatusUnauthorized, "Username or password does not exist")
+	ErrInvalidCredentials = echo.NewHTTPError(http.StatusUnauthorized, "Username or password is not authorized")
 )
 
 // Authenticate tries to authenticate the user provided by username and password
 func (a *Auth) Authenticate(c echo.Context, user, pass string) (*cerebrum.AuthToken, error) {
+	// TODO: This query does not need to include roles, fix that
 	u, err := a.udb.FindByUsername(a.db, user)
 	if err != nil {
 		return nil, err
 	}
 
-	if !a.sec.HashMatchesPassword(u.Password, pass) {
+	if ok := a.sec.HashMatchesPassword(u.Password, pass); !ok {
 		return nil, ErrInvalidCredentials
-	}
-
-	if !u.Active {
-		return nil, cerebrum.ErrUnauthorized
 	}
 
 	token, expire, err := a.tg.GenerateToken(u)

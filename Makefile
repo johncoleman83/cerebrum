@@ -36,6 +36,10 @@ refresh:
 	@make docker
 	@make bootstrap
 
+.PHONY: run_script # runs a test script $ go run scripts/testing/main.go
+run_script:
+	go run scripts/testing/main.go
+
 .PHONY: serve # starts backend server, executes $ go run cmd/api/main.go
 serve:
 	go run cmd/api/main.go

@@ -91,6 +91,9 @@ func TestCreate(t *testing.T) {
 				HashFn: func(string) string {
 					return "h4$h3d"
 				},
+				PasswordFn: func(string, ...string) bool {
+					return true
+				},
 			},
 			expectedResp: &cerebrum.User{
 				Base: cerebrum.Base{

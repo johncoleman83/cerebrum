@@ -37,12 +37,12 @@
   version = "v0.16.0"
 
 [[projects]]
-  digest = "1:fedf9acce6acb7d1395211bb07c6a7747d80b64ed9517b59b86e8ae9ccda4044"
+  digest = "1:ce77b60a5a960206e689e397af69f7e60df7d03d310a4062c72da623ec16f754"
   name = "github.com/go-playground/validator"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "0277b12d53df79c9dbf7311cb07fa9c81ed621bb"
-  version = "v9.24.0"
+  revision = "cdd5c28d217804eec51fa694927e6c57465748f6"
+  version = "v9.25.0"
 
 [[projects]]
   digest = "1:13e9a236e56e18fecb73f5b2f2eb7f60060a1a9bc27e5a7328ab22e275ecb63e"
@@ -158,12 +158,12 @@
   version = "v1.11.0"
 
 [[projects]]
-  digest = "1:bacb8b590716ab7c33f2277240972c9582d389593ee8d66fc10074e0508b8126"
+  digest = "1:42e8c2456d7ec0f31e182c20022e74324c4da2cb3bd9069ff9b131fe33466308"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "NUT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:af354641f23332b1a8d5d361d11b5a9171589e412a67d499633706c611acc064"
@@ -192,15 +192,15 @@
     "blowfish",
   ]
   pruneopts = "NUT"
-  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
+  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 
 [[projects]]
   branch = "master"
-  digest = "1:96ea74c421605290b28c62e72dd2222026b2094cd6cdb6b13d4e27b68c7ce1a4"
+  digest = "1:ca8ea53e5cb30d38277ad63ca4e92fd574ca370b44f0b149c2fc2dd524cbf05f"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "NUT"
-  revision = "9a3f9b0469bbc6b8802087ae5c0af9f61502de01"
+  revision = "11f53e03133963fb11ae0588e08b5e0b85be8be5"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"

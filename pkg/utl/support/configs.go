@@ -10,14 +10,22 @@ import (
 	"strings"
 )
 
+// Directory Paths
 var (
 	_, b, _, _ = runtime.Caller(0)
 	basepath   = filepath.Dir(b)
+	circlepath = "/go/src/github.com/johncoleman83/cerebrum/"
+
+	// hack for circle tests
+	configsdir = "configs/application/"
 )
 
 func configsDirectoryFullPath() string {
+	if strings.Contains(basepath, "_test/_obj_test") {
+		return circlepath + configsdir
+	}
 	tail := strings.LastIndex(basepath, "pkg/utl/support")
-	return basepath[:tail] + "configs/application/"
+	return basepath[:tail] + configsdir
 }
 
 // expectedFiles is simply a list of expected files for error checking

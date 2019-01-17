@@ -7,8 +7,14 @@ go:
 before_install:
   - go get -t -v ./...
 
+before_script:
+  - make ENV=test docker
+
 script:
   - ./test
+
+after_script:
+  - make lint
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

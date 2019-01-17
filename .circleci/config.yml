@@ -20,14 +20,31 @@ jobs:
     working_directory: /go/src/github.com/johncoleman83/cerebrum
     steps:
       - checkout
-      # specify any bash command here prefixed with `run: `
+
+      - setup_remote_docker # should be used with docker-compose to start mysql db
+
+      # bash commands prefixed with `run: `
       - run:
           name: install_dependencies
-          command: 'go get -t -v ./...'
-      # - setup_remote_docker # should be used with docker-compose to start mysql db
-        - run:
-            name: test
-            command: './test'
+          command: |
+            go get -t -v ./...
+      
+      - run:
+          name: docker-compose
+          command: |
+            make ENV=test docker
+
+      - run:
+          name: test_all
+          command: |
+            ./test
+
+      - run:
+          name: lint
+          command: |
+            golint pkg/...
+	          golint cmd/...
+
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
           name: codecov.io

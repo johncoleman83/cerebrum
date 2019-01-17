@@ -122,8 +122,11 @@ func TestCreate(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
 	duplicateUser := &cerebrum.User{
 		Email:    "alreadyused@mail.com",
@@ -134,7 +137,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 	}
-	if err := mockstore.InsertMultiple(db, superAdmin, duplicateUser); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, duplicateUser); err != nil {
 		t.Error(err)
 	}
 
@@ -156,10 +159,6 @@ func TestCreate(t *testing.T) {
 				assert.Equal(t, tt.expectedData, resp)
 			}
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -196,10 +195,13 @@ func TestView(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -225,10 +227,6 @@ func TestView(t *testing.T) {
 				}
 			}
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -263,10 +261,13 @@ func TestFindByUsername(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -287,10 +288,6 @@ func TestFindByUsername(t *testing.T) {
 
 			}
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -326,10 +323,13 @@ func TestFindByToken(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, cases[1].expectedData); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, cases[1].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -350,10 +350,6 @@ func TestFindByToken(t *testing.T) {
 
 			}
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -513,10 +509,13 @@ func TestList(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, &cases[3].expectedData[0], &cases[3].expectedData[1], &cases[3].expectedData[2]); err != nil {
 		t.Error(err)
 	}
 
@@ -537,10 +536,6 @@ func TestList(t *testing.T) {
 				assert.Equal(t, tt.expectedData, users)
 			}
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -586,10 +581,13 @@ func TestUpdate(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, cases[0].usr); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, cases[0].usr); err != nil {
 		t.Error(err)
 	}
 
@@ -613,10 +611,6 @@ func TestUpdate(t *testing.T) {
 			tt.expectedData.UpdatedAt = user.UpdatedAt
 			assert.Equal(t, tt.expectedData, user)
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }
 
@@ -647,10 +641,13 @@ func TestDelete(t *testing.T) {
 		},
 	}
 
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, pool, resource := container.DB, container.Pool, container.Resource
+	db, err := mockstore.NewDataBaseConnection()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
 
-	if err := mockstore.InsertMultiple(db, superAdmin, cases[0].expectedData); err != nil {
+	if err := mockstore.InsertRowsFor(db, superAdmin, cases[0].expectedData); err != nil {
 		t.Error(err)
 	}
 
@@ -680,9 +677,5 @@ func TestDelete(t *testing.T) {
 			}
 			assert.NotNil(t, emptyUser.DeletedAt, "the user should have a time set for deleted_at at the same time as when the user was deleted")
 		})
-	}
-	db.Close()
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
 	}
 }

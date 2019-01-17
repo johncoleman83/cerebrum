@@ -15,20 +15,21 @@ Gorsk is a Golang starter kit for developing RESTful services. It is designed to
 ## Dependencies
 
 ```bash
-|------------------------------------|--------------|
-|              PACKAGE               |    LICENSE   |
-|------------------------------------|--------------|
-| github.com/labstack/echo           | MIT          |
-| github.com/jinzhu/gorm             | MIT          |
-| github.com/dgrijalva/jwt-go        | MIT          |
-| github.com/rs/zerolog              | MIT          |
-| github.com/go-playground/validator | MIT          |
-| github.com/nbutton23/zxcvbn-go     | MIT          |
-| github.com/stretchr/testify        | MIT          |
-|------------------------------------|--------------|
-| github.com/go-yaml/yaml            | Apache       |
-| github.com/ory/dockertest          | Apache       |
-|------------------------------------|--------------|
+|---------------------------------------|---------|
+|              PACKAGE                  | LICENSE |
+|---------------------------------------|---------|
+| github.com/labstack/echo              |   MIT   |
+| github.com/jinzhu/gorm                |   MIT   |
+| github.com/dgrijalva/jwt-go           |   MIT   |
+| github.com/rs/zerolog                 |   MIT   |
+| github.com/go-playground/validator    |   MIT   |
+| github.com/nbutton23/zxcvbn-go        |   MIT   |
+| github.com/stretchr/testify           |   MIT   |
+|                                       |         |
+| npmjs.com/package/multi-file-swagger  |   MIT   |
+|---------------------------------------|---------|
+| github.com/go-yaml/yaml               |  Apache |
+|---------------------------------------|---------|
 ```
 
 ## Project Structure

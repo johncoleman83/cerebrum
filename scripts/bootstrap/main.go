@@ -53,7 +53,7 @@ func main() {
 		log.Fatal(err)
 	}
 	queries := buildQueries()
-	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
+	createSchema(db)
 
 	for _, v := range queries[0:len(queries)] {
 		db.Exec(v)
@@ -80,11 +80,19 @@ func main() {
 	fmt.Println(fmt.Sprintf("bootstrap finished with %d db errors", len(db.GetErrors())))
 }
 
-func createSchema(db *gorm.DB, models ...interface{}) {
+func createSchema(db *gorm.DB) {
+	models := []interface{}{
+		&cerebrum.Company{},
+		&cerebrum.Location{},
+		&cerebrum.Role{},
+		&cerebrum.User{},
+	}
 	for _, model := range models {
 		if db.HasTable(model) {
 			log.Printf("dropping table for ")
-			db.DropTable(model)
+			if err := db.DropTable(model).Error; err != nil {
+				log.Fatal(err)
+			}
 		}
 		if err := db.CreateTable(model).Error; err != nil {
 			log.Fatal(err)

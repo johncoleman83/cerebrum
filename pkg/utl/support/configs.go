@@ -17,7 +17,7 @@ var (
 
 func configsDirectoryFullPath() string {
 	tail := strings.LastIndex(basepath, "pkg/utl/support")
-	return basepath[:tail] + "configs/"
+	return basepath[:tail] + "configs/application/"
 }
 
 // expectedFiles is simply a list of expected files for error checking

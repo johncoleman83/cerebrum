@@ -92,14 +92,23 @@ endif
 
 .PHONY: docker # start docker dev dependencies, executes $ docker-compose up
 docker:
-	docker-compose up --detach
-	@echo "... zzz"
-	@echo "going to sleep to allow mysql enough time to startup"
+ifeq ($(ENV),dev)
+	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
+	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
 	sleep 10
+else ifeq ($(ENV),test)
+	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.test.yml up --detach
+	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
+	sleep 10
+else
+	@echo 'Usage: $ make ENV=XXXXX docker'
+	@echo 'where ENV could be `test` or `dev`'
+	@echo 'run `$$ make help` for more info'
+endif
 
 .PHONY: bootstrap # bootstrap the db with dev models
 bootstrap:
-	go run cmd/bootstrap/main.go
+	go run scrips/bootstrap/main.go
 
 .PHONY: mysql # login to mysql dev container to inspect
 mysql:
@@ -107,6 +116,9 @@ mysql:
 
 .PHONY: test # run all tests
 test:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
+	@make ENV=test clean
+	@make ENV=test docker
 	@make test_go
 	@make ENV=test clean
 	@make lint
@@ -126,8 +138,8 @@ ifeq ($(ENV),dev)
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
 	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker rm
 else ifeq ($(ENV),test)
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db_no_ | cut -f1 | xargs docker stop
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db_no_ | cut -f1 | xargs docker rm
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker rm
 else ifeq ($(ENV),all)
 	@make ENV=dev clean
 	@make ENV=test clean

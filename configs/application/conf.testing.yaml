@@ -1,8 +1,8 @@
 database:
   dialect: mysql
+  name: cerebrum_mysql_test_db
   user: mysql_test_user
   password: mysql_test_password
-  name: cerebrum_mysql_test_db
   protocol: tcp
   host: localhost
   port: 3306

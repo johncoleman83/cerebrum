@@ -1,0 +1,12 @@
+# Use root/example as user/password credentials
+version: '3.7'
+
+services:
+
+  db:
+    container_name: cerebrum_mysql_dev_db_1
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=cerebrum_mysql_dev_db
+      - MYSQL_USER=mysql_dev_user
+      - MYSQL_PASSWORD=mysql_dev_password

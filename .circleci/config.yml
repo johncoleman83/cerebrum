@@ -7,7 +7,17 @@ jobs:
     docker:
       # specify the version
       - image: circleci/golang:1.9
-      
+
+      - image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+          - 3306:3306
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_DATABASE: cerebrum_mysql_test_db
+          MYSQL_USER: mysql_test_user
+          MYSQL_PASSWORD: mysql_test_password
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -20,15 +30,33 @@ jobs:
     working_directory: /go/src/github.com/johncoleman83/cerebrum
     steps:
       - checkout
-      # specify any bash command here prefixed with `run: `
       - run:
-          name: install_dependencies
-          command: 'go get -t -v ./...'
-      # - setup_remote_docker # should be used with docker-compose to start mysql db
-        - run:
-            name: test
-            command: './test'
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run:
+          name: install dependencies
+          command: go get -t -v ./...
+
+      - run:
+          name: test all
+          command: ./test
+
+      - run:
+          name: ensure golint is installed
+          command: go get -u golang.org/x/lint/golint
+
+      - run:
+          name: run lint
+          command: make lint
+
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
           name: codecov.io
-          command: 'bash <(curl -s https://codecov.io/bash)'
+          command: bash <(curl -s https://codecov.io/bash)

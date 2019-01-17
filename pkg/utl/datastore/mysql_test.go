@@ -2,6 +2,7 @@ package datastore_test
 
 // TODO: NEED TO UPDATE THIS TO ACCOUNT FOR NEW CONTAINER SOLUTION
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -9,12 +10,18 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
+	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
 
 func TestNew(t *testing.T) {
-	container := mockstore.NewMySQLDockerTestContainer(t)
-	db, cfg, pool, resource := container.DB, container.Configuration, container.Pool, container.Resource
+	cfgPath := support.TestingConfigPath()
+	cfg, err := config.LoadConfigFrom(cfgPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg == nil {
+		t.Fatal(errors.New("unknown error loading testing yaml file"))
+	}
 
 	dsn := datastore.FormatDSN(cfg.DB)
 	expectedDsn := "mysql_test_user:mysql_test_password" +
@@ -33,7 +40,7 @@ func TestNew(t *testing.T) {
 		Settings: cfg.DB.Settings,
 	}
 	corruptedDBcfg.Host, corruptedDBcfg.Port = "pluto", "53456345634563"
-	_, err := datastore.NewMySQLGormDb(corruptedDBcfg)
+	_, err = datastore.NewMySQLGormDb(corruptedDBcfg)
 	assert.EqualError(t, err, err.Error(), "there should be an error connecting to mysql with bad config")
 
 	corruptedDBcfg.Host, corruptedDBcfg.Port = cfg.DB.Host, cfg.DB.Port
@@ -45,13 +52,11 @@ func TestNew(t *testing.T) {
 	_, err = datastore.NewMySQLGormDb(corruptedDBcfg)
 	assert.EqualError(t, err, err.Error(), "there should be an error connecting to mysql with bad config")
 
-	db, err = datastore.NewMySQLGormDb(cfg.DB)
+	db, err := datastore.NewMySQLGormDb(cfg.DB)
 	if err != nil {
 		t.Fatalf("Error establishing connection %v", err)
 	}
 
 	assert.Nil(t, db.Close(), "there should not be an error closing the DB")
-	if err := pool.Purge(resource); err != nil {
-		t.Fatal(fmt.Sprintf("Could not purge resource: %v", err))
-	}
+	db.Close()
 }

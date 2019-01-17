@@ -26,7 +26,3 @@
   go-tests = true
   unused-packages = true
   non-go = true
-
-[[constraint]]
-  name = "github.com/ory/dockertest"
-  version = "3.3.2"

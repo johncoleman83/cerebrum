@@ -4,7 +4,7 @@ package rbac
 import (
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // New creates new RBAC service
@@ -23,14 +23,14 @@ func checkBool(b bool) error {
 }
 
 // User returns user data stored in jwt token
-func (s *Service) User(c echo.Context) *cerebrum.AuthUser {
+func (s *Service) User(c echo.Context) *models.AuthUser {
 	id := c.Get("id").(uint)
 	companyID := c.Get("company_id").(uint)
 	locationID := c.Get("location_id").(uint)
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
-	role := c.Get("role").(cerebrum.AccessRole)
-	return &cerebrum.AuthUser{
+	role := c.Get("role").(models.AccessRole)
+	return &models.AuthUser{
 		ID:          id,
 		Username:    user,
 		CompanyID:   companyID,
@@ -41,8 +41,8 @@ func (s *Service) User(c echo.Context) *cerebrum.AuthUser {
 }
 
 // EnforceRole authorizes request by AccessRole
-func (s *Service) EnforceRole(c echo.Context, r cerebrum.AccessRole) error {
-	return checkBool(!(c.Get("role").(cerebrum.AccessRole) > r))
+func (s *Service) EnforceRole(c echo.Context, r models.AccessRole) error {
+	return checkBool(!(c.Get("role").(models.AccessRole) > r))
 }
 
 // EnforceUser checks whether the request to change user data is done by the same user
@@ -62,7 +62,7 @@ func (s *Service) EnforceCompany(c echo.Context, ID uint) error {
 	if s.isAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, cerebrum.CompanyAdminRole); err != nil {
+	if err := s.EnforceRole(c, models.CompanyAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("company_id").(uint) == ID)
@@ -74,24 +74,24 @@ func (s *Service) EnforceLocation(c echo.Context, ID uint) error {
 	if s.isCompanyAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, cerebrum.LocationAdminRole); err != nil {
+	if err := s.EnforceRole(c, models.LocationAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("location_id").(uint) == ID)
 }
 
 func (s *Service) isAdmin(c echo.Context) bool {
-	return !(c.Get("role").(cerebrum.AccessRole) > cerebrum.AdminRole)
+	return !(c.Get("role").(models.AccessRole) > models.AdminRole)
 }
 
 func (s *Service) isCompanyAdmin(c echo.Context) bool {
 	// Must query company ID in database for the given user
-	return !(c.Get("role").(cerebrum.AccessRole) > cerebrum.CompanyAdminRole)
+	return !(c.Get("role").(models.AccessRole) > models.CompanyAdminRole)
 }
 
 // AccountCreate performs auth check when creating a new account
 // Location admin cannot create accounts, needs to be fixed on EnforceLocation function
-func (s *Service) AccountCreate(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
+func (s *Service) AccountCreate(c echo.Context, roleID models.AccessRole, companyID, locationID uint) error {
 	if err := s.EnforceLocation(c, locationID); err != nil {
 		return err
 	}
@@ -100,6 +100,6 @@ func (s *Service) AccountCreate(c echo.Context, roleID cerebrum.AccessRole, comp
 
 // IsLowerRole checks whether the requesting user has higher role than the user it wants to change
 // Used for account creation/deletion
-func (s *Service) IsLowerRole(c echo.Context, r cerebrum.AccessRole) error {
-	return checkBool(c.Get("role").(cerebrum.AccessRole) < r)
+func (s *Service) IsLowerRole(c echo.Context, r models.AccessRole) error {
+	return checkBool(c.Get("role").(models.AccessRole) < r)
 }

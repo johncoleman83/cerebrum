@@ -7,7 +7,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 
 	"github.com/labstack/echo"
 )
@@ -70,12 +70,12 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	newID := cerebrum.AccessLevelToID(r.RoleID)
+	newID := models.AccessLevelToID(r.RoleID)
 	if newID == 0 {
 		return ErrUnknownRole
 	}
 
-	usr, err := h.svc.Create(c, cerebrum.User{
+	usr, err := h.svc.Create(c, models.User{
 		Username:   r.Username,
 		Password:   r.Password,
 		Email:      r.Email,
@@ -95,8 +95,8 @@ func (h *HTTP) create(c echo.Context) error {
 
 // listResponse contains the users list and page for the list response
 type listResponse struct {
-	Users []cerebrum.User `json:"users"`
-	Page  int             `json:"page"`
+	Users []models.User `json:"users"`
+	Page  int           `json:"page"`
 }
 
 // list Returns list of users. Depending on the user role requesting it:
@@ -130,7 +130,7 @@ type listResponse struct {
 //   "500":
 //     "$ref": "#/responses/err"
 func (h *HTTP) list(c echo.Context) error {
-	p := new(cerebrum.PaginationReq)
+	p := new(models.PaginationReq)
 	if err := c.Bind(p); err != nil {
 		return err
 	}
@@ -171,7 +171,7 @@ func (h *HTTP) list(c echo.Context) error {
 func (h *HTTP) view(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return cerebrum.ErrBadRequest
+		return models.ErrBadRequest
 	}
 
 	result, err := h.svc.View(c, uint(id))
@@ -223,7 +223,7 @@ type updateReq struct {
 func (h *HTTP) update(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return cerebrum.ErrBadRequest
+		return models.ErrBadRequest
 	}
 
 	req := new(updateReq)
@@ -272,7 +272,7 @@ func (h *HTTP) update(c echo.Context) error {
 func (h *HTTP) delete(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return cerebrum.ErrBadRequest
+		return models.ErrBadRequest
 	}
 
 	if err := h.svc.Delete(c, uint(id)); err != nil {

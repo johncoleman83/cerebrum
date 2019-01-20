@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Service represents password application interface
@@ -15,8 +15,8 @@ type Service interface {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(*gorm.DB, uint) (*cerebrum.User, error)
-	Update(*gorm.DB, *cerebrum.User) error
+	View(*gorm.DB, uint) (*models.User, error)
+	Update(*gorm.DB, *models.User) error
 }
 
 // Securer represents security interface

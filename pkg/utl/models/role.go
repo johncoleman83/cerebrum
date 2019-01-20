@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 // AccessRole represents access role type
 type AccessRole uint

@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 // Location represents company location model
 type Location struct {

@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 // Company represents company model
 type Company struct {

@@ -10,14 +10,14 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 var (
 	someTime   = time.Now().Round(time.Second)
-	superAdmin = cerebrum.Role{
+	superAdmin = models.Role{
 		ID:          1,
-		AccessLevel: cerebrum.AccessRole(100),
+		AccessLevel: models.AccessRole(100),
 		Name:        "SUPER_ADMIN",
 	}
 )
@@ -26,13 +26,13 @@ func TestCreate(t *testing.T) {
 	cases := []struct {
 		name         string
 		expectedErr  bool
-		req          cerebrum.User
-		expectedData *cerebrum.User
+		req          models.User
+		expectedData *models.User
 	}{
 		{
 			name:        "Fail on insert duplicate ID",
 			expectedErr: true,
-			req: cerebrum.User{
+			req: models.User{
 				Email:      "newname@mail.com",
 				FirstName:  "New",
 				LastName:   "Name",
@@ -41,7 +41,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 1,
 					},
@@ -51,7 +51,7 @@ func TestCreate(t *testing.T) {
 		{
 			name:        "Fail on insert duplicate email but new id",
 			expectedErr: true,
-			req: cerebrum.User{
+			req: models.User{
 				Email:      "alreadyused@mail.com",
 				FirstName:  "Never",
 				LastName:   "Used",
@@ -60,7 +60,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 12,
 					},
@@ -70,7 +70,7 @@ func TestCreate(t *testing.T) {
 		{
 			name:        "Fail on insert duplicate username but new id",
 			expectedErr: true,
-			req: cerebrum.User{
+			req: models.User{
 				Email:      "brandnewmail@mail.com",
 				FirstName:  "BrandNew",
 				LastName:   "Name",
@@ -79,7 +79,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 13,
 					},
@@ -89,7 +89,7 @@ func TestCreate(t *testing.T) {
 		{
 			name:        "Success",
 			expectedErr: false,
-			req: cerebrum.User{
+			req: models.User{
 				Email:      "successfullyNew@mail.com",
 				FirstName:  "Succeeding",
 				LastName:   "Always",
@@ -98,13 +98,13 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 42,
 					},
 				},
 			},
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "successfullyNew@mail.com",
 				FirstName:  "Succeeding",
 				LastName:   "Always",
@@ -113,7 +113,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 42,
 					},
@@ -128,10 +128,10 @@ func TestCreate(t *testing.T) {
 	}
 	defer db.Close()
 
-	duplicateUser := &cerebrum.User{
+	duplicateUser := &models.User{
 		Email:    "alreadyused@mail.com",
 		Username: "alreadyused",
-		Base: cerebrum.Base{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
@@ -167,7 +167,7 @@ func TestView(t *testing.T) {
 		name         string
 		expectedErr  bool
 		id           uint
-		expectedData *cerebrum.User
+		expectedData *models.User
 	}{
 		{
 			name:        "User should not not exist and return a 404 not found error",
@@ -178,7 +178,7 @@ func TestView(t *testing.T) {
 			name:        "Success",
 			id:          2,
 			expectedErr: false,
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "MrRogers@mail.com",
 				FirstName:  "Mr",
 				LastName:   "Rogers",
@@ -188,7 +188,7 @@ func TestView(t *testing.T) {
 				LocationID: 1,
 				Password:   "newPass",
 				Token:      "asdf",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{ID: 2},
 				},
 			},
@@ -235,7 +235,7 @@ func TestFindByUsername(t *testing.T) {
 		name         string
 		expectedErr  bool
 		username     string
-		expectedData *cerebrum.User
+		expectedData *models.User
 	}{
 		{
 			name:        "User does not exist",
@@ -245,7 +245,7 @@ func TestFindByUsername(t *testing.T) {
 		{
 			name:     "Success",
 			username: "indianajones",
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "indianajones@mail.com",
 				FirstName:  "Indiana",
 				LastName:   "Jones",
@@ -254,7 +254,7 @@ func TestFindByUsername(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{ID: 2},
 				},
 			},
@@ -296,7 +296,7 @@ func TestFindByToken(t *testing.T) {
 		name         string
 		expectedErr  bool
 		token        string
-		expectedData *cerebrum.User
+		expectedData *models.User
 	}{
 		{
 			name:        "User does not exist",
@@ -306,7 +306,7 @@ func TestFindByToken(t *testing.T) {
 		{
 			name:  "Success",
 			token: "loginrefresh",
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "CharlieDarwin@mail.com",
 				FirstName:  "Charles",
 				LastName:   "Darwin",
@@ -315,7 +315,7 @@ func TestFindByToken(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "hunter2",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{ID: 1},
 				},
 				Token: "loginrefresh",
@@ -357,22 +357,22 @@ func TestList(t *testing.T) {
 	cases := []struct {
 		name         string
 		expectedErr  bool
-		qp           *cerebrum.ListQuery
-		pg           *cerebrum.Pagination
-		expectedData []cerebrum.User
+		qp           *models.ListQuery
+		pg           *models.Pagination
+		expectedData []models.User
 	}{
 		{
 			name:        "Success, should return all 2 records",
 			expectedErr: false,
-			pg: &cerebrum.Pagination{
+			pg: &models.Pagination{
 				Limit:  100,
 				Offset: 0,
 			},
-			qp: &cerebrum.ListQuery{
+			qp: &models.ListQuery{
 				ID:    1,
 				Query: "company_id = ?",
 			},
-			expectedData: []cerebrum.User{
+			expectedData: []models.User{
 				{
 					Email:      "ElizabethSmart@mail.com",
 					FirstName:  "Elizabeth",
@@ -382,7 +382,7 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "newPass",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 1,
 						},
@@ -398,7 +398,7 @@ func TestList(t *testing.T) {
 					LocationID: 1,
 					Password:   "hunter2",
 					Token:      "loginrefresh",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 2,
 						},
@@ -409,15 +409,15 @@ func TestList(t *testing.T) {
 		{
 			name:        "Success, should respect the limit and offset",
 			expectedErr: false,
-			pg: &cerebrum.Pagination{
+			pg: &models.Pagination{
 				Limit:  1,
 				Offset: 1,
 			},
-			qp: &cerebrum.ListQuery{
+			qp: &models.ListQuery{
 				ID:    1,
 				Query: "company_id = ?",
 			},
-			expectedData: []cerebrum.User{
+			expectedData: []models.User{
 				{
 					Email:      "amandacena@mail.com",
 					FirstName:  "Amanda",
@@ -428,7 +428,7 @@ func TestList(t *testing.T) {
 					LocationID: 1,
 					Password:   "hunter2",
 					Token:      "loginrefresh",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 2,
 						},
@@ -439,25 +439,25 @@ func TestList(t *testing.T) {
 		{
 			name:        "Success, should return empty list if the query searches for non-existing id",
 			expectedErr: false,
-			pg: &cerebrum.Pagination{
+			pg: &models.Pagination{
 				Limit:  100,
 				Offset: 0,
 			},
-			qp: &cerebrum.ListQuery{
+			qp: &models.ListQuery{
 				ID:    99,
 				Query: "company_id = ?",
 			},
-			expectedData: []cerebrum.User{},
+			expectedData: []models.User{},
 		},
 		{
 			name:        "Success, should return all 3 records if no query is made",
 			expectedErr: false,
-			pg: &cerebrum.Pagination{
+			pg: &models.Pagination{
 				Limit:  100,
 				Offset: 0,
 			},
 			qp: nil,
-			expectedData: []cerebrum.User{
+			expectedData: []models.User{
 				{
 					Email:      "ElizabethSmart@mail.com",
 					FirstName:  "Elizabeth",
@@ -467,7 +467,7 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "newPass",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 1,
 						},
@@ -483,7 +483,7 @@ func TestList(t *testing.T) {
 					LocationID: 1,
 					Password:   "hunter2",
 					Token:      "loginrefresh",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 2,
 						},
@@ -499,7 +499,7 @@ func TestList(t *testing.T) {
 					LocationID: 3,
 					Password:   "hunter2",
 					Token:      "loginrefresh",
-					Base: cerebrum.Base{
+					Base: models.Base{
 						Model: gorm.Model{
 							ID: 3,
 						},
@@ -543,13 +543,13 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name         string
 		expectedErr  bool
-		usr          *cerebrum.User
-		expectedData *cerebrum.User
+		usr          *models.User
+		expectedData *models.User
 	}{
 		{
 			name: "Success",
-			usr: &cerebrum.User{
-				Base: cerebrum.Base{
+			usr: &models.User{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 2,
 					},
@@ -562,7 +562,7 @@ func TestUpdate(t *testing.T) {
 				Mobile:    "345678",
 				Username:  "OldSchool",
 			},
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "refresh@mail.com",
 				FirstName:  "Cool",
 				LastName:   "Hip",
@@ -574,7 +574,7 @@ func TestUpdate(t *testing.T) {
 				Address:    "2020 forme",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{ID: 2},
 				},
 			},
@@ -595,7 +595,7 @@ func TestUpdate(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			user := &cerebrum.User{}
+			user := &models.User{}
 			if err := db.First(user, tt.usr.ID).Error; err != nil {
 				t.Error(err)
 			}
@@ -604,7 +604,7 @@ func TestUpdate(t *testing.T) {
 			tt.expectedData.LastPasswordChange = user.LastPasswordChange
 			err := udb.Update(db, tt.expectedData)
 			assert.Equal(t, tt.expectedErr, err != nil)
-			user = &cerebrum.User{}
+			user = &models.User{}
 			if err := db.First(user, tt.usr.ID).Error; err != nil {
 				t.Error(err)
 			}
@@ -618,12 +618,12 @@ func TestDelete(t *testing.T) {
 	cases := []struct {
 		name         string
 		id           uint
-		expectedData *cerebrum.User
+		expectedData *models.User
 	}{
 		{
 			name: "Success",
 			id:   2,
-			expectedData: &cerebrum.User{
+			expectedData: &models.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -632,7 +632,7 @@ func TestDelete(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: cerebrum.Base{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID: 2,
 					},
@@ -655,7 +655,7 @@ func TestDelete(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			userBefore := new(cerebrum.User)
+			userBefore := new(models.User)
 			if err := db.Unscoped().Where("id = ?", tt.id).First(&userBefore).Error; err != nil {
 				assert.Equal(t, nil, err, "user should exist in db store")
 			}
@@ -665,7 +665,7 @@ func TestDelete(t *testing.T) {
 			assert.Nil(t, err, fmt.Sprintf("should not error on delete, error: %v", err))
 
 			userAfter, err := udb.View(db, tt.id)
-			emptyUser := new(cerebrum.User)
+			emptyUser := new(models.User)
 			assert.Equal(t, true, err != nil, "there should be an error when accessing deleted records")
 			if err != nil {
 				assert.Equal(t, "code=404, message=user not found", err.Error(), "error should be `code=404, message=user not found`")

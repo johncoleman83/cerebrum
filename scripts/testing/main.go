@@ -9,7 +9,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
@@ -22,8 +22,8 @@ const (
 	adminPassword = "zvuEFGa84598705027345SDfhlasdfasjzqGRFs"
 )
 
-func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) cerebrum.User {
-	user := cerebrum.User{
+func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) models.User {
+	user := models.User{
 		Email:      e,
 		FirstName:  f,
 		LastName:   l,
@@ -72,7 +72,7 @@ func main() {
 	}
 
 	queries := buildQueries()
-	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
+	createSchema(db, &models.Company{}, &models.Location{}, models.Role{}, &models.User{})
 	for _, v := range queries[0:len(queries)] {
 		db.Exec(v)
 	}
@@ -89,7 +89,7 @@ func main() {
 	if err := db.Create(&adminUser).Error; err != nil {
 		log.Fatal(err)
 	}
-	var checkUser = new(cerebrum.User)
+	var checkUser = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", adminUser.ID).First(&checkUser).Error; err != nil {
 		log.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func main() {
 	if err := db.Create(&userUser).Error; err != nil {
 		log.Fatal(err)
 	}
-	checkUser = new(cerebrum.User)
+	checkUser = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", userUser.ID).First(&checkUser).Error; err != nil {
 		log.Fatal(err)
 	}
@@ -119,8 +119,8 @@ func main() {
 	log.Println("USER PASSWORD DOES MATCH!!")
 }
 
-func createSchema(db *gorm.DB, models ...interface{}) {
-	for _, model := range models {
+func createSchema(db *gorm.DB, modelsList ...interface{}) {
+	for _, model := range modelsList {
 		if db.HasTable(model) {
 			log.Printf("dropping table for ")
 			db.DropTable(model)

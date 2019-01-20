@@ -9,7 +9,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
@@ -58,8 +58,8 @@ func main() {
 	}
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
-	user := cerebrum.User{
-		Base: cerebrum.Base{
+	user := models.User{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
@@ -73,8 +73,8 @@ func main() {
 		LocationID: 1,
 		Password:   adminPassword,
 	}
-	company := cerebrum.Company{
-		Base: cerebrum.Base{
+	company := models.Company{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
@@ -82,8 +82,8 @@ func main() {
 		Name:    "admin_company",
 		OwnerID: user.ID,
 	}
-	location := cerebrum.Location{
-		Base: cerebrum.Base{
+	location := models.Location{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
@@ -110,13 +110,13 @@ func main() {
 }
 
 func createSchema(db *gorm.DB) {
-	models := []interface{}{
-		&cerebrum.Company{},
-		&cerebrum.Location{},
-		&cerebrum.Role{},
-		&cerebrum.User{},
+	modelsList := []interface{}{
+		&models.Company{},
+		&models.Location{},
+		&models.Role{},
+		&models.User{},
 	}
-	for _, model := range models {
+	for _, model := range modelsList {
 		if db.HasTable(model) {
 			log.Printf("dropping table for ")
 			if err := db.DropTable(model).Error; err != nil {

@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 import (
 	"github.com/labstack/echo"

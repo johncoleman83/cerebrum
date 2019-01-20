@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/query"
 	"github.com/johncoleman83/cerebrum/pkg/utl/structs"
 )
@@ -16,7 +16,7 @@ var (
 )
 
 // Create creates a new user account
-func (u *User) Create(c echo.Context, req cerebrum.User) (*cerebrum.User, error) {
+func (u *User) Create(c echo.Context, req models.User) (*models.User, error) {
 	if err := u.rbac.AccountCreate(c, req.Role.AccessLevel, req.CompanyID, req.LocationID); err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (u *User) Create(c echo.Context, req cerebrum.User) (*cerebrum.User, error)
 }
 
 // List returns list of users
-func (u *User) List(c echo.Context, p *cerebrum.Pagination) ([]cerebrum.User, error) {
+func (u *User) List(c echo.Context, p *models.Pagination) ([]models.User, error) {
 	au := u.rbac.User(c)
 	q, err := query.List(au)
 	if err != nil {
@@ -38,7 +38,7 @@ func (u *User) List(c echo.Context, p *cerebrum.Pagination) ([]cerebrum.User, er
 }
 
 // View returns single user
-func (u *User) View(c echo.Context, id uint) (*cerebrum.User, error) {
+func (u *User) View(c echo.Context, id uint) (*models.User, error) {
 	if err := u.rbac.EnforceUser(c, id); err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ type Update struct {
 }
 
 // Update updates user's contact information
-func (u *User) Update(c echo.Context, req *Update) (*cerebrum.User, error) {
+func (u *User) Update(c echo.Context, req *Update) (*models.User, error) {
 	if err := u.rbac.EnforceUser(c, req.ID); err != nil {
 		return nil, err
 	}

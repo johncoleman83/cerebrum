@@ -90,14 +90,14 @@ else
 	@echo 'run `$$ make help` for more info'
 endif
 
-.PHONY: docker # start docker dev dependencies, executes $ docker-compose up
+.PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
 docker:
 ifeq ($(ENV),dev)
-	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
+	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev
 	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
 	sleep 15
 else ifeq ($(ENV),test)
-	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.test.yml up --detach
+	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test
 	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
 	sleep 15
 else
@@ -148,3 +148,7 @@ else
 	@echo 'where ENV could be `test`, `dev`, `git` or `all`'
 	@echo 'run `$$ make help` for more info'
 endif
+
+.PHONY: remove_mysql_image # removes mysql:latest docker image
+remove_mysql_image:
+	docker images --format "{{.Repository}}:{{.Tag}}\t{{.ID}}" --all | grep mysql:latest | cut -f2 | xargs docker rmi

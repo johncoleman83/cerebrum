@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // packageName is the name of the package
@@ -15,11 +15,11 @@ const packageName = "auth"
 // LogService represents auth logging service
 type LogService struct {
 	auth.Service
-	logger cerebrum.Logger
+	logger models.Logger
 }
 
 // New creates new auth logging service
-func New(svc auth.Service, logger cerebrum.Logger) *LogService {
+func New(svc auth.Service, logger models.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -27,7 +27,7 @@ func New(svc auth.Service, logger cerebrum.Logger) *LogService {
 }
 
 // Authenticate logging
-func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp *cerebrum.AuthToken, err error) {
+func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp *models.AuthToken, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -42,7 +42,7 @@ func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp 
 }
 
 // Refresh logging
-func (ls *LogService) Refresh(c echo.Context, req string) (resp *cerebrum.RefreshToken, err error) {
+func (ls *LogService) Refresh(c echo.Context, req string) (resp *models.RefreshToken, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -58,7 +58,7 @@ func (ls *LogService) Refresh(c echo.Context, req string) (resp *cerebrum.Refres
 }
 
 // Me logging
-func (ls *LogService) Me(c echo.Context) (resp *cerebrum.User, err error) {
+func (ls *LogService) Me(c echo.Context) (resp *models.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

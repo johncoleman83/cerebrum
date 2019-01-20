@@ -22,10 +22,10 @@ properties:
     format: uint64
     type: integer
     x-go-name: AccountID
-  team_id:
+  primary_team_id:
     format: uint64
     type: integer
-    x-go-name: TeamID
+    x-go-name: PrimaryTeamID
   role_id:
     x-go-name: RoleID
     $ref: '#/definitions/AccessRole'

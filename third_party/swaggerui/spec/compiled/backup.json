@@ -424,10 +424,10 @@
           "format": "date-time",
           "x-go-name": "LastPasswordChange"
         },
-        "team_id": {
+        "primary_team_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "TeamID"
+          "x-go-name": "PrimaryTeamID"
         },
         "mobile": {
           "type": "string",
@@ -520,10 +520,10 @@
           "type": "string",
           "x-go-name": "LastName"
         },
-        "team_id": {
+        "primary_team_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "TeamID"
+          "x-go-name": "PrimaryTeamID"
         },
         "password": {
           "type": "string",
@@ -700,10 +700,10 @@
             "format": "date-time",
             "x-go-name": "LastPasswordChange"
           },
-          "team_id": {
+          "primary_team_id": {
             "type": "integer",
             "format": "uint64",
-            "x-go-name": "TeamID"
+            "x-go-name": "PrimaryTeamID"
           },
           "mobile": {
             "type": "string",

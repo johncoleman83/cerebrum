@@ -40,12 +40,12 @@ func TestList(t *testing.T) {
 		{
 			name: "Team admin user",
 			args: args{user: &models.AuthUser{
-				AccessLevel: models.TeamAdminRole,
-				AccountID:   1,
-				TeamID:      2,
+				AccessLevel:   models.TeamAdminRole,
+				AccountID:     1,
+				PrimaryTeamID: 2,
 			}},
 			expectedData: &models.ListQuery{
-				Query: "team_id = ?",
+				Query: "primary_team_id = ?",
 				ID:    2},
 		},
 		{

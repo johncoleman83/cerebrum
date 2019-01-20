@@ -6,4 +6,5 @@ type Team struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	AccountID   uint   `json:"account_id"`
+	Members     []User `json:"members"`
 }

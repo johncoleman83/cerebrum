@@ -64,10 +64,10 @@ definitions:
         format: date-time
         type: string
         x-go-name: LastPasswordChange
-      team_id:
+      primary_team_id:
         format: uint64
         type: integer
-        x-go-name: TeamID
+        x-go-name: PrimaryTeamID
       mobile:
         type: string
         x-go-name: Mobile
@@ -135,10 +135,10 @@ definitions:
       last_name:
         type: string
         x-go-name: LastName
-      team_id:
+      primary_team_id:
         format: uint64
         type: integer
-        x-go-name: TeamID
+        x-go-name: PrimaryTeamID
       password:
         type: string
         x-go-name: Password
@@ -494,10 +494,10 @@ responses:
           format: date-time
           type: string
           x-go-name: LastPasswordChange
-        team_id:
+        primary_team_id:
           format: uint64
           type: integer
-          x-go-name: TeamID
+          x-go-name: PrimaryTeamID
         mobile:
           type: string
           x-go-name: Mobile

@@ -64,14 +64,14 @@ func main() {
 				ID: 1,
 			},
 		},
-		Email:     "rocinante@mail.com",
-		FirstName: "Rocinante",
-		LastName:  "DeLaMancha",
-		Username:  adminUsername,
-		RoleID:    1,
-		AccountID: 1,
-		TeamID:    1,
-		Password:  adminPassword,
+		Email:         "rocinante@mail.com",
+		FirstName:     "Rocinante",
+		LastName:      "DeLaMancha",
+		Username:      adminUsername,
+		RoleID:        1,
+		AccountID:     1,
+		PrimaryTeamID: 1,
+		Password:      adminPassword,
 	}
 	account := models.Account{
 		Base: models.Base{
@@ -88,9 +88,9 @@ func main() {
 				ID: 1,
 			},
 		},
-		Name:      "admin_team",
-		Description:   "admin_description",
-		AccountID: account.ID,
+		Name:        "admin_team",
+		Description: "admin_description",
+		AccountID:   account.ID,
 	}
 
 	if !sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email) {

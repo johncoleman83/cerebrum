@@ -44,9 +44,9 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	AccountID uint `json:"account_id" validate:"required"`
-	TeamID    uint `json:"team_id" validate:"required"`
-	RoleID    uint `json:"role_id" validate:"required"`
+	AccountID     uint `json:"account_id" validate:"required"`
+	PrimaryTeamID uint `json:"primary_team_id" validate:"required"`
+	RoleID        uint `json:"role_id" validate:"required"`
 }
 
 // create Creates new user account
@@ -76,14 +76,14 @@ func (h *HTTP) create(c echo.Context) error {
 	}
 
 	usr, err := h.svc.Create(c, models.User{
-		Username:  r.Username,
-		Password:  r.Password,
-		Email:     r.Email,
-		FirstName: r.FirstName,
-		LastName:  r.LastName,
-		AccountID: r.AccountID,
-		TeamID:    r.TeamID,
-		RoleID:    newID,
+		Username:      r.Username,
+		Password:      r.Password,
+		Email:         r.Email,
+		FirstName:     r.FirstName,
+		LastName:      r.LastName,
+		AccountID:     r.AccountID,
+		PrimaryTeamID: r.PrimaryTeamID,
+		RoleID:        newID,
 	})
 
 	if err != nil {

@@ -13,10 +13,10 @@ properties:
   last_name:
     type: string
     x-go-name: LastName
-  team_id:
+  primary_team_id:
     format: uint64
     type: integer
-    x-go-name: TeamID
+    x-go-name: PrimaryTeamID
   password:
     type: string
     x-go-name: Password

@@ -15,7 +15,7 @@ func List(u *models.AuthUser) (*models.ListQuery, error) {
 	case u.AccessLevel == models.AccountAdminRole:
 		return &models.ListQuery{Query: "account_id = ?", ID: u.AccountID}, nil
 	case u.AccessLevel == models.TeamAdminRole:
-		return &models.ListQuery{Query: "team_id = ?", ID: u.TeamID}, nil
+		return &models.ListQuery{Query: "primary_team_id = ?", ID: u.PrimaryTeamID}, nil
 	default:
 		return nil, echo.ErrForbidden
 	}

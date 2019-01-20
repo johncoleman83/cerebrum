@@ -28,24 +28,24 @@ func TestList(t *testing.T) {
 			}},
 		},
 		{
-			name: "Company admin user",
+			name: "Account admin user",
 			args: args{user: &models.AuthUser{
-				AccessLevel: models.CompanyAdminRole,
-				CompanyID:   1,
+				AccessLevel: models.AccountAdminRole,
+				AccountID:   1,
 			}},
 			expectedData: &models.ListQuery{
-				Query: "company_id = ?",
+				Query: "account_id = ?",
 				ID:    1},
 		},
 		{
-			name: "Location admin user",
+			name: "Team admin user",
 			args: args{user: &models.AuthUser{
-				AccessLevel: models.LocationAdminRole,
-				CompanyID:   1,
-				LocationID:  2,
+				AccessLevel: models.TeamAdminRole,
+				AccountID:   1,
+				TeamID:      2,
 			}},
 			expectedData: &models.ListQuery{
-				Query: "location_id = ?",
+				Query: "team_id = ?",
 				ID:    2},
 		},
 		{

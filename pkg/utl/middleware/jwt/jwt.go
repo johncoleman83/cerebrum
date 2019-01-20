@@ -49,15 +49,15 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 			claims := token.Claims.(jwt.MapClaims)
 
 			id := uint(claims["id"].(float64))
-			companyID := uint(claims["c"].(float64))
-			locationID := uint(claims["l"].(float64))
+			accountID := uint(claims["c"].(float64))
+			teamID := uint(claims["l"].(float64))
 			username := claims["u"].(string)
 			email := claims["e"].(string)
 			role := models.AccessRole(claims["r"].(float64))
 
 			c.Set("id", id)
-			c.Set("company_id", companyID)
-			c.Set("location_id", locationID)
+			c.Set("account_id", accountID)
+			c.Set("team_id", teamID)
 			c.Set("username", username)
 			c.Set("email", email)
 			c.Set("role", role)
@@ -97,8 +97,8 @@ func (j *Service) GenerateToken(u *models.User) (string, string, error) {
 		"u":   u.Username,
 		"e":   u.Email,
 		"r":   u.Role.AccessLevel,
-		"c":   u.CompanyID,
-		"l":   u.LocationID,
+		"c":   u.AccountID,
+		"l":   u.TeamID,
 		"exp": expire.Unix(),
 	})
 

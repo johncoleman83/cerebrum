@@ -8,4 +8,4 @@ properties:
     type: string
     x-go-name: Name
 type: object
-x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models

@@ -27,8 +27,8 @@ func buildQueries() []string {
 	return []string{
 		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
 		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'ACCOUNT_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'TEAM_ADMIN');",
 		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
@@ -64,33 +64,33 @@ func main() {
 				ID: 1,
 			},
 		},
-		Email:      "rocinante@mail.com",
-		FirstName:  "Rocinante",
-		LastName:   "DeLaMancha",
-		Username:   adminUsername,
-		RoleID:     1,
-		CompanyID:  1,
-		LocationID: 1,
-		Password:   adminPassword,
+		Email:     "rocinante@mail.com",
+		FirstName: "Rocinante",
+		LastName:  "DeLaMancha",
+		Username:  adminUsername,
+		RoleID:    1,
+		AccountID: 1,
+		TeamID:    1,
+		Password:  adminPassword,
 	}
-	company := models.Company{
+	account := models.Account{
 		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
-		Name:    "admin_company",
+		Name:    "admin_account",
 		OwnerID: user.ID,
 	}
-	location := models.Location{
+	team := models.Team{
 		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
-		Name:      "admin_location",
-		Address:   "admin_address",
-		CompanyID: company.ID,
+		Name:      "admin_team",
+		Description:   "admin_description",
+		AccountID: account.ID,
 	}
 
 	if !sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email) {
@@ -100,10 +100,10 @@ func main() {
 	if err := db.Create(&user).Error; err != nil {
 		log.Fatal(err)
 	}
-	if err := db.Create(&company).Error; err != nil {
+	if err := db.Create(&account).Error; err != nil {
 		log.Fatal(err)
 	}
-	if err := db.Create(&location).Error; err != nil {
+	if err := db.Create(&team).Error; err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(fmt.Sprintf("bootstrap finished with %d db errors", len(db.GetErrors())))
@@ -111,8 +111,8 @@ func main() {
 
 func createSchema(db *gorm.DB) {
 	modelsList := []interface{}{
-		&models.Company{},
-		&models.Location{},
+		&models.Account{},
+		&models.Team{},
 		&models.Role{},
 		&models.User{},
 	}

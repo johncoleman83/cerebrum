@@ -33,28 +33,28 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			name:           "Fail on bad params",
-			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation with short username",
-			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation of email",
-			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		}, {
 			name:           "Fail on non-matching passwords",
-			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
+			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"team_id":2,"role_id":199}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -62,9 +62,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "Fail on RBAC",
-			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -73,9 +73,9 @@ func TestCreate(t *testing.T) {
 
 		{
 			name: "Success",
-			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","account_id":1,"team_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return nil
 				},
 			},
@@ -103,12 +103,12 @@ func TestCreate(t *testing.T) {
 						UpdatedAt: mock.TestTime(2018),
 					},
 				},
-				FirstName:  "Edwin",
-				LastName:   "Abbott",
-				Username:   "edwinabbott",
-				Email:      "edwinabbott@gmail.com",
-				CompanyID:  1,
-				LocationID: 2,
+				FirstName: "Edwin",
+				LastName:  "Abbott",
+				Username:  "edwinabbott",
+				Email:     "edwinabbott@gmail.com",
+				AccountID: 1,
+				TeamID:    2,
 			},
 			expectedStatus: http.StatusOK,
 		},
@@ -165,8 +165,8 @@ func TestList(t *testing.T) {
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
 						ID:          1,
-						CompanyID:   2,
-						LocationID:  3,
+						AccountID:   2,
+						TeamID:      3,
 						AccessLevel: models.UserRole,
 						Email:       "barnabus@mail.com",
 					}
@@ -180,8 +180,8 @@ func TestList(t *testing.T) {
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
 						ID:          1,
-						CompanyID:   2,
-						LocationID:  3,
+						AccountID:   2,
+						TeamID:      3,
 						AccessLevel: models.SuperAdminRole,
 						Email:       "pingpong@mail.com",
 					}
@@ -198,11 +198,11 @@ func TestList(t *testing.T) {
 										UpdatedAt: mock.TestTime(2002),
 									},
 								},
-								FirstName:  "ilove",
-								LastName:   "futbol",
-								Email:      "futbol@mail.com",
-								CompanyID:  2,
-								LocationID: 3,
+								FirstName: "ilove",
+								LastName:  "futbol",
+								Email:     "futbol@mail.com",
+								AccountID: 2,
+								TeamID:    3,
 								Role: models.Role{
 									ID:          1,
 									AccessLevel: models.SuperAdminRole,
@@ -217,11 +217,11 @@ func TestList(t *testing.T) {
 										UpdatedAt: mock.TestTime(2005),
 									},
 								},
-								FirstName:  "Joanna",
-								LastName:   "Dye",
-								Email:      "joanna@mail.com",
-								CompanyID:  1,
-								LocationID: 2,
+								FirstName: "Joanna",
+								LastName:  "Dye",
+								Email:     "joanna@mail.com",
+								AccountID: 1,
+								TeamID:    2,
 								Role: models.Role{
 									ID:          1,
 									AccessLevel: models.AdminRole,
@@ -244,11 +244,11 @@ func TestList(t *testing.T) {
 								UpdatedAt: mock.TestTime(2002),
 							},
 						},
-						FirstName:  "ilove",
-						LastName:   "futbol",
-						Email:      "futbol@mail.com",
-						CompanyID:  2,
-						LocationID: 3,
+						FirstName: "ilove",
+						LastName:  "futbol",
+						Email:     "futbol@mail.com",
+						AccountID: 2,
+						TeamID:    3,
 						Role: models.Role{
 							ID:          1,
 							AccessLevel: models.SuperAdminRole,
@@ -263,11 +263,11 @@ func TestList(t *testing.T) {
 								UpdatedAt: mock.TestTime(2005),
 							},
 						},
-						FirstName:  "Joanna",
-						LastName:   "Dye",
-						Email:      "joanna@mail.com",
-						CompanyID:  1,
-						LocationID: 2,
+						FirstName: "Joanna",
+						LastName:  "Dye",
+						Email:     "joanna@mail.com",
+						AccountID: 1,
+						TeamID:    2,
 						Role: models.Role{
 							ID:          1,
 							AccessLevel: models.AdminRole,
@@ -527,7 +527,7 @@ func TestDelete(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Role: models.Role{
-							AccessLevel: models.CompanyAdminRole,
+							AccessLevel: models.AccountAdminRole,
 						},
 					}, nil
 				},
@@ -546,7 +546,7 @@ func TestDelete(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Role: models.Role{
-							AccessLevel: models.CompanyAdminRole,
+							AccessLevel: models.AccountAdminRole,
 						},
 					}, nil
 				},

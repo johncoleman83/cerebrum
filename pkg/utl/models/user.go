@@ -17,8 +17,8 @@ type User struct {
 	Phone   string `json:"phone,omitempty"`
 	Address string `json:"address,omitempty"`
 
-	CompanyID  uint `json:"company_id"`
-	LocationID uint `json:"location_id"`
+	AccountID uint `json:"account_id"`
+	TeamID    uint `json:"team_id"`
 
 	Role   Role `json:"role,omitempty" gorm:"foreignkey:ID;association_foreignkey:RoleID;"`
 	RoleID uint `json:"-"`
@@ -32,8 +32,8 @@ type User struct {
 // AuthUser represents data stored in JWT token for user
 type AuthUser struct {
 	ID          uint
-	CompanyID   uint
-	LocationID  uint
+	AccountID   uint
+	TeamID      uint
 	Username    string
 	Email       string
 	AccessLevel AccessRole

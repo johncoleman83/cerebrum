@@ -18,14 +18,14 @@ properties:
   password_confirm:
     type: string
     x-go-name: PasswordConfirm
-  company_id:
+  account_id:
     format: uint64
     type: integer
-    x-go-name: CompanyID
-  location_id:
+    x-go-name: AccountID
+  team_id:
     format: uint64
     type: integer
-    x-go-name: LocationID
+    x-go-name: TeamID
   role_id:
     x-go-name: RoleID
     $ref: '#/definitions/AccessRole'

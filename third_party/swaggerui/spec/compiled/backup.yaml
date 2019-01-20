@@ -5,7 +5,7 @@ definitions:
     description: AccessRole represents access role type
     format: uint64
     type: integer
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   HTTP:
     description: HTTP represents password http transport service
     type: object
@@ -21,7 +21,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   User:
     description: User represents user domain model
     properties:
@@ -43,10 +43,10 @@ definitions:
       address:
         type: string
         x-go-name: Address
-      company_id:
+      account_id:
         format: uint64
         type: integer
-        x-go-name: CompanyID
+        x-go-name: AccountID
       email:
         type: string
         x-go-name: Email
@@ -64,10 +64,10 @@ definitions:
         format: date-time
         type: string
         x-go-name: LastPasswordChange
-      location_id:
+      team_id:
         format: uint64
         type: integer
-        x-go-name: LocationID
+        x-go-name: TeamID
       mobile:
         type: string
         x-go-name: Mobile
@@ -80,7 +80,7 @@ definitions:
         type: string
         x-go-name: Username
     type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   credentials:
     properties:
       password:
@@ -122,10 +122,10 @@ definitions:
   userCreate:
     description: User create request
     properties:
-      company_id:
+      account_id:
         format: uint64
         type: integer
-        x-go-name: CompanyID
+        x-go-name: AccountID
       email:
         type: string
         x-go-name: Email
@@ -135,10 +135,10 @@ definitions:
       last_name:
         type: string
         x-go-name: LastName
-      location_id:
+      team_id:
         format: uint64
         type: integer
-        x-go-name: LocationID
+        x-go-name: TeamID
       password:
         type: string
         x-go-name: Password
@@ -279,8 +279,8 @@ paths:
   /v1/users:
     get:
       description: Returns list of users. Depending on the user role requesting it,
-        it may return all users for SuperAdmin/Admin users, all company/location users
-        for Company/Location admins, and an error for non-admin users.
+        it may return all users for SuperAdmin/Admin users, all account/team users
+        for Account/Team admins, and an error for non-admin users.
       operationId: listUsers
       parameters:
       - description: number of results
@@ -473,10 +473,10 @@ responses:
         address:
           type: string
           x-go-name: Address
-        company_id:
+        account_id:
           format: uint64
           type: integer
-          x-go-name: CompanyID
+          x-go-name: AccountID
         email:
           type: string
           x-go-name: Email
@@ -494,10 +494,10 @@ responses:
           format: date-time
           type: string
           x-go-name: LastPasswordChange
-        location_id:
+        team_id:
           format: uint64
           type: integer
-          x-go-name: LocationID
+          x-go-name: TeamID
         mobile:
           type: string
           x-go-name: Mobile

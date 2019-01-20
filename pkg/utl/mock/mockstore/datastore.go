@@ -35,8 +35,8 @@ func NewDataBaseConnection() (*gorm.DB, error) {
 // DropAndCreateAllTablesFor drops all tables in input db and recreates the ones listed in the function
 func DropAndCreateAllTablesFor(db *gorm.DB) error {
 	modelsList := []interface{}{
-		&models.Company{},
-		&models.Location{},
+		&models.Account{},
+		&models.Team{},
 		&models.Role{},
 		&models.User{},
 	}

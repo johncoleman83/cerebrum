@@ -16,7 +16,7 @@ definitions:
     description: AccessRole represents access role type
     format: uint64
     type: integer
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   credentials:
     properties:
       password:
@@ -80,14 +80,14 @@ definitions:
       password_confirm:
         type: string
         x-go-name: PasswordConfirm
-      company_id:
+      account_id:
         format: uint64
         type: integer
-        x-go-name: CompanyID
-      location_id:
+        x-go-name: AccountID
+      team_id:
         format: uint64
         type: integer
-        x-go-name: LocationID
+        x-go-name: TeamID
       role_id:
         x-go-name: RoleID
         $ref: '#/definitions/AccessRole'
@@ -104,7 +104,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   User:
     description: User represents user domain model
     properties:
@@ -126,10 +126,10 @@ definitions:
       address:
         type: string
         x-go-name: Address
-      company_id:
+      account_id:
         format: uint64
         type: integer
-        x-go-name: CompanyID
+        x-go-name: AccountID
       email:
         type: string
         x-go-name: Email
@@ -147,10 +147,10 @@ definitions:
         format: date-time
         type: string
         x-go-name: LastPasswordChange
-      location_id:
+      team_id:
         format: uint64
         type: integer
-        x-go-name: LocationID
+        x-go-name: TeamID
       mobile:
         type: string
         x-go-name: Mobile
@@ -163,14 +163,14 @@ definitions:
         type: string
         x-go-name: Username
     type: object
-    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+    x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   userCreate:
     description: User create request
     properties:
-      company_id:
+      account_id:
         format: uint64
         type: integer
-        x-go-name: CompanyID
+        x-go-name: AccountID
       email:
         type: string
         x-go-name: Email
@@ -180,10 +180,10 @@ definitions:
       last_name:
         type: string
         x-go-name: LastName
-      location_id:
+      team_id:
         format: uint64
         type: integer
-        x-go-name: LocationID
+        x-go-name: TeamID
       password:
         type: string
         x-go-name: Password
@@ -326,8 +326,8 @@ paths:
     get:
       description: >-
         Returns list of users. Depending on the user role requesting it, it may
-        return all users for SuperAdmin/Admin users, all company/location users
-        for Company/Location admins, and an error for non-admin users.
+        return all users for SuperAdmin/Admin users, all account/team users
+        for Account/Team admins, and an error for non-admin users.
       operationId: listUsers
       parameters:
         - description: number of results
@@ -355,7 +355,7 @@ paths:
     post:
       description: >-
         Creates a new user -> first name, last name, email, username, password,
-        password confirm, company id, location id, role id.
+        password confirm, account id, team id, role id.
       parameters:
         - description: Request body
           in: body
@@ -531,10 +531,10 @@ responses:
         address:
           type: string
           x-go-name: Address
-        company_id:
+        account_id:
           format: uint64
           type: integer
-          x-go-name: CompanyID
+          x-go-name: AccountID
         email:
           type: string
           x-go-name: Email
@@ -552,10 +552,10 @@ responses:
           format: date-time
           type: string
           x-go-name: LastPasswordChange
-        location_id:
+        team_id:
           format: uint64
           type: integer
-          x-go-name: LocationID
+          x-go-name: TeamID
         mobile:
           type: string
           x-go-name: Mobile

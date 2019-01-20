@@ -9,7 +9,7 @@ type Base struct {
 	gorm.Model
 }
 
-// ListQuery holds company/location data used for list db queries
+// ListQuery holds account/team data used for list db queries
 type ListQuery struct {
 	Query string
 	ID    uint

@@ -12,10 +12,10 @@ func List(u *models.AuthUser) (*models.ListQuery, error) {
 	switch true {
 	case u.AccessLevel <= models.AdminRole: // user is SuperAdmin or Admin
 		return nil, nil
-	case u.AccessLevel == models.CompanyAdminRole:
-		return &models.ListQuery{Query: "company_id = ?", ID: u.CompanyID}, nil
-	case u.AccessLevel == models.LocationAdminRole:
-		return &models.ListQuery{Query: "location_id = ?", ID: u.LocationID}, nil
+	case u.AccessLevel == models.AccountAdminRole:
+		return &models.ListQuery{Query: "account_id = ?", ID: u.AccountID}, nil
+	case u.AccessLevel == models.TeamAdminRole:
+		return &models.ListQuery{Query: "team_id = ?", ID: u.TeamID}, nil
 	default:
 		return nil, echo.ErrForbidden
 	}

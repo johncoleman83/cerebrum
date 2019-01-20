@@ -44,9 +44,9 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  uint `json:"company_id" validate:"required"`
-	LocationID uint `json:"location_id" validate:"required"`
-	RoleID     uint `json:"role_id" validate:"required"`
+	AccountID uint `json:"account_id" validate:"required"`
+	TeamID    uint `json:"team_id" validate:"required"`
+	RoleID    uint `json:"role_id" validate:"required"`
 }
 
 // create Creates new user account
@@ -76,14 +76,14 @@ func (h *HTTP) create(c echo.Context) error {
 	}
 
 	usr, err := h.svc.Create(c, models.User{
-		Username:   r.Username,
-		Password:   r.Password,
-		Email:      r.Email,
-		FirstName:  r.FirstName,
-		LastName:   r.LastName,
-		CompanyID:  r.CompanyID,
-		LocationID: r.LocationID,
-		RoleID:     newID,
+		Username:  r.Username,
+		Password:  r.Password,
+		Email:     r.Email,
+		FirstName: r.FirstName,
+		LastName:  r.LastName,
+		AccountID: r.AccountID,
+		TeamID:    r.TeamID,
+		RoleID:    newID,
 	})
 
 	if err != nil {
@@ -101,7 +101,7 @@ type listResponse struct {
 
 // list Returns list of users. Depending on the user role requesting it:
 // it may return all users for SuperAdmin/Admin users,
-// all company/location users for Company/Location admins
+// all account/team users for Account/Team admins
 // and an error for non-admin users.
 //
 // usage: GET /v1/users users listUsers

@@ -19,10 +19,10 @@ schema:
     address:
       type: string
       x-go-name: Address
-    company_id:
+    account_id:
       format: uint64
       type: integer
-      x-go-name: CompanyID
+      x-go-name: AccountID
     email:
       type: string
       x-go-name: Email
@@ -40,10 +40,10 @@ schema:
       format: date-time
       type: string
       x-go-name: LastPasswordChange
-    location_id:
+    team_id:
       format: uint64
       type: integer
-      x-go-name: LocationID
+      x-go-name: TeamID
     mobile:
       type: string
       x-go-name: Mobile

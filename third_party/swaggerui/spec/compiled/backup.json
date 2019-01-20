@@ -160,7 +160,7 @@
     },
     "/v1/users": {
       "get": {
-        "description": "Returns list of users. Depending on the user role requesting it, it may return all users for SuperAdmin/Admin users, all company/location users for Company/Location admins, and an error for non-admin users.",
+        "description": "Returns list of users. Depending on the user role requesting it, it may return all users for SuperAdmin/Admin users, all account/team users for Account/Team admins, and an error for non-admin users.",
         "tags": [
           "users"
         ],
@@ -345,7 +345,7 @@
       "description": "AccessRole represents access role type",
       "type": "integer",
       "format": "uint64",
-      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/model"
+      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/models"
     },
     "HTTP": {
       "description": "HTTP represents user http service",
@@ -367,7 +367,7 @@
           "x-go-name": "Name"
         }
       },
-      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/model"
+      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/models"
     },
     "User": {
       "description": "User represents user domain model",
@@ -397,10 +397,10 @@
           "type": "string",
           "x-go-name": "Address"
         },
-        "company_id": {
+        "account_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "CompanyID"
+          "x-go-name": "AccountID"
         },
         "email": {
           "type": "string",
@@ -424,10 +424,10 @@
           "format": "date-time",
           "x-go-name": "LastPasswordChange"
         },
-        "location_id": {
+        "team_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "LocationID"
+          "x-go-name": "TeamID"
         },
         "mobile": {
           "type": "string",
@@ -445,7 +445,7 @@
           "x-go-name": "Username"
         }
       },
-      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/model"
+      "x-go-package": "github.com/johncoleman83/cerebrum/pkg/utl/models"
     },
     "credentials": {
       "type": "object",
@@ -503,10 +503,10 @@
       "description": "User create request",
       "type": "object",
       "properties": {
-        "company_id": {
+        "account_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "CompanyID"
+          "x-go-name": "AccountID"
         },
         "email": {
           "type": "string",
@@ -520,10 +520,10 @@
           "type": "string",
           "x-go-name": "LastName"
         },
-        "location_id": {
+        "team_id": {
           "type": "integer",
           "format": "uint64",
-          "x-go-name": "LocationID"
+          "x-go-name": "TeamID"
         },
         "password": {
           "type": "string",
@@ -673,10 +673,10 @@
             "type": "string",
             "x-go-name": "Address"
           },
-          "company_id": {
+          "account_id": {
             "type": "integer",
             "format": "uint64",
-            "x-go-name": "CompanyID"
+            "x-go-name": "AccountID"
           },
           "email": {
             "type": "string",
@@ -700,10 +700,10 @@
             "format": "date-time",
             "x-go-name": "LastPasswordChange"
           },
-          "location_id": {
+          "team_id": {
             "type": "integer",
             "format": "uint64",
-            "x-go-name": "LocationID"
+            "x-go-name": "TeamID"
           },
           "mobile": {
             "type": "string",

@@ -1,9 +1,9 @@
 description: User create request
 properties:
-  company_id:
+  account_id:
     format: uint64
     type: integer
-    x-go-name: CompanyID
+    x-go-name: AccountID
   email:
     type: string
     x-go-name: Email
@@ -13,10 +13,10 @@ properties:
   last_name:
     type: string
     x-go-name: LastName
-  location_id:
+  team_id:
     format: uint64
     type: integer
-    x-go-name: LocationID
+    x-go-name: TeamID
   password:
     type: string
     x-go-name: Password

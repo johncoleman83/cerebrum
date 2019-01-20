@@ -25,13 +25,11 @@ const (
 // buildQueries creates some SQL queries into a string slice
 func buildQueries() []string {
 	return []string{
-		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
-		"INSERT INTO locations VALUES (1, now(), now(), NULL, 'admin_location', true, 'admin_address', 1);",
-		"INSERT INTO roles VALUES (100, 100, 'SUPER_ADMIN');",
-		"INSERT INTO roles VALUES (110, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (120, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (130, 130, 'LOCATION_ADMIN');",
-		"INSERT INTO roles VALUES (200, 200, 'USER');",
+		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
+		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
 
@@ -61,20 +59,51 @@ func main() {
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	user := cerebrum.User{
+		Base: cerebrum.Base{
+			Model: gorm.Model{
+				ID: 1,
+			},
+		},
 		Email:      "rocinante@mail.com",
 		FirstName:  "Rocinante",
 		LastName:   "DeLaMancha",
 		Username:   adminUsername,
-		RoleID:     cerebrum.AccessRole(100),
+		RoleID:     1,
 		CompanyID:  1,
 		LocationID: 1,
 		Password:   adminPassword,
 	}
+	company := cerebrum.Company{
+		Base: cerebrum.Base{
+			Model: gorm.Model{
+				ID: 1,
+			},
+		},
+		Name:    "admin_company",
+		OwnerID: user.ID,
+	}
+	location := cerebrum.Location{
+		Base: cerebrum.Base{
+			Model: gorm.Model{
+				ID: 1,
+			},
+		},
+		Name:      "admin_location",
+		Address:   "admin_address",
+		CompanyID: company.ID,
+	}
+
 	if !sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email) {
 		log.Fatal(fmt.Sprintf("Password %v is not strong enough", user.Password))
 	}
 	user.Password = sec.Hash(user.Password)
 	if err := db.Create(&user).Error; err != nil {
+		log.Fatal(err)
+	}
+	if err := db.Create(&company).Error; err != nil {
+		log.Fatal(err)
+	}
+	if err := db.Create(&location).Error; err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(fmt.Sprintf("bootstrap finished with %d db errors", len(db.GetErrors())))

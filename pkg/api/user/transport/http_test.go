@@ -164,11 +164,11 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *cerebrum.AuthUser {
 					return &cerebrum.AuthUser{
-						ID:         1,
-						CompanyID:  2,
-						LocationID: 3,
-						Role:       cerebrum.UserRole,
-						Email:      "barnabus@mail.com",
+						ID:          1,
+						CompanyID:   2,
+						LocationID:  3,
+						AccessLevel: cerebrum.UserRole,
+						Email:       "barnabus@mail.com",
 					}
 				}},
 			expectedStatus: http.StatusForbidden,
@@ -179,11 +179,11 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *cerebrum.AuthUser {
 					return &cerebrum.AuthUser{
-						ID:         1,
-						CompanyID:  2,
-						LocationID: 3,
-						Role:       cerebrum.SuperAdminRole,
-						Email:      "pingpong@mail.com",
+						ID:          1,
+						CompanyID:   2,
+						LocationID:  3,
+						AccessLevel: cerebrum.SuperAdminRole,
+						Email:       "pingpong@mail.com",
 					}
 				}},
 			udb: &mockstore.User{
@@ -204,7 +204,7 @@ func TestList(t *testing.T) {
 								CompanyID:  2,
 								LocationID: 3,
 								Role: cerebrum.Role{
-									ID:          cerebrum.SuperAdminRole,
+									ID:          1,
 									AccessLevel: cerebrum.SuperAdminRole,
 									Name:        "SUPER_ADMIN",
 								},
@@ -223,7 +223,7 @@ func TestList(t *testing.T) {
 								CompanyID:  1,
 								LocationID: 2,
 								Role: cerebrum.Role{
-									ID:          cerebrum.AdminRole,
+									ID:          1,
 									AccessLevel: cerebrum.AdminRole,
 									Name:        "ADMIN",
 								},
@@ -250,7 +250,7 @@ func TestList(t *testing.T) {
 						CompanyID:  2,
 						LocationID: 3,
 						Role: cerebrum.Role{
-							ID:          cerebrum.SuperAdminRole,
+							ID:          1,
 							AccessLevel: cerebrum.SuperAdminRole,
 							Name:        "SUPER_ADMIN",
 						},
@@ -269,7 +269,7 @@ func TestList(t *testing.T) {
 						CompanyID:  1,
 						LocationID: 2,
 						Role: cerebrum.Role{
-							ID:          cerebrum.AdminRole,
+							ID:          1,
 							AccessLevel: cerebrum.AdminRole,
 							Name:        "ADMIN",
 						},

@@ -18,12 +18,12 @@ func TestUser(t *testing.T) {
 		"id", "company_id", "location_id", "username", "email", "role"},
 		uint(9), uint(15), uint(52), "rocinante", "rocinante@gmail.com", cerebrum.SuperAdminRole)
 	expectedUser := &cerebrum.AuthUser{
-		ID:         uint(9),
-		Username:   "rocinante",
-		CompanyID:  uint(15),
-		LocationID: uint(52),
-		Email:      "rocinante@gmail.com",
-		Role:       cerebrum.SuperAdminRole,
+		ID:          uint(9),
+		Username:    "rocinante",
+		CompanyID:   uint(15),
+		LocationID:  uint(52),
+		Email:       "rocinante@gmail.com",
+		AccessLevel: cerebrum.SuperAdminRole,
 	}
 	rbacSvc := rbac.New()
 	assert.Equal(t, expectedUser, rbacSvc.User(ctx))

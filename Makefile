@@ -34,7 +34,7 @@ setup: deps refresh serve
 .PHONY: refresh # refresh all docker db's and bootstrap a new dev db
 refresh:
 	@make ENV=all clean
-	@make docker
+	@make ENV=dev docker
 	@make bootstrap
 
 .PHONY: run_script # runs a test script $ go run scripts/testing/main.go
@@ -95,11 +95,11 @@ docker:
 ifeq ($(ENV),dev)
 	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
 	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 10
+	sleep 15
 else ifeq ($(ENV),test)
 	docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.test.yml up --detach
 	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 10
+	sleep 15
 else
 	@echo 'Usage: $ make ENV=XXXXX docker'
 	@echo 'where ENV could be `test` or `dev`'
@@ -108,7 +108,7 @@ endif
 
 .PHONY: bootstrap # bootstrap the db with dev models
 bootstrap:
-	go run scrips/bootstrap/main.go
+	go run scripts/bootstrap/main.go
 
 .PHONY: mysql # login to mysql dev container to inspect
 mysql:

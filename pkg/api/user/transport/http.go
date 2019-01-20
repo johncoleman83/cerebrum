@@ -44,9 +44,9 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  uint                `json:"company_id" validate:"required"`
-	LocationID uint                `json:"location_id" validate:"required"`
-	RoleID     cerebrum.AccessRole `json:"role_id" validate:"required"`
+	CompanyID  uint `json:"company_id" validate:"required"`
+	LocationID uint `json:"location_id" validate:"required"`
+	RoleID     uint `json:"role_id" validate:"required"`
 }
 
 // create Creates new user account
@@ -70,7 +70,8 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if _, ok := cerebrum.ValidRoles[cerebrum.AccessRole(r.RoleID)]; !ok {
+	newID := cerebrum.AccessLevelToID(r.RoleID)
+	if newID == 0 {
 		return ErrUnknownRole
 	}
 
@@ -82,7 +83,7 @@ func (h *HTTP) create(c echo.Context) error {
 		LastName:   r.LastName,
 		CompanyID:  r.CompanyID,
 		LocationID: r.LocationID,
-		RoleID:     r.RoleID,
+		RoleID:     newID,
 	})
 
 	if err != nil {

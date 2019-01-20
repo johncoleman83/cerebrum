@@ -20,18 +20,27 @@ const (
 	UserRole AccessRole = 200
 )
 
-// ValidRoles contains all valid rols
-var ValidRoles = map[AccessRole]bool{
-	SuperAdminRole:    true,
-	AdminRole:         true,
-	CompanyAdminRole:  true,
-	LocationAdminRole: true,
-	UserRole:          true,
+// ValidRoles contains all valid roles mapped to their ID
+var ValidRoles = map[uint]uint{
+	100: 1,
+	110: 2,
+	120: 3,
+	130: 4,
+	200: 5,
 }
 
 // Role model
 type Role struct {
-	ID          AccessRole `json:"id" gorm:"foreignkey:RoleID;association_foreignkey:ID;"`
+	ID          uint       `json:"id"`
 	AccessLevel AccessRole `json:"access_level"`
 	Name        string     `json:"name"`
+}
+
+// AccessLevelToID contains all valid roles
+func AccessLevelToID(accessLevel uint) uint {
+	id, ok := ValidRoles[accessLevel]
+	if !ok {
+		return 0
+	}
+	return id
 }

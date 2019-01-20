@@ -2,7 +2,6 @@ package mockstore
 
 import (
 	"errors"
-	"testing"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
@@ -12,20 +11,6 @@ import (
 	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
-
-// NewDBConn instantiates new mysql database connection via docker container
-func NewDBConn(t *testing.T, cfg *config.Configuration, models ...interface{}) *gorm.DB {
-	db, err := datastore.NewMySQLGormDb(cfg.DB)
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, model := range models {
-		if err := db.CreateTable(model).Error; err != nil {
-			t.Fatal(err)
-		}
-	}
-	return db
-}
 
 // NewDataBaseConnection creates and returns a new GORM connection to the test DB
 func NewDataBaseConnection() (*gorm.DB, error) {

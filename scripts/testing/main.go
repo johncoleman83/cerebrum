@@ -22,7 +22,7 @@ const (
 	adminPassword = "zvuEFGa84598705027345SDfhlasdfasjzqGRFs"
 )
 
-func createUser(cfg *config.Configuration, sec *secure.Service, r cerebrum.AccessRole, e, f, l, u, p string) cerebrum.User {
+func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) cerebrum.User {
 	user := cerebrum.User{
 		Email:      e,
 		FirstName:  f,
@@ -45,11 +45,11 @@ func buildQueries() []string {
 	return []string{
 		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
 		"INSERT INTO locations VALUES (1, now(), now(), NULL, 'admin_location', true, 'admin_address', 1);",
-		"INSERT INTO roles VALUES (100, 100, 'SUPER_ADMIN');",
-		"INSERT INTO roles VALUES (110, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (120, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (130, 130, 'LOCATION_ADMIN');",
-		"INSERT INTO roles VALUES (200, 200, 'USER');",
+		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
+		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
 
@@ -80,7 +80,7 @@ func main() {
 	adminUser := createUser(
 		cfg,
 		sec,
-		cerebrum.AccessRole(100),
+		1,
 		"rocinante@mail.com",
 		"Rocinante",
 		"DeLaMancha",
@@ -100,7 +100,7 @@ func main() {
 	userUser := createUser(
 		cfg,
 		sec,
-		cerebrum.AccessRole(100),
+		1,
 		"user1@mail.com",
 		"user1_first",
 		"user1_last",

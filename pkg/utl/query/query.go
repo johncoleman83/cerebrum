@@ -10,11 +10,11 @@ import (
 // List prepares data for list queries
 func List(u *cerebrum.AuthUser) (*cerebrum.ListQuery, error) {
 	switch true {
-	case u.Role <= cerebrum.AdminRole: // user is SuperAdmin or Admin
+	case u.AccessLevel <= cerebrum.AdminRole: // user is SuperAdmin or Admin
 		return nil, nil
-	case u.Role == cerebrum.CompanyAdminRole:
+	case u.AccessLevel == cerebrum.CompanyAdminRole:
 		return &cerebrum.ListQuery{Query: "company_id = ?", ID: u.CompanyID}, nil
-	case u.Role == cerebrum.LocationAdminRole:
+	case u.AccessLevel == cerebrum.LocationAdminRole:
 		return &cerebrum.ListQuery{Query: "location_id = ?", ID: u.LocationID}, nil
 	default:
 		return nil, echo.ErrForbidden

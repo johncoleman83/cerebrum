@@ -24,14 +24,14 @@ func TestList(t *testing.T) {
 		{
 			name: "Super admin user",
 			args: args{user: &cerebrum.AuthUser{
-				Role: cerebrum.SuperAdminRole,
+				AccessLevel: cerebrum.SuperAdminRole,
 			}},
 		},
 		{
 			name: "Company admin user",
 			args: args{user: &cerebrum.AuthUser{
-				Role:      cerebrum.CompanyAdminRole,
-				CompanyID: 1,
+				AccessLevel: cerebrum.CompanyAdminRole,
+				CompanyID:   1,
 			}},
 			expectedData: &cerebrum.ListQuery{
 				Query: "company_id = ?",
@@ -40,9 +40,9 @@ func TestList(t *testing.T) {
 		{
 			name: "Location admin user",
 			args: args{user: &cerebrum.AuthUser{
-				Role:       cerebrum.LocationAdminRole,
-				CompanyID:  1,
-				LocationID: 2,
+				AccessLevel: cerebrum.LocationAdminRole,
+				CompanyID:   1,
+				LocationID:  2,
 			}},
 			expectedData: &cerebrum.ListQuery{
 				Query: "location_id = ?",
@@ -51,7 +51,7 @@ func TestList(t *testing.T) {
 		{
 			name: "Normal user",
 			args: args{user: &cerebrum.AuthUser{
-				Role: cerebrum.UserRole,
+				AccessLevel: cerebrum.UserRole,
 			}},
 			expectedErr: echo.ErrForbidden,
 		},

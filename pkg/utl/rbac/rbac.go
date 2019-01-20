@@ -31,12 +31,12 @@ func (s *Service) User(c echo.Context) *cerebrum.AuthUser {
 	email := c.Get("email").(string)
 	role := c.Get("role").(cerebrum.AccessRole)
 	return &cerebrum.AuthUser{
-		ID:         id,
-		Username:   user,
-		CompanyID:  companyID,
-		LocationID: locationID,
-		Email:      email,
-		Role:       role,
+		ID:          id,
+		Username:    user,
+		CompanyID:   companyID,
+		LocationID:  locationID,
+		Email:       email,
+		AccessLevel: role,
 	}
 }
 

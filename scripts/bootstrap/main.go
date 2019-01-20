@@ -25,11 +25,11 @@ const (
 // buildQueries creates some SQL queries into a string slice
 func buildQueries() []string {
 	return []string{
-		"INSERT INTO roles VALUES (100, 100, 'SUPER_ADMIN');",
-		"INSERT INTO roles VALUES (110, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (120, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (130, 130, 'LOCATION_ADMIN');",
-		"INSERT INTO roles VALUES (200, 200, 'USER');",
+		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
+		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
 
@@ -68,7 +68,7 @@ func main() {
 		FirstName:  "Rocinante",
 		LastName:   "DeLaMancha",
 		Username:   adminUsername,
-		RoleID:     cerebrum.AccessRole(100),
+		RoleID:     1,
 		CompanyID:  1,
 		LocationID: 1,
 		Password:   adminPassword,

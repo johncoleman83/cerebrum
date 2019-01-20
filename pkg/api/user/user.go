@@ -17,7 +17,7 @@ var (
 
 // Create creates a new user account
 func (u *User) Create(c echo.Context, req cerebrum.User) (*cerebrum.User, error) {
-	if err := u.rbac.AccountCreate(c, req.RoleID, req.CompanyID, req.LocationID); err != nil {
+	if err := u.rbac.AccountCreate(c, req.Role.AccessLevel, req.CompanyID, req.LocationID); err != nil {
 		return nil, err
 	}
 	if ok := u.sec.Password(req.Password, req.FirstName, req.LastName, req.Username, req.Email); !ok {

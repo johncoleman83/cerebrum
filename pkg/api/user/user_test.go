@@ -33,7 +33,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "Braxton",
 				LastName:  "Young",
 				Username:  "BraxtonYoung",
-				RoleID:    cerebrum.AccessRole(100),
+				RoleID:    1,
 				Password:  "Thranduil8822",
 				Email:     "byoung@gmail.com",
 			}},
@@ -58,7 +58,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "Tina",
 				LastName:  "Turner",
 				Username:  "TinaTurner",
-				RoleID:    cerebrum.AccessRole(200),
+				RoleID:    5,
 				Password:  "TinaTurnerMakesItRain",
 				Email:     "tinaturner@gmail.com",
 			}},
@@ -83,7 +83,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "Oprah",
 				LastName:  "Winfrey",
 				Username:  "OprahWinfrey",
-				RoleID:    cerebrum.AccessRole(100),
+				RoleID:    1,
 				Password:  "Thranduil8822",
 				Email:     "owinfrey@gmail.com",
 			}},
@@ -118,7 +118,7 @@ func TestCreate(t *testing.T) {
 				FirstName: "Oprah",
 				LastName:  "Winfrey",
 				Username:  "OprahWinfrey",
-				RoleID:    cerebrum.AccessRole(100),
+				RoleID:    1,
 				Password:  "h4$h3d",
 				Email:     "owinfrey@gmail.com",
 			}}}
@@ -226,10 +226,10 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *cerebrum.AuthUser {
 					return &cerebrum.AuthUser{
-						ID:         1,
-						CompanyID:  2,
-						LocationID: 3,
-						Role:       cerebrum.UserRole,
+						ID:          1,
+						CompanyID:   2,
+						LocationID:  3,
+						AccessLevel: cerebrum.UserRole,
 					}
 				}}},
 		{
@@ -241,10 +241,10 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *cerebrum.AuthUser {
 					return &cerebrum.AuthUser{
-						ID:         1,
-						CompanyID:  2,
-						LocationID: 3,
-						Role:       cerebrum.AdminRole,
+						ID:          1,
+						CompanyID:   2,
+						LocationID:  3,
+						AccessLevel: cerebrum.AdminRole,
 					}
 				}},
 			udb: &mockstore.User{
@@ -388,7 +388,7 @@ func TestDelete(t *testing.T) {
 						LastName:  "Valley",
 						Role: cerebrum.Role{
 							AccessLevel: cerebrum.AdminRole,
-							ID:          cerebrum.AdminRole,
+							ID:          2,
 							Name:        "Admin",
 						},
 					}, nil
@@ -479,7 +479,7 @@ func TestUpdate(t *testing.T) {
 						},
 						CompanyID:  1,
 						LocationID: 2,
-						RoleID:     cerebrum.AccessRole(200),
+						RoleID:     5,
 						FirstName:  "Joanna",
 						LastName:   "Dimsley",
 						Mobile:     "334455",
@@ -516,7 +516,7 @@ func TestUpdate(t *testing.T) {
 				},
 				CompanyID:  1,
 				LocationID: 2,
-				RoleID:     cerebrum.AccessRole(200),
+				RoleID:     5,
 				FirstName:  "Bethany",
 				LastName:   "Christian",
 				Mobile:     "123456",
@@ -536,7 +536,7 @@ func TestUpdate(t *testing.T) {
 						},
 						CompanyID:  1,
 						LocationID: 2,
-						RoleID:     cerebrum.AccessRole(200),
+						RoleID:     5,
 						FirstName:  "AnewName",
 						LastName:   "ALastName",
 						Mobile:     "334455",

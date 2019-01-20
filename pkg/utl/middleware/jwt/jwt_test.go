@@ -12,7 +12,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 func echoHandler(mw ...echo.MiddlewareFunc) *echo.Echo {
@@ -79,7 +79,7 @@ func TestGenerateToken(t *testing.T) {
 		name          string
 		expectedToken string
 		algo          string
-		req           *cerebrum.User
+		req           *models.User
 	}{
 		{
 			name: "Invalid algo",
@@ -88,17 +88,17 @@ func TestGenerateToken(t *testing.T) {
 		{
 			name: "Success",
 			algo: "HS256",
-			req: &cerebrum.User{
-				Base: cerebrum.Base{Model: gorm.Model{
+			req: &models.User{
+				Base: models.Base{Model: gorm.Model{
 					ID: 1,
 				}},
 				Username: "PrincessWarrior",
 				Email:    "PrincessWarrior@mail.com",
-				Role: cerebrum.Role{
-					AccessLevel: cerebrum.SuperAdminRole,
+				Role: models.Role{
+					AccessLevel: models.SuperAdminRole,
 				},
-				CompanyID:  1,
-				LocationID: 1,
+				AccountID:     1,
+				PrimaryTeamID: 1,
 			},
 			expectedToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 		},

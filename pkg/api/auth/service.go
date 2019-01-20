@@ -5,27 +5,27 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Service represents auth service interface
 type Service interface {
-	Authenticate(echo.Context, string, string) (*cerebrum.AuthToken, error)
-	Refresh(echo.Context, string) (*cerebrum.RefreshToken, error)
-	Me(echo.Context) (*cerebrum.User, error)
+	Authenticate(echo.Context, string, string) (*models.AuthToken, error)
+	Refresh(echo.Context, string) (*models.RefreshToken, error)
+	Me(echo.Context) (*models.User, error)
 }
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(*gorm.DB, uint) (*cerebrum.User, error)
-	FindByUsername(*gorm.DB, string) (*cerebrum.User, error)
-	FindByToken(*gorm.DB, string) (*cerebrum.User, error)
-	Update(*gorm.DB, *cerebrum.User) error
+	View(*gorm.DB, uint) (*models.User, error)
+	FindByUsername(*gorm.DB, string) (*models.User, error)
+	FindByToken(*gorm.DB, string) (*models.User, error)
+	Update(*gorm.DB, *models.User) error
 }
 
 // TokenGenerator represents token generator (jwt) interface
 type TokenGenerator interface {
-	GenerateToken(*cerebrum.User) (string, string, error)
+	GenerateToken(*models.User) (string, string, error)
 }
 
 // Securer represents security interface
@@ -36,7 +36,7 @@ type Securer interface {
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) *cerebrum.AuthUser
+	User(echo.Context) *models.AuthUser
 }
 
 // Auth represents auth application service

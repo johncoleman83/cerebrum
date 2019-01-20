@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 const packageName = "user"
@@ -14,11 +14,11 @@ const packageName = "user"
 // LogService represents user logging service
 type LogService struct {
 	user.Service
-	logger cerebrum.Logger
+	logger models.Logger
 }
 
 // New creates new user logging service
-func New(svc user.Service, logger cerebrum.Logger) *LogService {
+func New(svc user.Service, logger models.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -26,7 +26,7 @@ func New(svc user.Service, logger cerebrum.Logger) *LogService {
 }
 
 // Create logging
-func (ls *LogService) Create(c echo.Context, req cerebrum.User) (resp *cerebrum.User, err error) {
+func (ls *LogService) Create(c echo.Context, req models.User) (resp *models.User, err error) {
 	dupe := req
 	dupe.Password = "xxx-redacted-xxx"
 	defer func(begin time.Time) {
@@ -44,7 +44,7 @@ func (ls *LogService) Create(c echo.Context, req cerebrum.User) (resp *cerebrum.
 }
 
 // List logging
-func (ls *LogService) List(c echo.Context, req *cerebrum.Pagination) (resp []cerebrum.User, err error) {
+func (ls *LogService) List(c echo.Context, req *models.Pagination) (resp []models.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -60,7 +60,7 @@ func (ls *LogService) List(c echo.Context, req *cerebrum.Pagination) (resp []cer
 }
 
 // View logging
-func (ls *LogService) View(c echo.Context, req uint) (resp *cerebrum.User, err error) {
+func (ls *LogService) View(c echo.Context, req uint) (resp *models.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -91,7 +91,7 @@ func (ls *LogService) Delete(c echo.Context, req uint) (err error) {
 }
 
 // Update logging
-func (ls *LogService) Update(c echo.Context, req *user.Update) (resp *cerebrum.User, err error) {
+func (ls *LogService) Update(c echo.Context, req *user.Update) (resp *models.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

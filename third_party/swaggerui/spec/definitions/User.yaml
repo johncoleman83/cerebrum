@@ -18,10 +18,10 @@ properties:
   address:
     type: string
     x-go-name: Address
-  company_id:
+  account_id:
     format: uint64
     type: integer
-    x-go-name: CompanyID
+    x-go-name: AccountID
   email:
     type: string
     x-go-name: Email
@@ -39,10 +39,10 @@ properties:
     format: date-time
     type: string
     x-go-name: LastPasswordChange
-  location_id:
+  primary_team_id:
     format: uint64
     type: integer
-    x-go-name: LocationID
+    x-go-name: PrimaryTeamID
   mobile:
     type: string
     x-go-name: Mobile
@@ -55,4 +55,4 @@ properties:
     type: string
     x-go-name: Username
 type: object
-x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/model
+x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models

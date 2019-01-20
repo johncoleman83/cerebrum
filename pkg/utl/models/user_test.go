@@ -1,15 +1,15 @@
-package cerebrum_test
+package models_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 func TestChangePassword(t *testing.T) {
-	user := &cerebrum.User{
+	user := &models.User{
 		FirstName: "TestGuy",
 	}
 
@@ -27,7 +27,7 @@ func TestChangePassword(t *testing.T) {
 }
 
 func TestUpdateLastLogin(t *testing.T) {
-	user := &cerebrum.User{
+	user := &models.User{
 		FirstName: "TestGuy",
 	}
 
@@ -45,23 +45,23 @@ func TestUpdateLastLogin(t *testing.T) {
 }
 
 func TestPaginationLimit(t *testing.T) {
-	reqNegativeLimit := cerebrum.PaginationReq{Limit: -5, Page: 2}
-	expected := &cerebrum.Pagination{Limit: 100, Offset: 200}
+	reqNegativeLimit := models.PaginationReq{Limit: -5, Page: 2}
+	expected := &models.Pagination{Limit: 100, Offset: 200}
 	assert.Equal(t, expected, reqNegativeLimit.NewPagination(), "negative limit should get set to default")
 
-	reqMaxLimit := cerebrum.PaginationReq{Limit: 1001, Page: 2}
+	reqMaxLimit := models.PaginationReq{Limit: 1001, Page: 2}
 	expected.Limit, expected.Offset = 1000, 2000
 	assert.Equal(t, expected, reqMaxLimit.NewPagination(), "beyond max limit should get set to default")
 
-	reqTooBigLimit := cerebrum.PaginationReq{Limit: 9999999, Page: 2}
+	reqTooBigLimit := models.PaginationReq{Limit: 9999999, Page: 2}
 	expected.Limit, expected.Offset = 1000, 2000
 	assert.Equal(t, expected, reqTooBigLimit.NewPagination(), "way beyond max limit should get set to default")
 
-	reqNoChangeAllZeros := cerebrum.PaginationReq{Limit: 0, Page: 0}
+	reqNoChangeAllZeros := models.PaginationReq{Limit: 0, Page: 0}
 	expected.Limit, expected.Offset = 100, 0
 	assert.Equal(t, expected, reqNoChangeAllZeros.NewPagination(), "zeros should get set to default")
 
-	reqNoChange := cerebrum.PaginationReq{Limit: 95, Page: 25}
+	reqNoChange := models.PaginationReq{Limit: 95, Page: 25}
 	expected.Limit, expected.Offset = 95, 2375
 	assert.Equal(t, expected, reqNoChange.NewPagination(), "some random offset and limit within the bounds should stay the same")
 }

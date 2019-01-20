@@ -9,7 +9,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
@@ -27,8 +27,8 @@ func buildQueries() []string {
 	return []string{
 		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
 		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'ACCOUNT_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'TEAM_ADMIN');",
 		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
@@ -58,39 +58,39 @@ func main() {
 	}
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
-	user := cerebrum.User{
-		Base: cerebrum.Base{
+	user := models.User{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
-		Email:      "rocinante@mail.com",
-		FirstName:  "Rocinante",
-		LastName:   "DeLaMancha",
-		Username:   adminUsername,
-		RoleID:     1,
-		CompanyID:  1,
-		LocationID: 1,
-		Password:   adminPassword,
+		Email:         "rocinante@mail.com",
+		FirstName:     "Rocinante",
+		LastName:      "DeLaMancha",
+		Username:      adminUsername,
+		RoleID:        1,
+		AccountID:     1,
+		PrimaryTeamID: 1,
+		Password:      adminPassword,
 	}
-	company := cerebrum.Company{
-		Base: cerebrum.Base{
+	account := models.Account{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
-		Name:    "admin_company",
+		Name:    "admin_account",
 		OwnerID: user.ID,
 	}
-	location := cerebrum.Location{
-		Base: cerebrum.Base{
+	team := models.Team{
+		Base: models.Base{
 			Model: gorm.Model{
 				ID: 1,
 			},
 		},
-		Name:      "admin_location",
-		Address:   "admin_address",
-		CompanyID: company.ID,
+		Name:        "admin_team",
+		Description: "admin_description",
+		AccountID:   account.ID,
 	}
 
 	if !sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email) {
@@ -100,23 +100,23 @@ func main() {
 	if err := db.Create(&user).Error; err != nil {
 		log.Fatal(err)
 	}
-	if err := db.Create(&company).Error; err != nil {
+	if err := db.Create(&account).Error; err != nil {
 		log.Fatal(err)
 	}
-	if err := db.Create(&location).Error; err != nil {
+	if err := db.Create(&team).Error; err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(fmt.Sprintf("bootstrap finished with %d db errors", len(db.GetErrors())))
 }
 
 func createSchema(db *gorm.DB) {
-	models := []interface{}{
-		&cerebrum.Company{},
-		&cerebrum.Location{},
-		&cerebrum.Role{},
-		&cerebrum.User{},
+	modelsList := []interface{}{
+		&models.Account{},
+		&models.Team{},
+		&models.Role{},
+		&models.User{},
 	}
-	for _, model := range models {
+	for _, model := range modelsList {
 		if db.HasTable(model) {
 			log.Printf("dropping table for ")
 			if err := db.DropTable(model).Error; err != nil {

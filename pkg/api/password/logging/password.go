@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // packageName is the name of the package
@@ -15,11 +15,11 @@ const packageName = "password"
 // LogService represents password logging service
 type LogService struct {
 	password.Service
-	logger cerebrum.Logger
+	logger models.Logger
 }
 
 // New creates new password logging service
-func New(svc password.Service, logger cerebrum.Logger) *LogService {
+func New(svc password.Service, logger models.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,

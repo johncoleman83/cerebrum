@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 // Pagination constants
 const (

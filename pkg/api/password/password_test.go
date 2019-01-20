@@ -10,7 +10,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 func TestChange(t *testing.T) {
@@ -32,7 +32,7 @@ func TestChange(t *testing.T) {
 			args: args{id: 1},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id uint) error {
-					return cerebrum.ErrGeneric
+					return models.ErrGeneric
 				}},
 			expectedErr: true,
 		},
@@ -45,11 +45,11 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					if id != 1 {
 						return nil, nil
 					}
-					return nil, cerebrum.ErrGeneric
+					return nil, models.ErrGeneric
 				},
 			},
 		},
@@ -62,8 +62,8 @@ func TestChange(t *testing.T) {
 				}},
 			expectedErr: true,
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -83,8 +83,8 @@ func TestChange(t *testing.T) {
 				}},
 			expectedErr: true,
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -106,12 +106,12 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",
 					}, nil
 				},
-				UpdateFn: func(*gorm.DB, *cerebrum.User) error {
+				UpdateFn: func(*gorm.DB, *models.User) error {
 					return nil
 				},
 			},

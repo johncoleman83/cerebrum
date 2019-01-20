@@ -1,7 +1,7 @@
 get:
   description: Returns list of users. Depending on the user role requesting it,
-    it may return all users for SuperAdmin/Admin users, all company/location users
-    for Company/Location admins, and an error for non-admin users.
+    it may return all users for SuperAdmin/Admin users, all account/team users
+    for Account/Team admins, and an error for non-admin users.
   operationId: listUsers
   parameters:
   - description: number of results
@@ -28,7 +28,7 @@ get:
   - users
 post:
   description: Creates a new user -> first name, last name, email, username,
-    password, password confirm, company id, location id, role id.
+    password, password confirm, account id, team id, role id.
   parameters:
   - description: Request body
     in: body

@@ -4,18 +4,18 @@ package query
 import (
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // List prepares data for list queries
-func List(u *cerebrum.AuthUser) (*cerebrum.ListQuery, error) {
+func List(u *models.AuthUser) (*models.ListQuery, error) {
 	switch true {
-	case u.AccessLevel <= cerebrum.AdminRole: // user is SuperAdmin or Admin
+	case u.AccessLevel <= models.AdminRole: // user is SuperAdmin or Admin
 		return nil, nil
-	case u.AccessLevel == cerebrum.CompanyAdminRole:
-		return &cerebrum.ListQuery{Query: "company_id = ?", ID: u.CompanyID}, nil
-	case u.AccessLevel == cerebrum.LocationAdminRole:
-		return &cerebrum.ListQuery{Query: "location_id = ?", ID: u.LocationID}, nil
+	case u.AccessLevel == models.AccountAdminRole:
+		return &models.ListQuery{Query: "account_id = ?", ID: u.AccountID}, nil
+	case u.AccessLevel == models.TeamAdminRole:
+		return &models.ListQuery{Query: "primary_team_id = ?", ID: u.PrimaryTeamID}, nil
 	default:
 		return nil, echo.ErrForbidden
 	}

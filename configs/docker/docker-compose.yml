@@ -3,9 +3,28 @@ version: '3.7'
 
 services:
 
-  db:
+  db_test:
     image: mysql:latest
-    command: --default-authentication-plugin=mysql_native_password
+    command: mysqld --sql_mode="" --innodb_use_native_aio=0 --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
       - 3306:3306
+    container_name: cerebrum_mysql_test_db_no_1
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=cerebrum_mysql_test_db
+      - MYSQL_USER=mysql_test_user
+      - MYSQL_PASSWORD=mysql_test_password
+
+  db_dev:
+    image: mysql:latest
+    command: mysqld --sql_mode="" --innodb_use_native_aio=0 --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    container_name: cerebrum_mysql_dev_db_1
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=cerebrum_mysql_dev_db
+      - MYSQL_USER=mysql_dev_user
+      - MYSQL_PASSWORD=mysql_dev_password

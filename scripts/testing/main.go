@@ -9,7 +9,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 
@@ -22,16 +22,16 @@ const (
 	adminPassword = "zvuEFGa84598705027345SDfhlasdfasjzqGRFs"
 )
 
-func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) cerebrum.User {
-	user := cerebrum.User{
-		Email:      e,
-		FirstName:  f,
-		LastName:   l,
-		Username:   u,
-		RoleID:     r,
-		CompanyID:  1,
-		LocationID: 1,
-		Password:   p,
+func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) models.User {
+	user := models.User{
+		Email:         e,
+		FirstName:     f,
+		LastName:      l,
+		Username:      u,
+		RoleID:        r,
+		AccountID:     1,
+		PrimaryTeamID: 1,
+		Password:      p,
 	}
 	if ok := sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email); !ok {
 		log.Fatal(fmt.Sprintf("Password %v is not strong enough", user.Password))
@@ -43,12 +43,12 @@ func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l,
 // buildQueries creates some SQL queries into a string slice
 func buildQueries() []string {
 	return []string{
-		"INSERT INTO companies VALUES (1, now(), now(), NULL, 'admin_company', true);",
-		"INSERT INTO locations VALUES (1, now(), now(), NULL, 'admin_location', true, 'admin_address', 1);",
+		"INSERT INTO accounts VALUES (1, now(), now(), NULL, 'admin_account', true);",
+		"INSERT INTO teams VALUES (1, now(), now(), NULL, 'admin_team', true, 'admin_description', 1);",
 		"INSERT INTO roles VALUES (1, 100, 'SUPER_ADMIN');",
 		"INSERT INTO roles VALUES (2, 110, 'ADMIN');",
-		"INSERT INTO roles VALUES (3, 120, 'COMPANY_ADMIN');",
-		"INSERT INTO roles VALUES (4, 130, 'LOCATION_ADMIN');",
+		"INSERT INTO roles VALUES (3, 120, 'ACCOUNT_ADMIN');",
+		"INSERT INTO roles VALUES (4, 130, 'TEAM_ADMIN');",
 		"INSERT INTO roles VALUES (5, 200, 'USER');",
 	}
 }
@@ -72,7 +72,7 @@ func main() {
 	}
 
 	queries := buildQueries()
-	createSchema(db, &cerebrum.Company{}, &cerebrum.Location{}, cerebrum.Role{}, &cerebrum.User{})
+	createSchema(db, &models.Account{}, &models.Team{}, models.Role{}, &models.User{})
 	for _, v := range queries[0:len(queries)] {
 		db.Exec(v)
 	}
@@ -89,7 +89,7 @@ func main() {
 	if err := db.Create(&adminUser).Error; err != nil {
 		log.Fatal(err)
 	}
-	var checkUser = new(cerebrum.User)
+	var checkUser = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", adminUser.ID).First(&checkUser).Error; err != nil {
 		log.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func main() {
 	if err := db.Create(&userUser).Error; err != nil {
 		log.Fatal(err)
 	}
-	checkUser = new(cerebrum.User)
+	checkUser = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", userUser.ID).First(&checkUser).Error; err != nil {
 		log.Fatal(err)
 	}
@@ -119,8 +119,8 @@ func main() {
 	log.Println("USER PASSWORD DOES MATCH!!")
 }
 
-func createSchema(db *gorm.DB, models ...interface{}) {
-	for _, model := range models {
+func createSchema(db *gorm.DB, modelsList ...interface{}) {
+	for _, model := range modelsList {
 		if db.HasTable(model) {
 			log.Printf("dropping table for ")
 			db.DropTable(model)

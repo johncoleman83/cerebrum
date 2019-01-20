@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Custom errors
@@ -14,7 +14,7 @@ var (
 )
 
 // Authenticate tries to authenticate the user provided by username and password
-func (a *Auth) Authenticate(c echo.Context, user, pass string) (*cerebrum.AuthToken, error) {
+func (a *Auth) Authenticate(c echo.Context, user, pass string) (*models.AuthToken, error) {
 	// TODO: This query does not need to include roles, fix that
 	u, err := a.udb.FindByUsername(a.db, user)
 	if err != nil {
@@ -27,7 +27,7 @@ func (a *Auth) Authenticate(c echo.Context, user, pass string) (*cerebrum.AuthTo
 
 	token, expire, err := a.tg.GenerateToken(u)
 	if err != nil {
-		return nil, cerebrum.ErrUnauthorized
+		return nil, models.ErrUnauthorized
 	}
 
 	u.UpdateLastLogin(a.sec.Token(token))
@@ -36,11 +36,11 @@ func (a *Auth) Authenticate(c echo.Context, user, pass string) (*cerebrum.AuthTo
 		return nil, err
 	}
 
-	return &cerebrum.AuthToken{Token: token, Expires: expire, RefreshToken: u.Token}, nil
+	return &models.AuthToken{Token: token, Expires: expire, RefreshToken: u.Token}, nil
 }
 
 // Refresh refreshes jwt token and puts new claims inside
-func (a *Auth) Refresh(c echo.Context, token string) (*cerebrum.RefreshToken, error) {
+func (a *Auth) Refresh(c echo.Context, token string) (*models.RefreshToken, error) {
 	user, err := a.udb.FindByToken(a.db, token)
 	if err != nil {
 		return nil, err
@@ -49,11 +49,11 @@ func (a *Auth) Refresh(c echo.Context, token string) (*cerebrum.RefreshToken, er
 	if err != nil {
 		return nil, err
 	}
-	return &cerebrum.RefreshToken{Token: token, Expires: expire}, nil
+	return &models.RefreshToken{Token: token, Expires: expire}, nil
 }
 
 // Me returns info about currently logged user
-func (a *Auth) Me(c echo.Context) (*cerebrum.User, error) {
+func (a *Auth) Me(c echo.Context) (*models.User, error) {
 	au := a.rbac.User(c)
 	return a.udb.View(a.db, au.ID)
 }

@@ -1,4 +1,4 @@
-package cerebrum
+package models
 
 // AccessRole represents access role type
 type AccessRole uint
@@ -10,11 +10,11 @@ const (
 	// AdminRole has admin specific permissions
 	AdminRole AccessRole = 110
 
-	// CompanyAdminRole can edit company specific things
-	CompanyAdminRole AccessRole = 120
+	// AccountAdminRole can edit account specific things
+	AccountAdminRole AccessRole = 120
 
-	// LocationAdminRole can edit location specific things
-	LocationAdminRole AccessRole = 130
+	// TeamAdminRole can edit team specific things
+	TeamAdminRole AccessRole = 130
 
 	// UserRole is a standard user
 	UserRole AccessRole = 200

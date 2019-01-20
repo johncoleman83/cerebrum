@@ -4,7 +4,6 @@ package datastore
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // for use with gorm
@@ -24,12 +23,6 @@ func FormatDSN(dbConfig *config.Database) string {
 		dbConfig.Name,
 		dbConfig.Settings,
 	)
-}
-
-// ExtractHostAndPortFrom turns an address into 2 host and port variables
-func ExtractHostAndPortFrom(addr string) (string, string) {
-	addrSplit := strings.Split(addr, ":")
-	return addrSplit[0], addrSplit[1]
 }
 
 // NewMySQLGormDb creates new database connection to a mysql database

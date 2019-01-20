@@ -3,7 +3,7 @@ package query_test
 import (
 	"testing"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 
 	"github.com/labstack/echo"
 
@@ -13,45 +13,45 @@ import (
 
 func TestList(t *testing.T) {
 	type args struct {
-		user *cerebrum.AuthUser
+		user *models.AuthUser
 	}
 	cases := []struct {
 		name         string
 		args         args
-		expectedData *cerebrum.ListQuery
+		expectedData *models.ListQuery
 		expectedErr  error
 	}{
 		{
 			name: "Super admin user",
-			args: args{user: &cerebrum.AuthUser{
-				AccessLevel: cerebrum.SuperAdminRole,
+			args: args{user: &models.AuthUser{
+				AccessLevel: models.SuperAdminRole,
 			}},
 		},
 		{
-			name: "Company admin user",
-			args: args{user: &cerebrum.AuthUser{
-				AccessLevel: cerebrum.CompanyAdminRole,
-				CompanyID:   1,
+			name: "Account admin user",
+			args: args{user: &models.AuthUser{
+				AccessLevel: models.AccountAdminRole,
+				AccountID:   1,
 			}},
-			expectedData: &cerebrum.ListQuery{
-				Query: "company_id = ?",
+			expectedData: &models.ListQuery{
+				Query: "account_id = ?",
 				ID:    1},
 		},
 		{
-			name: "Location admin user",
-			args: args{user: &cerebrum.AuthUser{
-				AccessLevel: cerebrum.LocationAdminRole,
-				CompanyID:   1,
-				LocationID:  2,
+			name: "Team admin user",
+			args: args{user: &models.AuthUser{
+				AccessLevel:   models.TeamAdminRole,
+				AccountID:     1,
+				PrimaryTeamID: 2,
 			}},
-			expectedData: &cerebrum.ListQuery{
-				Query: "location_id = ?",
+			expectedData: &models.ListQuery{
+				Query: "primary_team_id = ?",
 				ID:    2},
 		},
 		{
 			name: "Normal user",
-			args: args{user: &cerebrum.AuthUser{
-				AccessLevel: cerebrum.UserRole,
+			args: args{user: &models.AuthUser{
+				AccessLevel: models.UserRole,
 			}},
 			expectedErr: echo.ErrForbidden,
 		},

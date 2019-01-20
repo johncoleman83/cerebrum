@@ -11,7 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Custom errors
@@ -29,8 +29,8 @@ func NewUser() *User {
 }
 
 // Create creates a new user on database
-func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
-	var checkUser = new(cerebrum.User)
+func (u *User) Create(db *gorm.DB, user models.User) (*models.User, error) {
+	var checkUser = new(models.User)
 	if err := db.Where(
 		"lower(username) = ? or lower(email) = ?",
 		strings.ToLower(user.Username),
@@ -46,8 +46,8 @@ func (u *User) Create(db *gorm.DB, user cerebrum.User) (*cerebrum.User, error) {
 }
 
 // View returns single user by ID
-func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
-	var user = new(cerebrum.User)
+func (u *User) View(db *gorm.DB, id uint) (*models.User, error) {
+	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
 	} else if err != nil {
@@ -58,8 +58,8 @@ func (u *User) View(db *gorm.DB, id uint) (*cerebrum.User, error) {
 }
 
 // FindByUsername queries for single user by username
-func (u *User) FindByUsername(db *gorm.DB, uname string) (*cerebrum.User, error) {
-	var user = new(cerebrum.User)
+func (u *User) FindByUsername(db *gorm.DB, uname string) (*models.User, error) {
+	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("username = ?", uname).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
 	} else if err != nil {
@@ -70,8 +70,8 @@ func (u *User) FindByUsername(db *gorm.DB, uname string) (*cerebrum.User, error)
 }
 
 // FindByToken queries for single user by token
-func (u *User) FindByToken(db *gorm.DB, token string) (*cerebrum.User, error) {
-	var user = new(cerebrum.User)
+func (u *User) FindByToken(db *gorm.DB, token string) (*models.User, error) {
+	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("token = ?", token).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
 	} else if err != nil {
@@ -82,8 +82,8 @@ func (u *User) FindByToken(db *gorm.DB, token string) (*cerebrum.User, error) {
 }
 
 // List returns list of all users retrievable for the current user, depending on role
-func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination) ([]cerebrum.User, error) {
-	var users []cerebrum.User
+func (u *User) List(db *gorm.DB, qp *models.ListQuery, p *models.Pagination) ([]models.User, error) {
+	var users []models.User
 	// Inner Join users with Role
 	if qp != nil {
 		if err := db.Set("gorm:auto_preload", true).Offset(p.Offset).Limit(p.Limit).Where(qp.Query, qp.ID).Find(&users).Order("lastname asc").Error; err != nil {
@@ -100,11 +100,11 @@ func (u *User) List(db *gorm.DB, qp *cerebrum.ListQuery, p *cerebrum.Pagination)
 }
 
 // Update updates user's info
-func (u *User) Update(db *gorm.DB, user *cerebrum.User) error {
+func (u *User) Update(db *gorm.DB, user *models.User) error {
 	return db.Save(user).Error
 }
 
 // Delete sets deleted_at for a user
-func (u *User) Delete(db *gorm.DB, user *cerebrum.User) error {
+func (u *User) Delete(db *gorm.DB, user *models.User) error {
 	return db.Delete(user).Error
 }

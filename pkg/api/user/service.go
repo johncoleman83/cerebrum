@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Securer represents security interface
@@ -16,28 +16,28 @@ type Securer interface {
 
 // UDB represents user repository interface
 type UDB interface {
-	Create(*gorm.DB, cerebrum.User) (*cerebrum.User, error)
-	View(*gorm.DB, uint) (*cerebrum.User, error)
-	List(*gorm.DB, *cerebrum.ListQuery, *cerebrum.Pagination) ([]cerebrum.User, error)
-	Update(*gorm.DB, *cerebrum.User) error
-	Delete(*gorm.DB, *cerebrum.User) error
+	Create(*gorm.DB, models.User) (*models.User, error)
+	View(*gorm.DB, uint) (*models.User, error)
+	List(*gorm.DB, *models.ListQuery, *models.Pagination) ([]models.User, error)
+	Update(*gorm.DB, *models.User) error
+	Delete(*gorm.DB, *models.User) error
 }
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) *cerebrum.AuthUser
+	User(echo.Context) *models.AuthUser
 	EnforceUser(echo.Context, uint) error
-	AccountCreate(echo.Context, cerebrum.AccessRole, uint, uint) error
-	IsLowerRole(echo.Context, cerebrum.AccessRole) error
+	AccountCreate(echo.Context, models.AccessRole, uint, uint) error
+	IsLowerRole(echo.Context, models.AccessRole) error
 }
 
 // Service represents user application interface
 type Service interface {
-	Create(echo.Context, cerebrum.User) (*cerebrum.User, error)
-	List(echo.Context, *cerebrum.Pagination) ([]cerebrum.User, error)
-	View(echo.Context, uint) (*cerebrum.User, error)
+	Create(echo.Context, models.User) (*models.User, error)
+	List(echo.Context, *models.Pagination) ([]models.User, error)
+	View(echo.Context, uint) (*models.User, error)
 	Delete(echo.Context, uint) error
-	Update(echo.Context, *Update) (*cerebrum.User, error)
+	Update(echo.Context, *Update) (*models.User, error)
 }
 
 // User represents user application service

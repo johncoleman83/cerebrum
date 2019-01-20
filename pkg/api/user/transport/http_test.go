@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/user"
 	"github.com/johncoleman83/cerebrum/pkg/api/user/transport"
@@ -26,35 +26,35 @@ func TestCreate(t *testing.T) {
 		name           string
 		req            string
 		expectedStatus int
-		expectedResp   *cerebrum.User
+		expectedResp   *models.User
 		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
 		{
 			name:           "Fail on bad params",
-			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation with short username",
-			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation of email",
-			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		}, {
 			name:           "Fail on non-matching passwords",
-			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","company_id":1,"location_id":2,"role_id":199}`,
+			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"primary_team_id":2,"role_id":199}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -62,9 +62,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "Fail on RBAC",
-			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -73,14 +73,14 @@ func TestCreate(t *testing.T) {
 
 		{
 			name: "Success",
-			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
+			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID cerebrum.AccessRole, companyID, locationID uint) error {
+				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return nil
 				},
 			},
 			udb: &mockstore.User{
-				CreateFn: func(db *gorm.DB, usr cerebrum.User) (*cerebrum.User, error) {
+				CreateFn: func(db *gorm.DB, usr models.User) (*models.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
 					usr.UpdatedAt = mock.TestTime(2018)
@@ -95,20 +95,20 @@ func TestCreate(t *testing.T) {
 					return true
 				},
 			},
-			expectedResp: &cerebrum.User{
-				Base: cerebrum.Base{
+			expectedResp: &models.User{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID:        1,
 						CreatedAt: mock.TestTime(2018),
 						UpdatedAt: mock.TestTime(2018),
 					},
 				},
-				FirstName:  "Edwin",
-				LastName:   "Abbott",
-				Username:   "edwinabbott",
-				Email:      "edwinabbott@gmail.com",
-				CompanyID:  1,
-				LocationID: 2,
+				FirstName: "Edwin",
+				LastName:  "Abbott",
+				Username:  "edwinabbott",
+				Email:     "edwinabbott@gmail.com",
+				AccountID: 1,
+				PrimaryTeamID:    2,
 			},
 			expectedStatus: http.StatusOK,
 		},
@@ -128,7 +128,7 @@ func TestCreate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.expectedResp != nil {
-				response := new(cerebrum.User)
+				response := new(models.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -141,8 +141,8 @@ func TestCreate(t *testing.T) {
 
 func TestList(t *testing.T) {
 	type listResponse struct {
-		Users []cerebrum.User `json:"users"`
-		Page  int             `json:"page"`
+		Users []models.User `json:"users"`
+		Page  int           `json:"page"`
 	}
 	cases := []struct {
 		name           string
@@ -162,12 +162,12 @@ func TestList(t *testing.T) {
 			name: "Fail on query list",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) *cerebrum.AuthUser {
-					return &cerebrum.AuthUser{
+				UserFn: func(c echo.Context) *models.AuthUser {
+					return &models.AuthUser{
 						ID:          1,
-						CompanyID:   2,
-						LocationID:  3,
-						AccessLevel: cerebrum.UserRole,
+						AccountID:   2,
+						PrimaryTeamID:      3,
+						AccessLevel: models.UserRole,
 						Email:       "barnabus@mail.com",
 					}
 				}},
@@ -177,100 +177,100 @@ func TestList(t *testing.T) {
 			name: "Success",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) *cerebrum.AuthUser {
-					return &cerebrum.AuthUser{
+				UserFn: func(c echo.Context) *models.AuthUser {
+					return &models.AuthUser{
 						ID:          1,
-						CompanyID:   2,
-						LocationID:  3,
-						AccessLevel: cerebrum.SuperAdminRole,
+						AccountID:   2,
+						PrimaryTeamID:      3,
+						AccessLevel: models.SuperAdminRole,
 						Email:       "pingpong@mail.com",
 					}
 				}},
 			udb: &mockstore.User{
-				ListFn: func(db *gorm.DB, q *cerebrum.ListQuery, p *cerebrum.Pagination) ([]cerebrum.User, error) {
+				ListFn: func(db *gorm.DB, q *models.ListQuery, p *models.Pagination) ([]models.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
-						return []cerebrum.User{
+						return []models.User{
 							{
-								Base: cerebrum.Base{
+								Base: models.Base{
 									Model: gorm.Model{
 										ID:        10,
 										CreatedAt: mock.TestTime(2001),
 										UpdatedAt: mock.TestTime(2002),
 									},
 								},
-								FirstName:  "ilove",
-								LastName:   "futbol",
-								Email:      "futbol@mail.com",
-								CompanyID:  2,
-								LocationID: 3,
-								Role: cerebrum.Role{
+								FirstName: "ilove",
+								LastName:  "futbol",
+								Email:     "futbol@mail.com",
+								AccountID: 2,
+								PrimaryTeamID:    3,
+								Role: models.Role{
 									ID:          1,
-									AccessLevel: cerebrum.SuperAdminRole,
+									AccessLevel: models.SuperAdminRole,
 									Name:        "SUPER_ADMIN",
 								},
 							},
 							{
-								Base: cerebrum.Base{
+								Base: models.Base{
 									Model: gorm.Model{
 										ID:        11,
 										CreatedAt: mock.TestTime(2004),
 										UpdatedAt: mock.TestTime(2005),
 									},
 								},
-								FirstName:  "Joanna",
-								LastName:   "Dye",
-								Email:      "joanna@mail.com",
-								CompanyID:  1,
-								LocationID: 2,
-								Role: cerebrum.Role{
+								FirstName: "Joanna",
+								LastName:  "Dye",
+								Email:     "joanna@mail.com",
+								AccountID: 1,
+								PrimaryTeamID:    2,
+								Role: models.Role{
 									ID:          1,
-									AccessLevel: cerebrum.AdminRole,
+									AccessLevel: models.AdminRole,
 									Name:        "ADMIN",
 								},
 							},
 						}, nil
 					}
-					return nil, cerebrum.ErrGeneric
+					return nil, models.ErrGeneric
 				},
 			},
 			expectedStatus: http.StatusOK,
 			expectedResp: &listResponse{
-				Users: []cerebrum.User{
+				Users: []models.User{
 					{
-						Base: cerebrum.Base{
+						Base: models.Base{
 							Model: gorm.Model{
 								ID:        10,
 								CreatedAt: mock.TestTime(2001),
 								UpdatedAt: mock.TestTime(2002),
 							},
 						},
-						FirstName:  "ilove",
-						LastName:   "futbol",
-						Email:      "futbol@mail.com",
-						CompanyID:  2,
-						LocationID: 3,
-						Role: cerebrum.Role{
+						FirstName: "ilove",
+						LastName:  "futbol",
+						Email:     "futbol@mail.com",
+						AccountID: 2,
+						PrimaryTeamID:    3,
+						Role: models.Role{
 							ID:          1,
-							AccessLevel: cerebrum.SuperAdminRole,
+							AccessLevel: models.SuperAdminRole,
 							Name:        "SUPER_ADMIN",
 						},
 					},
 					{
-						Base: cerebrum.Base{
+						Base: models.Base{
 							Model: gorm.Model{
 								ID:        11,
 								CreatedAt: mock.TestTime(2004),
 								UpdatedAt: mock.TestTime(2005),
 							},
 						},
-						FirstName:  "Joanna",
-						LastName:   "Dye",
-						Email:      "joanna@mail.com",
-						CompanyID:  1,
-						LocationID: 2,
-						Role: cerebrum.Role{
+						FirstName: "Joanna",
+						LastName:  "Dye",
+						Email:     "joanna@mail.com",
+						AccountID: 1,
+						PrimaryTeamID:    2,
+						Role: models.Role{
 							ID:          1,
-							AccessLevel: cerebrum.AdminRole,
+							AccessLevel: models.AdminRole,
 							Name:        "ADMIN",
 						},
 					},
@@ -308,7 +308,7 @@ func TestView(t *testing.T) {
 		name           string
 		req            string
 		expectedStatus int
-		expectedResp   *cerebrum.User
+		expectedResp   *models.User
 		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
@@ -337,9 +337,9 @@ func TestView(t *testing.T) {
 				},
 			},
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
-						Base: cerebrum.Base{
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
+						Base: models.Base{
 							Model: gorm.Model{
 								ID:        1,
 								CreatedAt: mock.TestTime(2000),
@@ -353,8 +353,8 @@ func TestView(t *testing.T) {
 				},
 			},
 			expectedStatus: http.StatusOK,
-			expectedResp: &cerebrum.User{
-				Base: cerebrum.Base{
+			expectedResp: &models.User{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID:        1,
 						CreatedAt: mock.TestTime(2000),
@@ -382,7 +382,7 @@ func TestView(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.expectedResp != nil {
-				response := new(cerebrum.User)
+				response := new(models.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -399,7 +399,7 @@ func TestUpdate(t *testing.T) {
 		req            string
 		id             string
 		expectedStatus int
-		expectedResp   *cerebrum.User
+		expectedResp   *models.User
 		udb            *mockstore.User
 		rbac           *mock.RBAC
 		sec            *mock.Secure
@@ -436,9 +436,9 @@ func TestUpdate(t *testing.T) {
 				},
 			},
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
-						Base: cerebrum.Base{
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
+						Base: models.Base{
 							Model: gorm.Model{
 								ID:        1,
 								CreatedAt: mock.TestTime(2000),
@@ -452,15 +452,15 @@ func TestUpdate(t *testing.T) {
 						Phone:     "332223",
 					}, nil
 				},
-				UpdateFn: func(db *gorm.DB, usr *cerebrum.User) error {
+				UpdateFn: func(db *gorm.DB, usr *models.User) error {
 					usr.UpdatedAt = mock.TestTime(2010)
 					usr.Mobile = "991991"
 					return nil
 				},
 			},
 			expectedStatus: http.StatusOK,
-			expectedResp: &cerebrum.User{
-				Base: cerebrum.Base{
+			expectedResp: &models.User{
+				Base: models.Base{
 					Model: gorm.Model{
 						ID:        1,
 						CreatedAt: mock.TestTime(2000),
@@ -495,7 +495,7 @@ func TestUpdate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.expectedResp != nil {
-				response := new(cerebrum.User)
+				response := new(models.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -524,16 +524,16 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			id:   `1`,
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
-						Role: cerebrum.Role{
-							AccessLevel: cerebrum.CompanyAdminRole,
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
+						Role: models.Role{
+							AccessLevel: models.AccountAdminRole,
 						},
 					}, nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, cerebrum.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, models.AccessRole) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -543,19 +543,19 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			id:   `1`,
 			udb: &mockstore.User{
-				ViewFn: func(db *gorm.DB, id uint) (*cerebrum.User, error) {
-					return &cerebrum.User{
-						Role: cerebrum.Role{
-							AccessLevel: cerebrum.CompanyAdminRole,
+				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
+					return &models.User{
+						Role: models.Role{
+							AccessLevel: models.AccountAdminRole,
 						},
 					}, nil
 				},
-				DeleteFn: func(*gorm.DB, *cerebrum.User) error {
+				DeleteFn: func(*gorm.DB, *models.User) error {
 					return nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, cerebrum.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, models.AccessRole) error {
 					return nil
 				},
 			},

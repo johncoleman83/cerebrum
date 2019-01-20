@@ -8,7 +8,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
 
@@ -34,13 +34,13 @@ func NewDataBaseConnection() (*gorm.DB, error) {
 
 // DropAndCreateAllTablesFor drops all tables in input db and recreates the ones listed in the function
 func DropAndCreateAllTablesFor(db *gorm.DB) error {
-	models := []interface{}{
-		&cerebrum.Company{},
-		&cerebrum.Location{},
-		&cerebrum.Role{},
-		&cerebrum.User{},
+	modelsList := []interface{}{
+		&models.Account{},
+		&models.Team{},
+		&models.Role{},
+		&models.User{},
 	}
-	for _, model := range models {
+	for _, model := range modelsList {
 		if db.HasTable(model) {
 			if err := db.DropTable(model).Error; err != nil {
 				return err
@@ -54,8 +54,8 @@ func DropAndCreateAllTablesFor(db *gorm.DB) error {
 }
 
 // InsertRowsFor inserts multiple values into database
-func InsertRowsFor(db *gorm.DB, models ...interface{}) error {
-	for _, v := range models {
+func InsertRowsFor(db *gorm.DB, modelsList ...interface{}) error {
+	for _, v := range modelsList {
 		if err := db.Create(v).Error; err != nil {
 			return err
 		}

@@ -9,7 +9,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
 
 // Service provides a Json-Web-Token authentication implementation
@@ -49,15 +49,15 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 			claims := token.Claims.(jwt.MapClaims)
 
 			id := uint(claims["id"].(float64))
-			companyID := uint(claims["c"].(float64))
-			locationID := uint(claims["l"].(float64))
+			accountID := uint(claims["c"].(float64))
+			teamID := uint(claims["l"].(float64))
 			username := claims["u"].(string)
 			email := claims["e"].(string)
-			role := cerebrum.AccessRole(claims["r"].(float64))
+			role := models.AccessRole(claims["r"].(float64))
 
 			c.Set("id", id)
-			c.Set("company_id", companyID)
-			c.Set("location_id", locationID)
+			c.Set("account_id", accountID)
+			c.Set("primary_team_id", teamID)
 			c.Set("username", username)
 			c.Set("email", email)
 			c.Set("role", role)
@@ -72,16 +72,16 @@ func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
 
 	token := c.Request().Header.Get("Authorization")
 	if token == "" {
-		return nil, cerebrum.ErrGeneric
+		return nil, models.ErrGeneric
 	}
 	parts := strings.SplitN(token, " ", 2)
 	if len(parts) != 2 || parts[0] != "Bearer" {
-		return nil, cerebrum.ErrGeneric
+		return nil, models.ErrGeneric
 	}
 
 	return jwt.Parse(parts[1], func(token *jwt.Token) (interface{}, error) {
 		if j.algo != token.Method {
-			return nil, cerebrum.ErrGeneric
+			return nil, models.ErrGeneric
 		}
 		return j.key, nil
 	})
@@ -89,7 +89,7 @@ func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
 }
 
 // GenerateToken generates new JWT token and populates it with user data
-func (j *Service) GenerateToken(u *cerebrum.User) (string, string, error) {
+func (j *Service) GenerateToken(u *models.User) (string, string, error) {
 	expire := time.Now().Add(j.duration)
 
 	token := jwt.NewWithClaims((j.algo), jwt.MapClaims{
@@ -97,8 +97,8 @@ func (j *Service) GenerateToken(u *cerebrum.User) (string, string, error) {
 		"u":   u.Username,
 		"e":   u.Email,
 		"r":   u.Role.AccessLevel,
-		"c":   u.CompanyID,
-		"l":   u.LocationID,
+		"c":   u.AccountID,
+		"l":   u.PrimaryTeamID,
 		"exp": expire.Unix(),
 	})
 

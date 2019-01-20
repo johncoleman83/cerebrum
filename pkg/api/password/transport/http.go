@@ -6,7 +6,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
 
-	cerebrum "github.com/johncoleman83/cerebrum/pkg/utl/model"
+	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 
 	"github.com/labstack/echo"
 )
@@ -68,7 +68,7 @@ type changeReq struct {
 func (h *HTTP) change(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		return cerebrum.ErrBadRequest
+		return models.ErrBadRequest
 	}
 
 	p := new(changeReq)

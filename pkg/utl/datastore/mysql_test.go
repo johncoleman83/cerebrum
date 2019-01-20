@@ -1,6 +1,5 @@
 package datastore_test
 
-// TODO: NEED TO UPDATE THIS TO ACCOUNT FOR NEW CONTAINER SOLUTION
 import (
 	"errors"
 	"fmt"
@@ -12,6 +11,29 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
 	"github.com/johncoleman83/cerebrum/pkg/utl/support"
 )
+
+func TestFormatDSN(t *testing.T) {
+	cfgPath := support.TestingConfigPath()
+	cfg, err := config.LoadConfigFrom(cfgPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg == nil {
+		t.Fatal(errors.New("unknown error loading testing yaml file"))
+	}
+	expectedDSN := fmt.Sprintf(
+		"%s:%s@%s(%s:%s)/%s?%s",
+		cfg.DB.User,
+		cfg.DB.Password,
+		cfg.DB.Protocol,
+		cfg.DB.Host,
+		cfg.DB.Port,
+		cfg.DB.Name,
+		cfg.DB.Settings,
+	)
+	dsn := datastore.FormatDSN(cfg.DB)
+	assert.Equal(t, expectedDSN, dsn, "dsn should be properly formatted")
+}
 
 func TestNew(t *testing.T) {
 	cfgPath := support.TestingConfigPath()

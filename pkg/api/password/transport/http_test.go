@@ -25,7 +25,7 @@ func TestChangePassword(t *testing.T) {
 		req            string
 		expectedStatus int
 		id             string
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -66,7 +66,7 @@ func TestChangePassword(t *testing.T) {
 				},
 			},
 			id: "1",
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Password: "oldPassword",

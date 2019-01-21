@@ -27,7 +27,7 @@ func TestLogin(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *models.AuthToken
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		jwt            *mock.JWT
 		sec            *mock.Secure
 	}{
@@ -40,7 +40,7 @@ func TestLogin(t *testing.T) {
 			name:           "Fail on FindByUsername",
 			req:            `{"username":"juzernejm","password":"hunter123"}`,
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(*gorm.DB, string) (*models.User, error) {
 					return nil, models.ErrGeneric
 				},
@@ -50,7 +50,7 @@ func TestLogin(t *testing.T) {
 			name:           "Success",
 			req:            `{"username":"juzernejm","password":"hunter123"}`,
 			expectedStatus: http.StatusOK,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(*gorm.DB, string) (*models.User, error) {
 					return &models.User{
 						Password: "hunter123",
@@ -108,14 +108,14 @@ func TestRefresh(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *models.RefreshToken
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		jwt            *mock.JWT
 	}{
 		{
 			name:           "Fail on FindByToken",
 			req:            "refreshtoken",
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByTokenFn: func(*gorm.DB, string) (*models.User, error) {
 					return nil, models.ErrGeneric
 				},
@@ -125,7 +125,7 @@ func TestRefresh(t *testing.T) {
 			name:           "Success",
 			req:            "refreshtoken",
 			expectedStatus: http.StatusOK,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByTokenFn: func(*gorm.DB, string) (*models.User, error) {
 					return &models.User{
 						Username: "bugsbunny",
@@ -171,13 +171,13 @@ func TestMe(t *testing.T) {
 		expectedStatus int
 		expectedResp   *models.User
 		header         string
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 	}{
 		{
 			name:           "Fail on user view",
 			expectedStatus: http.StatusInternalServerError,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(*gorm.DB, uint) (*models.User, error) {
 					return nil, models.ErrGeneric
 				},
@@ -192,7 +192,7 @@ func TestMe(t *testing.T) {
 		{
 			name:           "Success",
 			expectedStatus: http.StatusOK,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{

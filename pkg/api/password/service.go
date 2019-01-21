@@ -13,8 +13,8 @@ type Service interface {
 	Change(echo.Context, uint, string, string) error
 }
 
-// UserDBClient represents user repository interface
-type UserDBClient interface {
+// UserDBClientInterface represents user repository interface
+type UserDBClientInterface interface {
 	View(*gorm.DB, uint) (*models.User, error)
 	Update(*gorm.DB, *models.User) error
 }
@@ -34,13 +34,13 @@ type RBAC interface {
 // Password represents password application service
 type Password struct {
 	db   *gorm.DB
-	udb  UserDBClient
+	udb  UserDBClientInterface
 	rbac RBAC
 	sec  Securer
 }
 
 // New creates new password application service
-func New(db *gorm.DB, udb UserDBClient, rbac RBAC, sec Securer) *Password {
+func New(db *gorm.DB, udb UserDBClientInterface, rbac RBAC, sec Securer) *Password {
 	return &Password{
 		db:   db,
 		udb:  udb,

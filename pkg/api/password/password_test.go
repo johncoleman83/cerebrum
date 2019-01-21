@@ -23,7 +23,7 @@ func TestChange(t *testing.T) {
 		name        string
 		args        args
 		expectedErr bool
-		udb         *mockstore.User
+		udb         *mockstore.UserDBClient
 		rbac        *mock.RBAC
 		sec         *mock.Secure
 	}{
@@ -44,7 +44,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					if id != 1 {
 						return nil, nil
@@ -61,7 +61,7 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Password: "HashedPassword",
@@ -82,7 +82,7 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Password: "HashedPassword",
@@ -105,7 +105,7 @@ func TestChange(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",

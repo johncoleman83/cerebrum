@@ -23,8 +23,8 @@ var (
 // User represents the client for user table
 type User struct{}
 
-// NewUser returns a new user client for db interface
-func NewUser() *User {
+// NewUserDBClient returns a new user client for db interface
+func NewUserDBClient() *User {
 	return &User{}
 }
 

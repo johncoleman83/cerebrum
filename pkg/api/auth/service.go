@@ -15,8 +15,8 @@ type Service interface {
 	Me(echo.Context) (*models.User, error)
 }
 
-// UserDB represents user repository interface
-type UserDB interface {
+// UserDBClient represents user repository interface
+type UserDBClient interface {
 	View(*gorm.DB, uint) (*models.User, error)
 	FindByUsername(*gorm.DB, string) (*models.User, error)
 	FindByToken(*gorm.DB, string) (*models.User, error)
@@ -42,14 +42,14 @@ type RBAC interface {
 // Auth represents auth application service
 type Auth struct {
 	db   *gorm.DB
-	udb  UserDB
+	udb  UserDBClient
 	tg   TokenGenerator
 	sec  Securer
 	rbac RBAC
 }
 
 // New creates new iam service
-func New(db *gorm.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
+func New(db *gorm.DB, udb UserDBClient, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
 	return &Auth{
 		db:   db,
 		udb:  udb,
@@ -61,5 +61,5 @@ func New(db *gorm.DB, udb UserDB, j TokenGenerator, sec Securer, rbac RBAC) *Aut
 
 // Initialize initializes auth application service
 func Initialize(db *gorm.DB, j TokenGenerator, sec Securer, rbac RBAC) *Auth {
-	return New(db, store.NewUser(), j, sec, rbac)
+	return New(db, store.NewUserDBClient(), j, sec, rbac)
 }

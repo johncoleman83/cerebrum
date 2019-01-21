@@ -14,8 +14,8 @@ type Securer interface {
 	Password(string, ...string) bool
 }
 
-// UDB represents user repository interface
-type UDB interface {
+// UserDBClient represents user repository interface
+type UserDBClient interface {
 	Create(*gorm.DB, models.User) (*models.User, error)
 	View(*gorm.DB, uint) (*models.User, error)
 	List(*gorm.DB, *models.ListQuery, *models.Pagination) ([]models.User, error)
@@ -43,17 +43,17 @@ type Service interface {
 // User represents user application service
 type User struct {
 	db   *gorm.DB
-	udb  UDB
+	udb  UserDBClient
 	rbac RBAC
 	sec  Securer
 }
 
 // New creates new user application service
-func New(db *gorm.DB, udb UDB, rbac RBAC, sec Securer) *User {
+func New(db *gorm.DB, udb UserDBClient, rbac RBAC, sec Securer) *User {
 	return &User{db: db, udb: udb, rbac: rbac, sec: sec}
 }
 
 // Initialize initalizes User application service with defaults
 func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *User {
-	return New(db, store.NewUser(), rbac, sec)
+	return New(db, store.NewUserDBClient(), rbac, sec)
 }

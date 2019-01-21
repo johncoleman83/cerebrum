@@ -247,11 +247,9 @@ func TestMe(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID:        id,
-								CreatedAt: mock.TestTime(1999),
-								UpdatedAt: mock.TestTime(2000),
-							},
+							ID:        id,
+							CreatedAt: mock.TestTime(1999),
+							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "Blazing",
 						LastName:  "Saddles",
@@ -263,11 +261,9 @@ func TestMe(t *testing.T) {
 			},
 			expectedData: &models.User{
 				Base: models.Base{
-					Model: gorm.Model{
-						ID:        9,
-						CreatedAt: mock.TestTime(1999),
-						UpdatedAt: mock.TestTime(2000),
-					},
+					ID:        9,
+					CreatedAt: mock.TestTime(1999),
+					UpdatedAt: mock.TestTime(2000),
 				},
 				FirstName: "Blazing",
 				LastName:  "Saddles",

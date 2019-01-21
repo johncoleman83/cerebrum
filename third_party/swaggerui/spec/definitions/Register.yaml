@@ -3,29 +3,37 @@ properties:
   email:
     type: string
     x-go-name: Email
+    example: tony@tigers.edu
   first_name:
     type: string
     x-go-name: FirstName
+    example: Tony
   last_name:
     type: string
     x-go-name: LastName
+    example: theTiger
   username:
     type: string
     x-go-name: Username
+    example: tonyTiger
   password:
     type: string
     x-go-name: Password
+    example: zvuEFGa84598705027345SDfhlasdfasjzqGRFs
   password_confirm:
     type: string
     x-go-name: PasswordConfirm
+    example: zvuEFGa84598705027345SDfhlasdfasjzqGRFs
   account_id:
     format: uint64
     type: integer
     x-go-name: AccountID
+    example: 42
   primary_team_id:
     format: uint64
     type: integer
     x-go-name: PrimaryTeamID
+    example: 54
   role_id:
     x-go-name: RoleID
     $ref: '#/definitions/AccessRole'

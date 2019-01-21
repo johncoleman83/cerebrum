@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/johncoleman83/cerebrum/pkg/api/store"
@@ -41,11 +40,7 @@ func TestCreate(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "pass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 1,
-					},
-				},
+				Base:          models.Base{ID: 1},
 			},
 		},
 		{
@@ -60,11 +55,7 @@ func TestCreate(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "pass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 12,
-					},
-				},
+				Base:          models.Base{ID: 12},
 			},
 		},
 		{
@@ -79,11 +70,7 @@ func TestCreate(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "pass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 13,
-					},
-				},
+				Base:          models.Base{ID: 13},
 			},
 		},
 		{
@@ -98,11 +85,7 @@ func TestCreate(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "pass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 42,
-					},
-				},
+				Base:          models.Base{ID: 42},
 			},
 			expectedData: &models.User{
 				Email:         "successfullyNew@mail.com",
@@ -113,11 +96,7 @@ func TestCreate(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "pass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 42,
-					},
-				},
+				Base:          models.Base{ID: 42},
 			},
 		},
 	}
@@ -131,11 +110,7 @@ func TestCreate(t *testing.T) {
 	duplicateUser := &models.User{
 		Email:    "alreadyused@mail.com",
 		Username: "alreadyused",
-		Base: models.Base{
-			Model: gorm.Model{
-				ID: 1,
-			},
-		},
+		Base:     models.Base{ID: 1},
 	}
 	if err := mockstore.InsertRowsFor(db, superAdmin, duplicateUser); err != nil {
 		t.Error(err)
@@ -188,9 +163,7 @@ func TestView(t *testing.T) {
 				PrimaryTeamID: 1,
 				Password:      "newPass",
 				Token:         "asdf",
-				Base: models.Base{
-					Model: gorm.Model{ID: 2},
-				},
+				Base:          models.Base{ID: 2},
 			},
 		},
 	}
@@ -254,9 +227,7 @@ func TestFindByUsername(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "newPass",
-				Base: models.Base{
-					Model: gorm.Model{ID: 2},
-				},
+				Base:          models.Base{ID: 2},
 			},
 		},
 	}
@@ -315,10 +286,8 @@ func TestFindByToken(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "hunter2",
-				Base: models.Base{
-					Model: gorm.Model{ID: 1},
-				},
-				Token: "loginrefresh",
+				Base:          models.Base{ID: 1},
+				Token:         "loginrefresh",
 			},
 		},
 	}
@@ -382,11 +351,7 @@ func TestList(t *testing.T) {
 					AccountID:     1,
 					PrimaryTeamID: 1,
 					Password:      "newPass",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 1,
-						},
-					},
+					Base:          models.Base{ID: 1},
 				},
 				{
 					Email:         "amandacena@mail.com",
@@ -398,11 +363,7 @@ func TestList(t *testing.T) {
 					PrimaryTeamID: 1,
 					Password:      "hunter2",
 					Token:         "loginrefresh",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
+					Base:          models.Base{ID: 2},
 				},
 			},
 		},
@@ -428,11 +389,7 @@ func TestList(t *testing.T) {
 					PrimaryTeamID: 1,
 					Password:      "hunter2",
 					Token:         "loginrefresh",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
+					Base:          models.Base{ID: 2},
 				},
 			},
 		},
@@ -467,11 +424,7 @@ func TestList(t *testing.T) {
 					AccountID:     1,
 					PrimaryTeamID: 1,
 					Password:      "newPass",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 1,
-						},
-					},
+					Base:          models.Base{ID: 1},
 				},
 				{
 					Email:         "amandacena@mail.com",
@@ -483,11 +436,7 @@ func TestList(t *testing.T) {
 					PrimaryTeamID: 1,
 					Password:      "hunter2",
 					Token:         "loginrefresh",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
+					Base:          models.Base{ID: 2},
 				},
 				{
 					Email:         "sarahsmith@mail.com",
@@ -499,11 +448,7 @@ func TestList(t *testing.T) {
 					PrimaryTeamID: 3,
 					Password:      "hunter2",
 					Token:         "loginrefresh",
-					Base: models.Base{
-						Model: gorm.Model{
-							ID: 3,
-						},
-					},
+					Base:          models.Base{ID: 3},
 				},
 			},
 		},
@@ -549,11 +494,7 @@ func TestUpdate(t *testing.T) {
 		{
 			name: "Success",
 			usr: &models.User{
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 2,
-					},
-				},
+				Base:      models.Base{ID: 2},
 				Email:     "iamold@village.com",
 				FirstName: "OldName",
 				LastName:  "Antiques",
@@ -574,9 +515,7 @@ func TestUpdate(t *testing.T) {
 				Address:       "2020 forme",
 				Phone:         "123456",
 				Mobile:        "345678",
-				Base: models.Base{
-					Model: gorm.Model{ID: 2},
-				},
+				Base:          models.Base{ID: 2},
 			},
 		},
 	}
@@ -632,11 +571,7 @@ func TestDelete(t *testing.T) {
 				AccountID:     1,
 				PrimaryTeamID: 1,
 				Password:      "newPass",
-				Base: models.Base{
-					Model: gorm.Model{
-						ID: 2,
-					},
-				},
+				Base:          models.Base{ID: 2},
 			},
 		},
 	}

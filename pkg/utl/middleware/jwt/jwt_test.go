@@ -6,7 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 
@@ -89,9 +88,7 @@ func TestGenerateToken(t *testing.T) {
 			name: "Success",
 			algo: "HS256",
 			req: &models.User{
-				Base: models.Base{Model: gorm.Model{
-					ID: 1,
-				}},
+				Base:     models.Base{ID: 1},
 				Username: "PrincessWarrior",
 				Email:    "PrincessWarrior@mail.com",
 				Role: models.Role{

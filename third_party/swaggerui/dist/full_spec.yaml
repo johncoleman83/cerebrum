@@ -17,14 +17,17 @@ definitions:
     format: uint64
     type: integer
     x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
+    example: 200
   credentials:
     properties:
       password:
         type: string
         x-go-name: Password
+        example: zvuEFGa84598705027345SDfhlasdfasjzqGRFs
       username:
         type: string
         x-go-name: Username
+        example: rocinante
     type: object
     x-go-package: github.com/johncoleman83/cerebrum/pkg/api/auth/transport
   HTTP:
@@ -65,29 +68,37 @@ definitions:
       email:
         type: string
         x-go-name: Email
+        example: tony@tigers.edu
       first_name:
         type: string
         x-go-name: FirstName
+        example: Tony
       last_name:
         type: string
         x-go-name: LastName
+        example: theTiger
       username:
         type: string
         x-go-name: Username
+        example: tonyTiger
       password:
         type: string
         x-go-name: Password
+        example: zvuEFGa84598705027345SDfhlasdfasjzqGRFs
       password_confirm:
         type: string
         x-go-name: PasswordConfirm
+        example: zvuEFGa84598705027345SDfhlasdfasjzqGRFs
       account_id:
         format: uint64
         type: integer
         x-go-name: AccountID
+        example: 42
       primary_team_id:
         format: uint64
         type: integer
         x-go-name: PrimaryTeamID
+        example: 54
       role_id:
         x-go-name: RoleID
         $ref: '#/definitions/AccessRole'
@@ -99,43 +110,49 @@ definitions:
       access_level:
         $ref: '#/definitions/AccessRole'
       id:
-        $ref: '#/definitions/AccessRole'
+        type: integer
+        format: uint64
+        x-go-name: ID
+        example: 5
       name:
         type: string
         x-go-name: Name
+        example: USER_ROLE
     type: object
     x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   User:
     description: User represents user domain model
     properties:
-      CreatedAt:
+      created_at:
         format: date-time
         type: string
-      DeletedAt:
+      deleted_at:
         format: date-time
         type: string
-      ID:
+      id:
         format: uint64
         type: integer
-      UpdatedAt:
+        example: 42
+      updated_at:
         format: date-time
         type: string
-      active:
-        type: boolean
-        x-go-name: Active
       address:
         type: string
         x-go-name: Address
+        example: '456 Jungle ST., Corn Flakes, TN, 543634'
       account_id:
         format: uint64
         type: integer
         x-go-name: AccountID
+        example: 23
       email:
         type: string
         x-go-name: Email
+        example: tony@tigers.edu
       first_name:
         type: string
         x-go-name: FirstName
+        example: Tony
       last_login:
         format: date-time
         type: string
@@ -143,6 +160,7 @@ definitions:
       last_name:
         type: string
         x-go-name: LastName
+        example: theTiger
       last_password_change:
         format: date-time
         type: string
@@ -151,17 +169,21 @@ definitions:
         format: uint64
         type: integer
         x-go-name: PrimaryTeamID
+        example: 1567
       mobile:
         type: string
         x-go-name: Mobile
+        example: 1-555-675-3211
       phone:
         type: string
         x-go-name: Phone
+        example: 1-555-675-3211
       role:
         $ref: '#/definitions/Role'
       username:
         type: string
         x-go-name: Username
+        example: tonyTiger
     type: object
     x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models
   userCreate:
@@ -326,8 +348,8 @@ paths:
     get:
       description: >-
         Returns list of users. Depending on the user role requesting it, it may
-        return all users for SuperAdmin/Admin users, all account/team users
-        for Account/Team admins, and an error for non-admin users.
+        return all users for SuperAdmin/Admin users, all account/team users for
+        Account/Team admins, and an error for non-admin users.
       operationId: listUsers
       parameters:
         - description: number of results
@@ -510,62 +532,5 @@ responses:
           x-go-name: Users
       type: object
   userResp:
-    description: User model response
-    schema:
-      properties:
-        CreatedAt:
-          format: date-time
-          type: string
-        DeletedAt:
-          format: date-time
-          type: string
-        ID:
-          format: uint64
-          type: integer
-        UpdatedAt:
-          format: date-time
-          type: string
-        active:
-          type: boolean
-          x-go-name: Active
-        address:
-          type: string
-          x-go-name: Address
-        account_id:
-          format: uint64
-          type: integer
-          x-go-name: AccountID
-        email:
-          type: string
-          x-go-name: Email
-        first_name:
-          type: string
-          x-go-name: FirstName
-        last_login:
-          format: date-time
-          type: string
-          x-go-name: LastLogin
-        last_name:
-          type: string
-          x-go-name: LastName
-        last_password_change:
-          format: date-time
-          type: string
-          x-go-name: LastPasswordChange
-        primary_team_id:
-          format: uint64
-          type: integer
-          x-go-name: PrimaryTeamID
-        mobile:
-          type: string
-          x-go-name: Mobile
-        phone:
-          type: string
-          x-go-name: Phone
-        role:
-          $ref: '#/definitions/Role'
-        username:
-          type: string
-          x-go-name: Username
-      type: object
+    $ref: '#/definitions/User'
 

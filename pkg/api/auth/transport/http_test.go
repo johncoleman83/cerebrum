@@ -196,9 +196,7 @@ func TestMe(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID: id,
-							},
+							ID: id,
 						},
 						AccountID:     2,
 						PrimaryTeamID: 3,
@@ -216,9 +214,7 @@ func TestMe(t *testing.T) {
 			header: mock.HeaderValid(),
 			expectedResp: &models.User{
 				Base: models.Base{
-					Model: gorm.Model{
-						ID: 1,
-					},
+					ID: 1,
 				},
 				AccountID:     2,
 				PrimaryTeamID: 3,

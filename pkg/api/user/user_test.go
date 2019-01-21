@@ -23,7 +23,7 @@ func TestCreate(t *testing.T) {
 		args         args
 		expectedErr  bool
 		expectedData *models.User
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		rbac         *mock.RBAC
 		sec          *mock.Secure
 	}{
@@ -87,7 +87,7 @@ func TestCreate(t *testing.T) {
 				Password:  "Thranduil8822",
 				Email:     "owinfrey@gmail.com",
 			}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				CreateFn: func(db *gorm.DB, u models.User) (*models.User, error) {
 					u.CreatedAt = mock.TestTime(2000)
 					u.UpdatedAt = mock.TestTime(2000)
@@ -142,7 +142,7 @@ func TestView(t *testing.T) {
 		args         args
 		expectedData *models.User
 		expectedErr  error
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		rbac         *mock.RBAC
 	}{
 		{
@@ -173,7 +173,7 @@ func TestView(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id uint) error {
 					return nil
 				}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					if id == 1 {
 						return &models.User{
@@ -213,7 +213,7 @@ func TestList(t *testing.T) {
 		args         args
 		expectedData []models.User
 		expectedErr  bool
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		rbac         *mock.RBAC
 	}{
 		{
@@ -247,7 +247,7 @@ func TestList(t *testing.T) {
 						AccessLevel:   models.AdminRole,
 					}
 				}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ListFn: func(*gorm.DB, *models.ListQuery, *models.Pagination) ([]models.User, error) {
 					return []models.User{
 						{
@@ -328,14 +328,14 @@ func TestDelete(t *testing.T) {
 		name        string
 		args        args
 		expectedErr error
-		udb         *mockstore.User
+		udb         *mockstore.UserDBClient
 		rbac        *mock.RBAC
 	}{
 		{
 			name:        "Fail on ViewUser",
 			args:        args{id: 1},
 			expectedErr: models.ErrGeneric,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					if id != 1 {
 						return nil, nil
@@ -347,7 +347,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Fail on RBAC",
 			args: args{id: 1},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
@@ -374,7 +374,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Success",
 			args: args{id: 1},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
@@ -424,7 +424,7 @@ func TestUpdate(t *testing.T) {
 		args         args
 		expectedData *models.User
 		expectedErr  error
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		rbac         *mock.RBAC
 	}{
 		{
@@ -448,7 +448,7 @@ func TestUpdate(t *testing.T) {
 					return nil
 				}},
 			expectedErr: models.ErrGeneric,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					if id != 1 {
 						return nil, nil
@@ -467,7 +467,7 @@ func TestUpdate(t *testing.T) {
 					return nil
 				}},
 			expectedErr: models.ErrGeneric,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
@@ -524,7 +524,7 @@ func TestUpdate(t *testing.T) {
 				Address:       "Work Address",
 				Email:         "golang@go.org",
 			},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{

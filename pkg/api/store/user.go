@@ -20,16 +20,16 @@ var (
 	ErrRecordNotFound = echo.NewHTTPError(http.StatusNotFound, "user not found")
 )
 
-// User represents the client for user table
-type User struct{}
+// UserDBClient represents the client for user table
+type UserDBClient struct{}
 
-// NewUser returns a new user client for db interface
-func NewUser() *User {
-	return &User{}
+// NewUserDBClient returns a new user client for db interface
+func NewUserDBClient() *UserDBClient {
+	return &UserDBClient{}
 }
 
 // Create creates a new user on database
-func (u *User) Create(db *gorm.DB, user models.User) (*models.User, error) {
+func (u *UserDBClient) Create(db *gorm.DB, user models.User) (*models.User, error) {
 	var checkUser = new(models.User)
 	if err := db.Where(
 		"lower(username) = ? or lower(email) = ?",
@@ -46,7 +46,7 @@ func (u *User) Create(db *gorm.DB, user models.User) (*models.User, error) {
 }
 
 // View returns single user by ID
-func (u *User) View(db *gorm.DB, id uint) (*models.User, error) {
+func (u *UserDBClient) View(db *gorm.DB, id uint) (*models.User, error) {
 	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
@@ -58,7 +58,7 @@ func (u *User) View(db *gorm.DB, id uint) (*models.User, error) {
 }
 
 // FindByUsername queries for single user by username
-func (u *User) FindByUsername(db *gorm.DB, uname string) (*models.User, error) {
+func (u *UserDBClient) FindByUsername(db *gorm.DB, uname string) (*models.User, error) {
 	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("username = ?", uname).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
@@ -70,7 +70,7 @@ func (u *User) FindByUsername(db *gorm.DB, uname string) (*models.User, error) {
 }
 
 // FindByToken queries for single user by token
-func (u *User) FindByToken(db *gorm.DB, token string) (*models.User, error) {
+func (u *UserDBClient) FindByToken(db *gorm.DB, token string) (*models.User, error) {
 	var user = new(models.User)
 	if err := db.Set("gorm:auto_preload", true).Where("token = ?", token).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 		return user, ErrRecordNotFound
@@ -82,7 +82,7 @@ func (u *User) FindByToken(db *gorm.DB, token string) (*models.User, error) {
 }
 
 // List returns list of all users retrievable for the current user, depending on role
-func (u *User) List(db *gorm.DB, qp *models.ListQuery, p *models.Pagination) ([]models.User, error) {
+func (u *UserDBClient) List(db *gorm.DB, qp *models.ListQuery, p *models.Pagination) ([]models.User, error) {
 	var users []models.User
 	// Inner Join users with Role
 	if qp != nil {
@@ -100,11 +100,11 @@ func (u *User) List(db *gorm.DB, qp *models.ListQuery, p *models.Pagination) ([]
 }
 
 // Update updates user's info
-func (u *User) Update(db *gorm.DB, user *models.User) error {
+func (u *UserDBClient) Update(db *gorm.DB, user *models.User) error {
 	return db.Save(user).Error
 }
 
 // Delete sets deleted_at for a user
-func (u *User) Delete(db *gorm.DB, user *models.User) error {
+func (u *UserDBClient) Delete(db *gorm.DB, user *models.User) error {
 	return db.Delete(user).Error
 }

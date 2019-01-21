@@ -16,7 +16,7 @@ var (
 )
 
 // Create creates a new user account
-func (u *User) Create(c echo.Context, req models.User) (*models.User, error) {
+func (u *RequestHandler) Create(c echo.Context, req models.User) (*models.User, error) {
 	if err := u.rbac.AccountCreate(c, req.Role.AccessLevel, req.AccountID, req.PrimaryTeamID); err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (u *User) Create(c echo.Context, req models.User) (*models.User, error) {
 }
 
 // List returns list of users
-func (u *User) List(c echo.Context, p *models.Pagination) ([]models.User, error) {
+func (u *RequestHandler) List(c echo.Context, p *models.Pagination) ([]models.User, error) {
 	au := u.rbac.User(c)
 	q, err := query.List(au)
 	if err != nil {
@@ -38,7 +38,7 @@ func (u *User) List(c echo.Context, p *models.Pagination) ([]models.User, error)
 }
 
 // View returns single user
-func (u *User) View(c echo.Context, id uint) (*models.User, error) {
+func (u *RequestHandler) View(c echo.Context, id uint) (*models.User, error) {
 	if err := u.rbac.EnforceUser(c, id); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (u *User) View(c echo.Context, id uint) (*models.User, error) {
 }
 
 // Delete deletes a user
-func (u *User) Delete(c echo.Context, id uint) error {
+func (u *RequestHandler) Delete(c echo.Context, id uint) error {
 	user, err := u.udb.View(u.db, id)
 	if err != nil {
 		return err
@@ -68,7 +68,7 @@ type Update struct {
 }
 
 // Update updates user's contact information
-func (u *User) Update(c echo.Context, req *Update) (*models.User, error) {
+func (u *RequestHandler) Update(c echo.Context, req *Update) (*models.User, error) {
 	if err := u.rbac.EnforceUser(c, req.ID); err != nil {
 		return nil, err
 	}

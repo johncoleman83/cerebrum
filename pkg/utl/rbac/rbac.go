@@ -30,6 +30,7 @@ func (s *Service) User(c echo.Context) *models.AuthUser {
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
 	role := c.Get("role").(models.AccessRole)
+
 	return &models.AuthUser{
 		ID:            id,
 		Username:      user,

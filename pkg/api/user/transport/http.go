@@ -70,8 +70,9 @@ func (h *HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	newID := models.AccessLevelToID(r.RoleID)
-	if newID == 0 {
+	role, err := models.NewRoleFromAccessLevelUint(r.RoleID)
+
+	if err != nil {
 		return ErrUnknownRole
 	}
 
@@ -83,7 +84,8 @@ func (h *HTTP) create(c echo.Context) error {
 		LastName:      r.LastName,
 		AccountID:     r.AccountID,
 		PrimaryTeamID: r.PrimaryTeamID,
-		RoleID:        newID,
+		RoleID:        role.ID,
+		Role:          *role,
 	})
 
 	if err != nil {

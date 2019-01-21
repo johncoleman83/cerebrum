@@ -27,7 +27,7 @@ func TestCreate(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *models.User
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -52,13 +52,13 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"primary_team_id":2,"role_id":199}`,
+			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
 				},
 			},
-			expectedStatus: http.StatusBadRequest,
+			expectedStatus: http.StatusForbidden,
 		},
 		{
 			name: "Fail on RBAC",
@@ -79,7 +79,7 @@ func TestCreate(t *testing.T) {
 					return nil
 				},
 			},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				CreateFn: func(db *gorm.DB, usr models.User) (*models.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
@@ -103,12 +103,17 @@ func TestCreate(t *testing.T) {
 						UpdatedAt: mock.TestTime(2018),
 					},
 				},
-				FirstName: "Edwin",
-				LastName:  "Abbott",
-				Username:  "edwinabbott",
-				Email:     "edwinabbott@gmail.com",
-				AccountID: 1,
-				PrimaryTeamID:    2,
+				FirstName:     "Edwin",
+				LastName:      "Abbott",
+				Username:      "edwinabbott",
+				Email:         "edwinabbott@gmail.com",
+				AccountID:     1,
+				PrimaryTeamID: 2,
+				Role: models.Role{
+					ID:          uint(5),
+					AccessLevel: models.UserRole,
+					Name:        "USER_ADMIN",
+				},
 			},
 			expectedStatus: http.StatusOK,
 		},
@@ -149,7 +154,7 @@ func TestList(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *listResponse
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -164,11 +169,11 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
-						ID:          1,
-						AccountID:   2,
-						PrimaryTeamID:      3,
-						AccessLevel: models.UserRole,
-						Email:       "barnabus@mail.com",
+						ID:            1,
+						AccountID:     2,
+						PrimaryTeamID: 3,
+						AccessLevel:   models.UserRole,
+						Email:         "barnabus@mail.com",
 					}
 				}},
 			expectedStatus: http.StatusForbidden,
@@ -179,14 +184,14 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
-						ID:          1,
-						AccountID:   2,
-						PrimaryTeamID:      3,
-						AccessLevel: models.SuperAdminRole,
-						Email:       "pingpong@mail.com",
+						ID:            1,
+						AccountID:     2,
+						PrimaryTeamID: 3,
+						AccessLevel:   models.SuperAdminRole,
+						Email:         "pingpong@mail.com",
 					}
 				}},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ListFn: func(db *gorm.DB, q *models.ListQuery, p *models.Pagination) ([]models.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
 						return []models.User{
@@ -198,11 +203,11 @@ func TestList(t *testing.T) {
 										UpdatedAt: mock.TestTime(2002),
 									},
 								},
-								FirstName: "ilove",
-								LastName:  "futbol",
-								Email:     "futbol@mail.com",
-								AccountID: 2,
-								PrimaryTeamID:    3,
+								FirstName:     "ilove",
+								LastName:      "futbol",
+								Email:         "futbol@mail.com",
+								AccountID:     2,
+								PrimaryTeamID: 3,
 								Role: models.Role{
 									ID:          1,
 									AccessLevel: models.SuperAdminRole,
@@ -217,11 +222,11 @@ func TestList(t *testing.T) {
 										UpdatedAt: mock.TestTime(2005),
 									},
 								},
-								FirstName: "Joanna",
-								LastName:  "Dye",
-								Email:     "joanna@mail.com",
-								AccountID: 1,
-								PrimaryTeamID:    2,
+								FirstName:     "Joanna",
+								LastName:      "Dye",
+								Email:         "joanna@mail.com",
+								AccountID:     1,
+								PrimaryTeamID: 2,
 								Role: models.Role{
 									ID:          1,
 									AccessLevel: models.AdminRole,
@@ -244,11 +249,11 @@ func TestList(t *testing.T) {
 								UpdatedAt: mock.TestTime(2002),
 							},
 						},
-						FirstName: "ilove",
-						LastName:  "futbol",
-						Email:     "futbol@mail.com",
-						AccountID: 2,
-						PrimaryTeamID:    3,
+						FirstName:     "ilove",
+						LastName:      "futbol",
+						Email:         "futbol@mail.com",
+						AccountID:     2,
+						PrimaryTeamID: 3,
 						Role: models.Role{
 							ID:          1,
 							AccessLevel: models.SuperAdminRole,
@@ -263,11 +268,11 @@ func TestList(t *testing.T) {
 								UpdatedAt: mock.TestTime(2005),
 							},
 						},
-						FirstName: "Joanna",
-						LastName:  "Dye",
-						Email:     "joanna@mail.com",
-						AccountID: 1,
-						PrimaryTeamID:    2,
+						FirstName:     "Joanna",
+						LastName:      "Dye",
+						Email:         "joanna@mail.com",
+						AccountID:     1,
+						PrimaryTeamID: 2,
 						Role: models.Role{
 							ID:          1,
 							AccessLevel: models.AdminRole,
@@ -309,7 +314,7 @@ func TestView(t *testing.T) {
 		req            string
 		expectedStatus int
 		expectedResp   *models.User
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -336,7 +341,7 @@ func TestView(t *testing.T) {
 					return nil
 				},
 			},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
@@ -400,7 +405,7 @@ func TestUpdate(t *testing.T) {
 		id             string
 		expectedStatus int
 		expectedResp   *models.User
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -435,7 +440,7 @@ func TestUpdate(t *testing.T) {
 					return nil
 				},
 			},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
@@ -511,7 +516,7 @@ func TestDelete(t *testing.T) {
 		name           string
 		id             string
 		expectedStatus int
-		udb            *mockstore.User
+		udb            *mockstore.UserDBClient
 		rbac           *mock.RBAC
 		sec            *mock.Secure
 	}{
@@ -523,7 +528,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Fail on RBAC",
 			id:   `1`,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Role: models.Role{
@@ -542,7 +547,7 @@ func TestDelete(t *testing.T) {
 		{
 			name: "Success",
 			id:   `1`,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Role: models.Role{

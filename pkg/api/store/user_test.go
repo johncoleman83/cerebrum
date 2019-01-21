@@ -141,7 +141,7 @@ func TestCreate(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -205,7 +205,7 @@ func TestView(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -271,7 +271,7 @@ func TestFindByUsername(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -333,7 +333,7 @@ func TestFindByToken(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -519,7 +519,7 @@ func TestList(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -591,7 +591,7 @@ func TestUpdate(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -651,7 +651,7 @@ func TestDelete(t *testing.T) {
 		t.Error(err)
 	}
 
-	udb := store.NewUser()
+	udb := store.NewUserDBClient()
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {

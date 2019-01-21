@@ -24,7 +24,7 @@ func TestAuthenticate(t *testing.T) {
 		args         args
 		expectedData *models.AuthToken
 		expectedErr  bool
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		jwt          *mock.JWT
 		sec          *mock.Secure
 	}{
@@ -32,7 +32,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on finding user",
 			args:        args{user: "juzernejm"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*models.User, error) {
 					return nil, models.ErrGeneric
 				},
@@ -42,7 +42,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on wrong password",
 			args:        args{user: "juzernejm", pass: "notHashedPassword"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*models.User, error) {
 					return &models.User{
 						Username: user,
@@ -59,7 +59,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on token generation",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*models.User, error) {
 					return &models.User{
 						Username: user,
@@ -82,7 +82,7 @@ func TestAuthenticate(t *testing.T) {
 			name:        "Fail on updating last login",
 			args:        args{user: "juzernejm", pass: "pass"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*models.User, error) {
 					return &models.User{
 						Username: user,
@@ -110,7 +110,7 @@ func TestAuthenticate(t *testing.T) {
 		{
 			name: "Success",
 			args: args{user: "juzernejm", pass: "pass"},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByUsernameFn: func(db *gorm.DB, user string) (*models.User, error) {
 					return &models.User{
 						Username: user,
@@ -163,14 +163,14 @@ func TestRefresh(t *testing.T) {
 		args         args
 		expectedData *models.RefreshToken
 		expectedErr  bool
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		jwt          *mock.JWT
 	}{
 		{
 			name:        "Fail on finding token",
 			args:        args{token: "refreshtoken"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByTokenFn: func(db *gorm.DB, token string) (*models.User, error) {
 					return nil, models.ErrGeneric
 				},
@@ -180,7 +180,7 @@ func TestRefresh(t *testing.T) {
 			name:        "Fail on token generation",
 			args:        args{token: "refreshtoken"},
 			expectedErr: true,
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByTokenFn: func(db *gorm.DB, token string) (*models.User, error) {
 					return &models.User{
 						Username: "username",
@@ -198,7 +198,7 @@ func TestRefresh(t *testing.T) {
 		{
 			name: "Success",
 			args: args{token: "refreshtoken"},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				FindByTokenFn: func(db *gorm.DB, token string) (*models.User, error) {
 					return &models.User{
 						Username: "username",
@@ -232,7 +232,7 @@ func TestMe(t *testing.T) {
 	cases := []struct {
 		name         string
 		expectedData *models.User
-		udb          *mockstore.User
+		udb          *mockstore.UserDBClient
 		rbac         *mock.RBAC
 		expectedErr  bool
 	}{
@@ -243,7 +243,7 @@ func TestMe(t *testing.T) {
 					return &models.AuthUser{ID: 9}
 				},
 			},
-			udb: &mockstore.User{
+			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{

@@ -63,8 +63,8 @@ endif
 swagger_compile:
 ifdef TYPE
 	cd third_party/swaggerui/spec && \
-		multi-file-swagger -o $(TYPE) index.yaml > compiled/index.$(TYPE) && \
-		cp -rf compiled/index.$(TYPE) ../dist/spec.yaml && \
+		multi-file-swagger -o $(TYPE) index.yaml > compiled/full_spec.$(TYPE) && \
+		cp -rf compiled/full_spec.$(TYPE) ../dist/full_spec.yaml && \
 		cd -
 else
 	@echo 'Usage: $ make CMD=compile TYPE=XXXXX swagger'

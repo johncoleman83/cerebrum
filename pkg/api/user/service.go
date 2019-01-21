@@ -14,8 +14,8 @@ type Securer interface {
 	Password(string, ...string) bool
 }
 
-// UDB represents user repository interface
-type UDB interface {
+// DBClientInterface represents user repository interface
+type DBClientInterface interface {
 	Create(*gorm.DB, models.User) (*models.User, error)
 	View(*gorm.DB, uint) (*models.User, error)
 	List(*gorm.DB, *models.ListQuery, *models.Pagination) ([]models.User, error)
@@ -34,26 +34,26 @@ type RBAC interface {
 // Service represents user application interface
 type Service interface {
 	Create(echo.Context, models.User) (*models.User, error)
-	List(echo.Context, *models.Pagination) ([]models.User, error)
 	View(echo.Context, uint) (*models.User, error)
-	Delete(echo.Context, uint) error
+	List(echo.Context, *models.Pagination) ([]models.User, error)
 	Update(echo.Context, *Update) (*models.User, error)
+	Delete(echo.Context, uint) error
 }
 
-// User represents user application service
-type User struct {
+// RequestHandler represents user application service
+type RequestHandler struct {
 	db   *gorm.DB
-	udb  UDB
+	udb  DBClientInterface
 	rbac RBAC
 	sec  Securer
 }
 
-// New creates new user application service
-func New(db *gorm.DB, udb UDB, rbac RBAC, sec Securer) *User {
-	return &User{db: db, udb: udb, rbac: rbac, sec: sec}
+// New creates new user RequestHandler application service
+func New(db *gorm.DB, udb DBClientInterface, rbac RBAC, sec Securer) *RequestHandler {
+	return &RequestHandler{db: db, udb: udb, rbac: rbac, sec: sec}
 }
 
-// Initialize initalizes User application service with defaults
-func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *User {
-	return New(db, store.NewUser(), rbac, sec)
+// Initialize initalizes User RequestHandler application service with defaults
+func Initialize(db *gorm.DB, rbac RBAC, sec Securer) *RequestHandler {
+	return New(db, store.NewUserDBClient(), rbac, sec)
 }

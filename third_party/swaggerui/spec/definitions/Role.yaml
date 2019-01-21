@@ -3,9 +3,13 @@ properties:
   access_level:
     $ref: '#/definitions/AccessRole'
   id:
-    $ref: '#/definitions/AccessRole'
+    type: integer
+    format: uint64
+    x-go-name: ID
+    example: 5
   name:
     type: string
     x-go-name: Name
+    example: USER_ROLE
 type: object
 x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models

@@ -109,11 +109,9 @@ func TestCreate(t *testing.T) {
 			},
 			expectedData: &models.User{
 				Base: models.Base{
-					Model: gorm.Model{
-						ID:        1,
-						CreatedAt: mock.TestTime(2000),
-						UpdatedAt: mock.TestTime(2000),
-					},
+					ID:        1,
+					CreatedAt: mock.TestTime(2000),
+					UpdatedAt: mock.TestTime(2000),
 				},
 				FirstName: "Oprah",
 				LastName:  "Winfrey",
@@ -159,11 +157,9 @@ func TestView(t *testing.T) {
 			args: args{id: 1},
 			expectedData: &models.User{
 				Base: models.Base{
-					Model: gorm.Model{
-						ID:        1,
-						CreatedAt: mock.TestTime(2000),
-						UpdatedAt: mock.TestTime(2000),
-					},
+					ID:        1,
+					CreatedAt: mock.TestTime(2000),
+					UpdatedAt: mock.TestTime(2000),
 				},
 				FirstName: "William",
 				LastName:  "Faukner",
@@ -178,11 +174,9 @@ func TestView(t *testing.T) {
 					if id == 1 {
 						return &models.User{
 							Base: models.Base{
-								Model: gorm.Model{
-									ID:        1,
-									CreatedAt: mock.TestTime(2000),
-									UpdatedAt: mock.TestTime(2000),
-								},
+								ID:        1,
+								CreatedAt: mock.TestTime(2000),
+								UpdatedAt: mock.TestTime(2000),
 							},
 							FirstName: "William",
 							LastName:  "Faukner",
@@ -252,11 +246,9 @@ func TestList(t *testing.T) {
 					return []models.User{
 						{
 							Base: models.Base{
-								Model: gorm.Model{
-									ID:        1,
-									CreatedAt: mock.TestTime(1999),
-									UpdatedAt: mock.TestTime(2000),
-								},
+								ID:        1,
+								CreatedAt: mock.TestTime(1999),
+								UpdatedAt: mock.TestTime(2000),
 							},
 							FirstName: "Samantha",
 							LastName:  "Mills",
@@ -265,11 +257,9 @@ func TestList(t *testing.T) {
 						},
 						{
 							Base: models.Base{
-								Model: gorm.Model{
-									ID:        2,
-									CreatedAt: mock.TestTime(2001),
-									UpdatedAt: mock.TestTime(2002),
-								},
+								ID:        2,
+								CreatedAt: mock.TestTime(2001),
+								UpdatedAt: mock.TestTime(2002),
 							},
 							FirstName: "Preston",
 							LastName:  "Phelps",
@@ -281,11 +271,9 @@ func TestList(t *testing.T) {
 			expectedData: []models.User{
 				{
 					Base: models.Base{
-						Model: gorm.Model{
-							ID:        1,
-							CreatedAt: mock.TestTime(1999),
-							UpdatedAt: mock.TestTime(2000),
-						},
+						ID:        1,
+						CreatedAt: mock.TestTime(1999),
+						UpdatedAt: mock.TestTime(2000),
 					},
 					FirstName: "Samantha",
 					LastName:  "Mills",
@@ -294,11 +282,9 @@ func TestList(t *testing.T) {
 				},
 				{
 					Base: models.Base{
-						Model: gorm.Model{
-							ID:        2,
-							CreatedAt: mock.TestTime(2001),
-							UpdatedAt: mock.TestTime(2002),
-						},
+						ID:        2,
+						CreatedAt: mock.TestTime(2001),
+						UpdatedAt: mock.TestTime(2002),
 					},
 					FirstName: "Preston",
 					LastName:  "Phelps",
@@ -351,11 +337,9 @@ func TestDelete(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID:        id,
-								CreatedAt: mock.TestTime(1999),
-								UpdatedAt: mock.TestTime(2000),
-							},
+							ID:        id,
+							CreatedAt: mock.TestTime(1999),
+							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "Abigail",
 						LastName:  "Gunnings",
@@ -378,11 +362,9 @@ func TestDelete(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID:        id,
-								CreatedAt: mock.TestTime(1999),
-								UpdatedAt: mock.TestTime(2000),
-							},
+							ID:        id,
+							CreatedAt: mock.TestTime(1999),
+							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "Yignacio",
 						LastName:  "Valley",
@@ -471,11 +453,9 @@ func TestUpdate(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID:        1,
-								CreatedAt: mock.TestTime(1990),
-								UpdatedAt: mock.TestTime(1991),
-							},
+							ID:        1,
+							CreatedAt: mock.TestTime(1990),
+							UpdatedAt: mock.TestTime(1991),
 						},
 						AccountID:     1,
 						PrimaryTeamID: 2,
@@ -508,11 +488,9 @@ func TestUpdate(t *testing.T) {
 				}},
 			expectedData: &models.User{
 				Base: models.Base{
-					Model: gorm.Model{
-						ID:        1,
-						CreatedAt: mock.TestTime(1990),
-						UpdatedAt: mock.TestTime(2000),
-					},
+					ID:        1,
+					CreatedAt: mock.TestTime(1990),
+					UpdatedAt: mock.TestTime(2000),
 				},
 				AccountID:     1,
 				PrimaryTeamID: 2,
@@ -528,11 +506,9 @@ func TestUpdate(t *testing.T) {
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
 					return &models.User{
 						Base: models.Base{
-							Model: gorm.Model{
-								ID:        1,
-								CreatedAt: mock.TestTime(1990),
-								UpdatedAt: mock.TestTime(1991),
-							},
+							ID:        1,
+							CreatedAt: mock.TestTime(1990),
+							UpdatedAt: mock.TestTime(1991),
 						},
 						AccountID:     1,
 						PrimaryTeamID: 2,

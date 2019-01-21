@@ -59,11 +59,7 @@ func main() {
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	user := models.User{
-		Base: models.Base{
-			Model: gorm.Model{
-				ID: 1,
-			},
-		},
+		Base:          models.Base{ID: 1},
 		Email:         "rocinante@mail.com",
 		FirstName:     "Rocinante",
 		LastName:      "DeLaMancha",
@@ -74,20 +70,12 @@ func main() {
 		Password:      adminPassword,
 	}
 	account := models.Account{
-		Base: models.Base{
-			Model: gorm.Model{
-				ID: 1,
-			},
-		},
+		Base:    models.Base{ID: 1},
 		Name:    "admin_account",
 		OwnerID: user.ID,
 	}
 	team := models.Team{
-		Base: models.Base{
-			Model: gorm.Model{
-				ID: 1,
-			},
-		},
+		Base:        models.Base{ID: 1},
 		Name:        "admin_team",
 		Description: "admin_description",
 		AccountID:   account.ID,

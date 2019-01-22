@@ -12,7 +12,7 @@ help:
 	@echo "-----------------------"
 	@echo "| TARGET: DESCRIPTION |"
 	@echo "-----------------------"
-	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/\1: \2/' | expand -t20
+	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/\1: \2/'
 
 .PHONY: godoc # run godoc server and site on port 6060 to see package docs
 godoc:
@@ -28,22 +28,62 @@ deps:
 	@echo 'golang/dep: https://github.com/golang/dep'
 	go get -t -v ./...
 
-.PHONY: setup # a "one click" type start from scratch to refresh the db bootstrap & serve the application
-setup: deps refresh serve
-
-.PHONY: refresh # refresh all docker db's and bootstrap a new dev db
-refresh:
-	@make ENV=all clean
+.PHONY: setup # start docker dev db, bootstrap it and serve application
+setup:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
 	@make ENV=dev docker
 	@make bootstrap
-
-.PHONY: run_script # runs a test script $ go run scripts/testing/main.go
-run_script:
-	go run scripts/testing/main.go
+	go run cmd/api/main.go
 
 .PHONY: serve # starts backend server, executes $ go run cmd/api/main.go
 serve:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
+	@make ENV=dev docker
 	go run cmd/api/main.go
+
+.PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
+docker:
+ifeq ($(ENV),dev)
+	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev
+	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
+	sleep 15
+else ifeq ($(ENV),test)
+	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test
+	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
+	sleep 15
+else
+	@echo 'Usage: $ make ENV=XXXXX docker'
+	@echo 'where ENV could be `test` or `dev`'
+	@echo 'run `$$ make help` for more info'
+endif
+
+.PHONY: bootstrap # bootstrap the db with dev models
+bootstrap:
+	go run scripts/bootstrap/main.go
+
+.PHONY: mysql # login to mysql dev container to inspect
+mysql:
+	docker exec -it $(DEV_CONTAINER) mysql -u root
+
+.PHONY: test_script # runs a test script $ go run scripts/testing/main.go
+test_script:
+	go run scripts/testing/main.go
+
+.PHONY: test # run all tests
+test:
+	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
+	@make ENV=test docker
+	@make test_go
+	@make lint
+
+.PHONY: test_go # run all go file tests
+test_go:
+	go test ./...
+
+.PHONY: lint # run linters on go package
+lint:
+	golint pkg/...
+	golint cmd/...
 
 .PHONY: swagger # entry point to generate swagger support docs using multi-file-swagger or (outdated) go-swagger -- https://github.com/go-swagger/go-swagger
 swagger:
@@ -90,48 +130,6 @@ else
 	@echo 'run `$$ make help` for more info'
 endif
 
-.PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
-docker:
-ifeq ($(ENV),dev)
-	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev
-	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 15
-else ifeq ($(ENV),test)
-	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test
-	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 15
-else
-	@echo 'Usage: $ make ENV=XXXXX docker'
-	@echo 'where ENV could be `test` or `dev`'
-	@echo 'run `$$ make help` for more info'
-endif
-
-.PHONY: bootstrap # bootstrap the db with dev models
-bootstrap:
-	go run scripts/bootstrap/main.go
-
-.PHONY: mysql # login to mysql dev container to inspect
-mysql:
-	docker exec -it $(DEV_CONTAINER) mysql -u root
-
-.PHONY: test # run all tests
-test:
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
-	@make ENV=test clean
-	@make ENV=test docker
-	@make test_go
-	@make ENV=test clean
-	@make lint
-
-.PHONY: test_go # run all go file tests
-test_go:
-	go test ./...
-
-.PHONY: lint # run linters on go package
-lint:
-	golint pkg/...
-	golint cmd/...
-
 .PHONY: clean # removes docker containers from the environmental variable ENV such as `test`
 clean:
 ifeq ($(ENV),dev)
@@ -148,6 +146,12 @@ else
 	@echo 'where ENV could be `test`, `dev`, `git` or `all`'
 	@echo 'run `$$ make help` for more info'
 endif
+
+.PHONY: refresh # refresh all docker db's and bootstrap a new dev db
+refresh:
+	@make ENV=all clean
+	@make ENV=dev docker
+	@make bootstrap
 
 .PHONY: remove_mysql_image # removes mysql:latest docker image
 remove_mysql_image:

@@ -6,7 +6,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
-	"github.com/johncoleman83/cerebrum/pkg/utl/rbac"
+	rbacService "github.com/johncoleman83/cerebrum/pkg/utl/rbac"
 
 	"github.com/labstack/echo"
 
@@ -25,8 +25,8 @@ func TestUser(t *testing.T) {
 		Email:         "rocinante@gmail.com",
 		AccessLevel:   models.SuperAdminRole,
 	}
-	rbacSvc := rbac.New()
-	assert.Equal(t, expectedUser, rbacSvc.User(ctx))
+	rbac := rbacService.New()
+	assert.Equal(t, expectedUser, rbac.User(ctx))
 }
 
 func TestEnforceRole(t *testing.T) {
@@ -52,8 +52,8 @@ func TestEnforceRole(t *testing.T) {
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			rbacSvc := rbac.New()
-			res := rbacSvc.EnforceRole(tt.args.ctx, tt.args.role)
+			rbac := rbacService.New()
+			res := rbac.EnforceRole(tt.args.ctx, tt.args.role)
 			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
@@ -87,8 +87,8 @@ func TestEnforceUser(t *testing.T) {
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			rbacSvc := rbac.New()
-			res := rbacSvc.EnforceUser(tt.args.ctx, tt.args.id)
+			rbac := rbacService.New()
+			res := rbac.EnforceUser(tt.args.ctx, tt.args.id)
 			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
@@ -127,8 +127,8 @@ func TestEnforceAccount(t *testing.T) {
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			rbacSvc := rbac.New()
-			res := rbacSvc.EnforceAccount(tt.args.ctx, tt.args.id)
+			rbac := rbacService.New()
+			res := rbac.EnforceAccount(tt.args.ctx, tt.args.id)
 			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
@@ -167,8 +167,8 @@ func TestEnforceTeam(t *testing.T) {
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			rbacSvc := rbac.New()
-			res := rbacSvc.EnforceTeam(tt.args.ctx, tt.args.id)
+			rbac := rbacService.New()
+			res := rbac.EnforceTeam(tt.args.ctx, tt.args.id)
 			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
@@ -219,8 +219,8 @@ func TestAccountCreate(t *testing.T) {
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			rbacSvc := rbac.New()
-			res := rbacSvc.AccountCreate(tt.args.ctx, tt.args.roleID, tt.args.account_id, tt.args.primary_team_id)
+			rbac := rbacService.New()
+			res := rbac.AccountCreate(tt.args.ctx, tt.args.roleID, tt.args.account_id, tt.args.primary_team_id)
 			assert.Equal(t, tt.expectedErr, res == echo.ErrForbidden)
 		})
 	}
@@ -228,11 +228,11 @@ func TestAccountCreate(t *testing.T) {
 
 func TestIsLowerRole(t *testing.T) {
 	ctx := mock.EchoCtxWithKeys([]string{"role"}, models.AccountAdminRole)
-	rbacSvc := rbac.New()
-	if rbacSvc.IsLowerRole(ctx, models.TeamAdminRole) != nil {
+	rbac := rbacService.New()
+	if rbac.IsLowerRole(ctx, models.TeamAdminRole) != nil {
 		t.Error("The requested user is higher role than the user requesting it")
 	}
-	if rbacSvc.IsLowerRole(ctx, models.AdminRole) == nil {
+	if rbac.IsLowerRole(ctx, models.AdminRole) == nil {
 		t.Error("The requested user is lower role than the user requesting it")
 	}
 }

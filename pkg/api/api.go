@@ -20,7 +20,7 @@ import (
 	// cerebrum/pkg/utl
 	"github.com/johncoleman83/cerebrum/pkg/utl/config"
 	"github.com/johncoleman83/cerebrum/pkg/utl/datastore"
-	jwtService "github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	jwtService "github.com/johncoleman83/cerebrum/pkg/utl/middleware/jsonwebtoken"
 	rbacService "github.com/johncoleman83/cerebrum/pkg/utl/rbac"
 	"github.com/johncoleman83/cerebrum/pkg/utl/secure"
 	"github.com/johncoleman83/cerebrum/pkg/utl/server"

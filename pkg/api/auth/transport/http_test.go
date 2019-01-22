@@ -14,7 +14,7 @@ import (
 
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
 	"github.com/johncoleman83/cerebrum/pkg/api/auth/transport"
-	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	jwtService "github.com/johncoleman83/cerebrum/pkg/utl/middleware/jsonwebtoken"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock/mockstore"
 	"github.com/johncoleman83/cerebrum/pkg/utl/models"
@@ -226,7 +226,7 @@ func TestMe(t *testing.T) {
 	}
 
 	client := &http.Client{}
-	jwtMW := jwt.New("jwtsecret", "HS256", 60)
+	jwtMW := jwtService.New("jwtsecret", "HS256", 60)
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {

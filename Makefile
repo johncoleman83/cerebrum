@@ -85,48 +85,16 @@ lint:
 	golint pkg/...
 	golint cmd/...
 
-.PHONY: swagger # entry point to generate swagger support docs using multi-file-swagger or (outdated) go-swagger -- https://github.com/go-swagger/go-swagger
+.PHONY: swagger # compile swagger spec file from swagger directories. Usage: make TYPE=XXXXX swagger
 swagger:
-ifeq ($(CMD),compile)
-	@make TYPE=$(TYPE) swagger_compile
-else ifeq ($(CMD),client)
-	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
-else ifeq ($(CMD),server)
-	@make CMD=$(CMD) TYPE=$(TYPE) swagger_ui
-else
-	@echo 'Usage: $ make CMD=XXXXX TYPE=XXXXX swagger'
-	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
-	@echo 'run `$$ make help` for more info'
-endif
-
-.PHONY: swagger_compile # compile swagger spec file from swagger directories. Usage: make CMD=compile TYPE=XXXXX swagger
-swagger_compile:
 ifdef TYPE
 	cd third_party/swaggerui/spec && \
 		multi-file-swagger -o $(TYPE) index.yaml > compiled/full_spec.$(TYPE) && \
 		cp -rf compiled/full_spec.$(TYPE) ../dist/full_spec.yaml && \
 		cd -
 else
-	@echo 'Usage: $ make CMD=compile TYPE=XXXXX swagger'
-	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
-	@echo 'run `$$ make help` for more info'
-endif
-
-.PHONY: swagger_ui # generate swagger client or server side template files, must already have a valid swagger.yaml file. Usage: make CMD=[client|server] TYPE=XXXXX swagger
-swagger_ui:
-ifdef TYPE
-	~/go/bin/swagger generate \
-		--output=logs/swagger.log $(CMD) \
-		--target=cmd/api/ \
-		--spec=third_party/swaggerui/spec/swagger.$(TYPE) \
-		--api-package=../../third_party/swaggerui/api \
-		--client-package=../../third_party/swaggerui/client \
-		--model-package=../../third_party/swaggerui/model \
-		--server-package=../../third_party/swaggerui/server \
-		--name=cerebrum
-else
-	@echo 'Usage: $ make CMD=XXXXX TYPE=XXXXX swagger'
-	@echo 'where CMD is the generate command and TYPE is a valid file extension like `yaml`'
+	@echo 'Usage: $ make TYPE=XXXXX swagger'
+	@echo 'where TYPE is a valid file extension like `yaml` or `json`'
 	@echo 'run `$$ make help` for more info'
 endif
 

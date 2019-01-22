@@ -50,7 +50,7 @@ use make to help with development
   $ make help
   ```
 
-* after setup and successfully running `make serve` use [swagger](https://github.com/johncoleman83/cerebrum#swagger) to test endpoints.
+* run `make setup` then after that, `make serve` to use [swagger](https://github.com/johncoleman83/cerebrum#swagger) to test endpoints.
 
 * or use `curl` to login with bootstrap data
   ```
@@ -64,7 +64,7 @@ use make to help with development
 
 Visit `http://localhost:8080/swaggerui/` (with trailing slash) in your browser to test out some endpoints!
 
-* use `make` or [multi-file-swagger](https://www.npmjs.com/package/multi-file-swagger) to generate the swagger `.yaml` spec file.
+* use `make TYPE=yaml swagger` or [multi-file-swagger](https://www.npmjs.com/package/multi-file-swagger) to generate the swagger `.yaml` spec file.
 * more docs on creating a swagger server: https://goswagger.io/use/spec.html#parsing-rules
 * this application uses the latest distribution from [github.com/swagger-api/swagger-ui](https://github.com/swagger-api/swagger-ui/tree/master/dist)
 

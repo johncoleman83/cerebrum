@@ -6,11 +6,28 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/maintainability)](https://codeclimate.com/github/johncoleman83/cerebrum/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3e7ca0599c269e5ebfb6/test_coverage)](https://codeclimate.com/github/johncoleman83/cerebrum/test_coverage)
 
-## Branched off of GORSK - GO(lang) Restful Starter Kit
-
-**[App started with GORSK](https://www.ribice.ba/refactoring-gorsk/)**
+### Branched off of [GORSK - GO(lang) Restful Starter Kit](https://www.ribice.ba/refactoring-gorsk/)
 
 Gorsk is a Golang starter kit for developing RESTful services. It is designed to help you kickstart your project, skipping the 'setting-up part' and jumping straight to writing business logic.
+
+#### Updates from GORSK:
+
+* use `gorm` as the ORM
+  * `gorm` doesn't have the limitations indicated by the author of gorsk
+  * `gorm` allows for use of various different DB's
+  * in this case we use **MySQL**
+* get rid of go-swagger
+  * it's too complicated to find Open API docs all throughout the codebase comments
+  * built a new design to organize and compile all Open API doc in `third_party/swaggerui/spec`
+* Updated the swagger distribution and spec file that were out of date.
+* new naming conventions / refactoring
+  * **Account** and **Team** created and therfore removed **Company** and **Location**
+  * Other packages and directories have been renamed to help ease the understanding of what they are used for
+  * other minor refactoring and renaming of directories such as moving the swagger distribution from `/assets` to `/third_party/swaggerui/dist`
+* Use CirclCI instead of Travis
+* Don't start up to 10 new docker containers for every test DB test.
+  * Just use 1 test container and be sure to refresh the DB for every test.
+
 
 ## Dependencies
 

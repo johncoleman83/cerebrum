@@ -1,12 +1,12 @@
-// Package jwt contains logic for using JSON web tokens
-package jwt
+// Package jsonwebtoken contains logic for using JSON web tokens
+package jsonwebtoken
 
 import (
 	"net/http"
 	"strings"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
 	"github.com/johncoleman83/cerebrum/pkg/utl/models"
@@ -21,12 +21,12 @@ type Service struct {
 	duration time.Duration
 
 	// JWT signing algorithm
-	algo jwt.SigningMethod
+	algo jwtGo.SigningMethod
 }
 
 // New generates new JWT service necessery for auth middleware
 func New(secret, algo string, d int) *Service {
-	signingMethod := jwt.GetSigningMethod(algo)
+	signingMethod := jwtGo.GetSigningMethod(algo)
 	if signingMethod == nil {
 		panic("invalid jwt signing method")
 	}
@@ -46,7 +46,7 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 				return c.NoContent(http.StatusUnauthorized)
 			}
 
-			claims := token.Claims.(jwt.MapClaims)
+			claims := token.Claims.(jwtGo.MapClaims)
 
 			id := uint(claims["id"].(float64))
 			accountID := uint(claims["c"].(float64))
@@ -68,7 +68,7 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 }
 
 // ParseToken parses token from Authorization header
-func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
+func (j *Service) ParseToken(c echo.Context) (*jwtGo.Token, error) {
 
 	token := c.Request().Header.Get("Authorization")
 	if token == "" {
@@ -79,7 +79,7 @@ func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
 		return nil, models.ErrGeneric
 	}
 
-	return jwt.Parse(parts[1], func(token *jwt.Token) (interface{}, error) {
+	return jwtGo.Parse(parts[1], func(token *jwtGo.Token) (interface{}, error) {
 		if j.algo != token.Method {
 			return nil, models.ErrGeneric
 		}
@@ -92,7 +92,7 @@ func (j *Service) ParseToken(c echo.Context) (*jwt.Token, error) {
 func (j *Service) GenerateToken(u *models.User) (string, string, error) {
 	expire := time.Now().Add(j.duration)
 
-	token := jwt.NewWithClaims((j.algo), jwt.MapClaims{
+	token := jwtGo.NewWithClaims((j.algo), jwtGo.MapClaims{
 		"id":  u.ID,
 		"u":   u.Username,
 		"e":   u.Email,

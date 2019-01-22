@@ -1,4 +1,4 @@
-package jwt_test
+package jsonwebtoken_test
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/johncoleman83/cerebrum/pkg/utl/middleware/jwt"
+	jwtService "github.com/johncoleman83/cerebrum/pkg/utl/middleware/jsonwebtoken"
 	"github.com/johncoleman83/cerebrum/pkg/utl/mock"
 	"github.com/johncoleman83/cerebrum/pkg/utl/models"
 )
@@ -54,7 +54,7 @@ func TestMWFunc(t *testing.T) {
 			expectedStatus: http.StatusOK,
 		},
 	}
-	jwtMW := jwt.New("jwtsecret", "HS256", 60)
+	jwtMW := jwtService.New("jwtsecret", "HS256", 60)
 	ts := httptest.NewServer(echoHandler(jwtMW.MWFunc()))
 	defer ts.Close()
 	path := ts.URL + "/hello"
@@ -105,11 +105,11 @@ func TestGenerateToken(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.algo != "HS256" {
 				assert.Panics(t, func() {
-					jwt.New("jwtsecret", tt.algo, 60)
+					jwtService.New("jwtsecret", tt.algo, 60)
 				}, "The code did not panic")
 				return
 			}
-			jwt := jwt.New("jwtsecret", tt.algo, 60)
+			jwt := jwtService.New("jwtsecret", tt.algo, 60)
 			str, _, err := jwt.GenerateToken(tt.req)
 			assert.Nil(t, err)
 			assert.Equal(t, tt.expectedToken, strings.Split(str, ".")[0])

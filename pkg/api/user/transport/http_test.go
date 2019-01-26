@@ -33,26 +33,26 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			name:           "Fail on bad params",
-			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:            `{"firstname":"Vanessa","lastname":"Harris","username":"vanessaharris","password":"hunter123","password_confirm":"hunter123","email":"vanessaharris@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation with short username",
-			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:            `{"first_name":"Frank","last_name":"Williams","username":"fw","password":"hunter123","password_confirm":"hunter123","email":"frankwilliams@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "Fail on validation of email",
-			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:            `{"first_name":"Princton","last_name":"Thomas","username":"princetonthomas","password":"hunter123","password_confirm":"hunter123","email":"princetonthomas$gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			expectedStatus: http.StatusBadRequest,
 		}, {
 			name:           "Fail on non-matching passwords",
-			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:            `{"first_name":"Blake","last_name":"Fields","username":"blakefields","password":"sampson","password_confirm":"sampson1","email":"blakefields@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Fail on invalid role",
-			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:  `{"first_name":"William","last_name":"Abbott","username":"williamabbot","password":"hunter123","password_confirm":"hunter123","email":"williamabbot@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
@@ -62,7 +62,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "Fail on RBAC",
-			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:  `{"first_name":"Sarah","last_name":"Smith","username":"sarahsmith","password":"hunter123","password_confirm":"hunter123","email":"sarahsmith@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return echo.ErrForbidden
@@ -73,7 +73,7 @@ func TestCreate(t *testing.T) {
 
 		{
 			name: "Success",
-			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","account_id":1,"primary_team_id":2,"role_id":200}`,
+			req:  `{"first_name":"Edwin","last_name":"Abbott","username":"edwinabbott","password":"hunter123","password_confirm":"hunter123","email":"edwinabbott@gmail.com","account_id":1,"primary_team_id":2,"role_id":5}`,
 			rbac: &mock.RBAC{
 				AccountCreateFn: func(c echo.Context, roleID models.AccessRole, accountID, teamID uint) error {
 					return nil

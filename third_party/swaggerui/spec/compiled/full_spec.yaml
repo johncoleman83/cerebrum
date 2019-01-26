@@ -213,7 +213,9 @@ definitions:
         type: string
         x-go-name: PasswordConfirm
       role_id:
-        $ref: '#/definitions/AccessRole'
+        format: uint64
+        type: integer
+        x-go-name: RoleID
       username:
         type: string
         x-go-name: Username

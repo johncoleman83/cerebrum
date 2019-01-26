@@ -78,7 +78,7 @@ test:
 
 .PHONY: test_go # run all go file tests
 test_go:
-	go test ./...
+	go test `go list ./... | grep -v -e pkg/utl/mock`
 
 .PHONY: lint # run linters on go package
 lint:

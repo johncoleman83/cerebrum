@@ -26,11 +26,11 @@ const (
 
 // ValidRoles contains all valid roles mapped to their ID
 var ValidRoles = map[uint]Role{
-	100: Role{ID: 1, AccessLevel: SuperAdminRole, Name: "SUPER_ADMIN"},
-	110: Role{ID: 2, AccessLevel: AdminRole, Name: "ADMIN"},
-	120: Role{ID: 3, AccessLevel: AccountAdminRole, Name: "ACCOUNT_ADMIN"},
-	130: Role{ID: 4, AccessLevel: TeamAdminRole, Name: "TEAM_ADMIN"},
-	200: Role{ID: 5, AccessLevel: UserRole, Name: "USER_ADMIN"},
+	1: Role{ID: 1, AccessLevel: SuperAdminRole, Name: "SUPER_ADMIN"},
+	2: Role{ID: 2, AccessLevel: AdminRole, Name: "ADMIN"},
+	3: Role{ID: 3, AccessLevel: AccountAdminRole, Name: "ACCOUNT_ADMIN"},
+	4: Role{ID: 4, AccessLevel: TeamAdminRole, Name: "TEAM_ADMIN"},
+	5: Role{ID: 5, AccessLevel: UserRole, Name: "USER_ADMIN"},
 }
 
 // Role model
@@ -40,11 +40,11 @@ type Role struct {
 	Name        string     `json:"name"`
 }
 
-// NewRoleFromAccessLevelUint contains all valid roles
-func NewRoleFromAccessLevelUint(accessLevel uint) (*Role, error) {
-	role, ok := ValidRoles[accessLevel]
+// NewRoleFromRoleID contains all valid roles
+func NewRoleFromRoleID(roleID uint) (*Role, error) {
+	role, ok := ValidRoles[roleID]
 	if !ok {
-		return nil, errors.New("unknown accessLevel id")
+		return nil, errors.New("unknown role id")
 	}
 	return &role, nil
 }

@@ -1,0 +1,68 @@
+type User {
+  firstName: String!
+  lastName: String!
+  username: String!
+  password: String!
+  passwordConfirm: String!
+  email: String!
+  mobile: String!
+  phone: String!
+  address: String!
+  accountId: Int!
+  primaryTeamId: Int!
+  role: Role!
+  updatedAt: String!
+  createdAt: String!
+  deletedAt: String!
+  lastPasswordChange: String!
+  lastLogin: String!
+}
+
+type NewUser {
+  firstName: String!
+  lastName: String!
+  username: String!
+  password: String!
+  passwordConfirm: String!
+  email: String!
+  accountId: Int!
+  primaryTeamId: Int!
+  roleId: Int!
+}
+
+type UpdateUser {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  address: String!
+  mobile: String!
+  phone: String!
+}
+
+type Role {
+  id: ID!
+  accessLevel: Int!
+  name: String!
+}
+
+type PasswordChange {
+  oldPassword: String!
+  newPassword: String!
+  newPasswordConfirm: String!
+}
+
+type Credentials {
+  password: String!
+  username: String!
+}
+
+type Query {
+  me: User!
+  user(id: ID!): User!
+  users: [User!]!
+}
+
+type Mutation {
+  login(email: String!, password: String!): String!
+  refresh(token: String!): String!
+}

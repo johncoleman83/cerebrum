@@ -2,6 +2,7 @@ package graphql
 
 import (
 	"context"
+	"fmt"
 )
 
 type Resolver struct{}
@@ -16,7 +17,7 @@ func (r *Resolver) Query() QueryResolver {
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) Login(ctx context.Context, email string, password string) (string, error) {
-	panic("not implemented")
+	return fmt.Sprintf("Jimmmy crack corn, and I don't care %s: %s", email, password), nil
 }
 func (r *mutationResolver) Refresh(ctx context.Context, token string) (string, error) {
 	panic("not implemented")

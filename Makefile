@@ -1,5 +1,6 @@
 # cerebrum make
 DEV_CONTAINER := $(shell docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1)
+TEST_CONTAINER := $(shell docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1)
 
 .PHONY: list # show all make targets
 list:
@@ -30,27 +31,29 @@ deps:
 
 .PHONY: setup # start docker dev db, bootstrap it and serve application
 setup:
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
 	@make ENV=dev docker
 	@make bootstrap
 	go run cmd/api/main.go
 
 .PHONY: serve # starts backend server, executes $ go run cmd/api/main.go
 serve:
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
 	@make ENV=dev docker
 	go run cmd/api/main.go
 
 .PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
 docker:
 ifeq ($(ENV),dev)
-	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev
-	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 15
+	if [[  `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = true ]]; then docker stop $(TEST_CONTAINER); fi
+	if [[  `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = false ]]; then 	\
+		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev \
+		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
+		&& sleep 10; fi
 else ifeq ($(ENV),test)
-	docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test
-	@echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup"
-	sleep 15
+	if [[  `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi
+	if [[  `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]]; then 	\
+		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test \
+		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
+		&& sleep 10; fi
 else
 	@echo 'Usage: $ make ENV=XXXXX docker'
 	@echo 'where ENV could be `test` or `dev`'
@@ -63,15 +66,16 @@ bootstrap:
 
 .PHONY: mysql # login to mysql dev container to inspect
 mysql:
+	@make ENV=dev docker
 	docker exec -it $(DEV_CONTAINER) mysql -u root
 
 .PHONY: test_script # runs a test script $ go run scripts/testing/main.go
 test_script:
+	@make ENV=dev docker
 	go run scripts/testing/main.go
 
 .PHONY: test # run all tests
 test:
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
 	@make ENV=test docker
 	@make test_go
 	@make lint
@@ -101,11 +105,11 @@ endif
 .PHONY: clean # removes docker containers from the environmental variable ENV such as `test`
 clean:
 ifeq ($(ENV),dev)
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker stop
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_dev_db | cut -f1 | xargs docker rm
+	docker stop $(DEV_CONTAINER)
+	docker rm $(DEV_CONTAINER)
 else ifeq ($(ENV),test)
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker stop
-	docker ps --all --format "{{.ID}}\t{{.Names}}" | grep cerebrum_mysql_test_db | cut -f1 | xargs docker rm
+	docker stop $(TEST_CONTAINER)
+	docker rm $(TEST_CONTAINER)
 else ifeq ($(ENV),all)
 	@make ENV=dev clean
 	@make ENV=test clean

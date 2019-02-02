@@ -3,6 +3,7 @@ package api
 import (
 	"crypto/sha1"
 
+	"github.com/99designs/gqlgen/handler"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/johncoleman83/cerebrum/pkg/api/auth"
 	al "github.com/johncoleman83/cerebrum/pkg/api/auth/logging"
 	at "github.com/johncoleman83/cerebrum/pkg/api/auth/transport"
+	"github.com/johncoleman83/cerebrum/pkg/api/graphql"
 	"github.com/johncoleman83/cerebrum/pkg/api/password"
 	pl "github.com/johncoleman83/cerebrum/pkg/api/password/logging"
 	pt "github.com/johncoleman83/cerebrum/pkg/api/password/transport"
@@ -33,14 +35,17 @@ func newServices(cfg *config.Configuration) (rbac *rbacService.Service, jwt *jwt
 	rbac = rbacService.New()
 	jwt = jwtService.New(cfg.JWT.Secret, cfg.JWT.SigningAlgorithm, cfg.JWT.Duration)
 	log = zlog.New()
-
 	e = server.New()
-	e.Static("/swaggerui", cfg.App.SwaggerUIPath)
+
 	return rbac, jwt, sec, log, e
 }
 
 // initializeControllers initializes new HTTP services for each controller
 func initializeControllers(db *gorm.DB, rbac *rbacService.Service, jwt *jwtService.Service, sec *secure.Service, log *zlog.Log, e *echo.Echo) {
+	//e.Static("/swaggerui", cfg.App.SwaggerUIPath)
+	e.GET("/api_playground", echo.WrapHandler(handler.Playground("GraphQL playground", "/query")))
+	e.Any("/query", echo.WrapHandler(handler.GraphQL(graphql.NewExecutableSchema(graphql.Config{Resolvers: &graphql.Resolver{}}))))
+
 	at.NewHTTP(al.New(auth.Initialize(db, jwt, sec, rbac), log), e, jwt.MWFunc())
 
 	v1 := e.Group("/v1")

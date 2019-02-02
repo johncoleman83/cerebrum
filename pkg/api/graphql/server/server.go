@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	"github.com/johncoleman83/cerebrum/scripts/graphql"
+	"github.com/johncoleman83/cerebrum/pkg/api/graphql"
 )
 
 const defaultPort = "8080"

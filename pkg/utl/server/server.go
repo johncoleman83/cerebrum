@@ -19,7 +19,7 @@ func New() *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.Logger(), middleware.Recover(),
 		secure.CORS(), secure.Headers())
-	e.GET("/", healthCheck)
+	e.GET("/health", healthCheck)
 	e.Validator = &CustomValidator{V: validator.New()}
 	custErr := &customErrHandler{e: e}
 	e.HTTPErrorHandler = custErr.handler
@@ -28,7 +28,7 @@ func New() *echo.Echo {
 }
 
 func healthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, "OK")
+	return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 }
 
 // Config represents server specific config

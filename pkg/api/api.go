@@ -42,7 +42,6 @@ func newServices(cfg *config.Configuration) (rbac *rbacService.Service, jwt *jwt
 
 // initializeControllers initializes new HTTP services for each controller
 func initializeControllers(db *gorm.DB, rbac *rbacService.Service, jwt *jwtService.Service, sec *secure.Service, log *zlog.Log, e *echo.Echo) {
-	//e.Static("/swaggerui", cfg.App.SwaggerUIPath)
 	e.GET("/api_playground", echo.WrapHandler(handler.Playground("GraphQL playground", "/query")))
 	e.Any("/query", echo.WrapHandler(handler.GraphQL(graphql.NewExecutableSchema(graphql.Config{Resolvers: &graphql.Resolver{}}))))
 
@@ -75,6 +74,9 @@ func Start(cfg *config.Configuration) error {
 	rbac, jwt, sec, log, e := newServices(cfg)
 
 	initializeControllers(db, rbac, jwt, sec, log, e)
+
+	// swagger will soon be deprecated
+	e.Static("/swaggerui", cfg.App.SwaggerUIPath)
 
 	startServer(e, cfg)
 

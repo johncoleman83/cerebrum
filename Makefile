@@ -44,24 +44,6 @@ serve:
 	@make ENV=dev docker
 	go run cmd/api/main.go
 
-.PHONY: test_make # execute some make code to test
-test_make:
-ifeq ($(ENV),dev)
-	if [ -z $(DEV_CONTAINER) ] && ! [ -z $(TEST_CONTAINER) ]; then 	\
-		echo "TRUE"; else \
-		echo "NOT TRUE"; fi
-else ifeq ($(ENV),test)
-	if [[ ! -z $(DEV_CONTAINER) && `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi
-	if [[ -z $(TEST_CONTAINER) || `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]]; then 	\
-		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test \
-		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
-		&& sleep 10; fi
-else
-	@echo 'Usage: $ make ENV=XXXXX docker'
-	@echo 'where ENV could be `test` or `dev`'
-	@echo 'run `$$ make help` for more info'
-endif
-
 .PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
 docker:
 ifeq ($(ENV),dev)

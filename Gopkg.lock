@@ -2,32 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:12888be6ae772ea65441ee26ce677d3452e6236c10cf3d5d80cca150954b96b5"
-  name = "github.com/99designs/gqlgen"
-  packages = [
-    "cmd",
-    "codegen",
-    "codegen/templates",
-    "complexity",
-    "graphql",
-    "graphql/introspection",
-    "handler",
-    "internal/gopath",
-    "internal/imports",
-  ]
-  pruneopts = "NUT"
-  revision = "39216361225c6dc824331ad1a218c9c931cc0985"
-
-[[projects]]
-  digest = "1:352b01f15a6d9c1fa40f50e94b5a627e3b6ce7735dccddb770d8ab4df2df69f6"
-  name = "github.com/agnivade/levenshtein"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "834b435c3df04fba060c8d74a40d849ab2c4a090"
-  version = "v1.0.1"
-
-[[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -77,25 +51,6 @@
   pruneopts = "NUT"
   revision = "72cd26f257d44c1114970e19afddcd812016007e"
   version = "v1.4.1"
-
-[[projects]]
-  digest = "1:4a0c072e44da763409da72d41492373a034baf2e6d849c76d239b4abdfbb6c49"
-  name = "github.com/gorilla/websocket"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
-  version = "v1.4.0"
-
-[[projects]]
-  digest = "1:b42cde0e1f3c816dd57f57f7bbcf05ca40263ad96f168714c130c611fc0856a6"
-  name = "github.com/hashicorp/golang-lru"
-  packages = [
-    ".",
-    "simplelru",
-  ]
-  pruneopts = "NUT"
-  revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
-  version = "v0.5.0"
 
 [[projects]]
   digest = "1:05bee1867e4c402256c67735a7d610f926f3003fbaa091801aaac7bb2d6f28af"
@@ -183,14 +138,6 @@
   version = "v0.1"
 
 [[projects]]
-  digest = "1:14715f705ff5dfe0ffd6571d7d201dd8e921030f8070321a79380d8ca4ec1a24"
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
-  version = "v0.8.1"
-
-[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -219,14 +166,6 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:5dba68a1600a235630e208cb7196b24e58fcbb77bb7a6bec08fcd23f081b0a58"
-  name = "github.com/urfave/cli"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
-  version = "v1.20.0"
-
-[[projects]]
   digest = "1:af354641f23332b1a8d5d361d11b5a9171589e412a67d499633706c611acc064"
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
@@ -241,22 +180,6 @@
   packages = ["."]
   pruneopts = "NUT"
   revision = "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
-
-[[projects]]
-  digest = "1:6ab600ae9149a1c99012b4028b91822e9996d498ea50a3388118a9aa7f9f8240"
-  name = "github.com/vektah/gqlparser"
-  packages = [
-    ".",
-    "ast",
-    "gqlerror",
-    "lexer",
-    "parser",
-    "validator",
-    "validator/rules",
-  ]
-  pruneopts = "NUT"
-  revision = "b850e94a0bf8eab2820054638d96def671b7ae4e"
-  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -280,29 +203,6 @@
   revision = "b90733256f2e882e81d52f9126de08df5615afd9"
 
 [[projects]]
-  branch = "master"
-  digest = "1:7a1d1925013ae530a8e2eaef7d83b189fde2709627055b482a96a05375169cda"
-  name = "golang.org/x/tools"
-  packages = [
-    "go/ast/astutil",
-    "go/buildutil",
-    "go/gcexportdata",
-    "go/internal/cgo",
-    "go/internal/gcimporter",
-    "go/internal/packagesdriver",
-    "go/loader",
-    "go/packages",
-    "go/types/typeutil",
-    "imports",
-    "internal/fastwalk",
-    "internal/gopathwalk",
-    "internal/module",
-    "internal/semver",
-  ]
-  pruneopts = "NUT"
-  revision = "d66bd3c5d5a61998d3e35797d266491d11b5e487"
-
-[[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
@@ -322,10 +222,6 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/99designs/gqlgen/cmd",
-    "github.com/99designs/gqlgen/graphql",
-    "github.com/99designs/gqlgen/graphql/introspection",
-    "github.com/99designs/gqlgen/handler",
     "github.com/dgrijalva/jwt-go",
     "github.com/go-playground/validator",
     "github.com/jinzhu/gorm",
@@ -335,8 +231,6 @@
     "github.com/nbutton23/zxcvbn-go",
     "github.com/rs/zerolog",
     "github.com/stretchr/testify/assert",
-    "github.com/vektah/gqlparser",
-    "github.com/vektah/gqlparser/ast",
     "golang.org/x/crypto/bcrypt",
     "gopkg.in/yaml.v2",
   ]

@@ -19,8 +19,8 @@ help:
 godoc:
 	godoc -play=true -index -http=:6060
 
-.PHONY: deps # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
-deps:
+.PHONY: init # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
+init:
 	@echo 'if you have not already, install these dependencies of the specified version or newer'
 	@echo 'docker 18.09.0'
 	@echo 'golang version go1.11.4 darwin/amd64'
@@ -28,6 +28,10 @@ deps:
 	@echo 'multi-file-swagger: https://github.com/mohsen1/multi-file-swagger-example'
 	@echo 'golang/dep: https://github.com/golang/dep'
 	go get -t -v ./...
+
+.PHONY: dep # update go package dependencies
+dep:
+	dep ensure
 
 .PHONY: setup # start docker dev db, bootstrap it and serve application
 setup:
@@ -40,19 +44,41 @@ serve:
 	@make ENV=dev docker
 	go run cmd/api/main.go
 
+.PHONY: test_make # execute some make code to test
+test_make:
+ifeq ($(ENV),dev)
+	if [ -z $(DEV_CONTAINER) ] && ! [ -z $(TEST_CONTAINER) ]; then 	\
+		echo "TRUE"; else \
+		echo "NOT TRUE"; fi
+else ifeq ($(ENV),test)
+	if [[ ! -z $(DEV_CONTAINER) && `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi
+	if [[ -z $(TEST_CONTAINER) || `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]]; then 	\
+		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test \
+		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
+		&& sleep 10; fi
+else
+	@echo 'Usage: $ make ENV=XXXXX docker'
+	@echo 'where ENV could be `test` or `dev`'
+	@echo 'run `$$ make help` for more info'
+endif
+
 .PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
 docker:
 ifeq ($(ENV),dev)
-	if [[  `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = true ]]; then docker stop $(TEST_CONTAINER); fi
-	if [[  `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = false ]]; then 	\
+	if ! [ -z $(TEST_CONTAINER) ]; then	\
+		if [[ `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = true ]]; then docker stop $(TEST_CONTAINER); fi \
+	fi
+	if [ -z $(DEV_CONTAINER) ] || [ `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = false ]; then	\
 		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev \
-		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
+		&& echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
 		&& sleep 10; fi
 else ifeq ($(ENV),test)
-	if [[  `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi
-	if [[  `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]]; then 	\
+	if ! [ -z $(DEV_CONTAINER) ]; then	\
+		if [[ `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi \
+	fi
+	if [ -z $(TEST_CONTAINER) ] || [ `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]; then	\
 		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test \
-		&& @echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
+		&& echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
 		&& sleep 10; fi
 else
 	@echo 'Usage: $ make ENV=XXXXX docker'

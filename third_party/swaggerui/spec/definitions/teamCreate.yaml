@@ -1,0 +1,17 @@
+description: Team represents team domain model
+properties:
+  name:
+    type: string
+    x-go-name: Name
+    example: The A Team
+  account_id:
+    format: uint64
+    type: integer
+    x-go-name: AccountID
+    example: 23
+  description:
+    type: string
+    x-go-name: Desciption
+    example: For fighting Justice
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/api/user/transport

@@ -10,3 +10,7 @@
   $ref: ./v1/users/index.yaml
 /v1/users/{id}:
   $ref: ./v1/users/id.yaml
+/v1/teams:
+  $ref: ./v1/teams/index.yaml
+/v1/teams/{id}:
+  $ref: ./v1/teams/id.yaml

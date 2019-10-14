@@ -1,0 +1,48 @@
+delete:
+  description: Deletes a team with requested ID.
+  operationId: teamDelete
+  parameters:
+  - description: id of team
+    in: path
+    name: id
+    required: true
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/ok'
+    "400":
+      $ref: '#/responses/err'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Deletes a team
+  tags:
+  - teams
+get:
+  description: Returns a single team by its ID.
+  operationId: getTeam
+  parameters:
+  - description: id of team
+    in: path
+    name: id
+    required: true
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/teamResp'
+    "400":
+      $ref: '#/responses/err'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "404":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Returns a single team.
+  tags:
+  - teams

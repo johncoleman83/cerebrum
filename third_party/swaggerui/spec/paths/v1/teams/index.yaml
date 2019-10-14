@@ -1,0 +1,50 @@
+get:
+  description: Returns list of teams.
+  operationId: listTeams
+  parameters:
+  - description: number of results
+    in: query
+    name: limit
+    type: integer
+  - description: page number
+    in: query
+    name: page
+    type: integer
+  responses:
+    "200":
+      $ref: '#/responses/teamListResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/err'
+    "500":
+      $ref: '#/responses/err'
+  summary: Returns list of teams.
+  tags:
+  - teams
+post:
+  description: Creates a new team.
+  parameters:
+  - description: Request body
+    in: body
+    name: request
+    required: true
+    schema:
+      $ref: '#/definitions/teamCreate'
+  operationId: teamCreate
+  responses:
+    "200":
+      $ref: '#/responses/teamResp'
+    "400":
+      $ref: '#/responses/errMsg'
+    "401":
+      $ref: '#/responses/err'
+    "403":
+      $ref: '#/responses/errMsg'
+    "500":
+      $ref: '#/responses/err'
+  summary: Creates new team.
+  tags:
+  - teams

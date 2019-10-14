@@ -6,13 +6,13 @@ properties:
   deleted_at:
     format: date-time
     type: string
+  updated_at:
+    format: date-time
+    type: string
   id:
     format: uint64
     type: integer
     example: 42
-  updated_at:
-    format: date-time
-    type: string
   address:
     type: string
     x-go-name: Address

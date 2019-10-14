@@ -129,13 +129,13 @@ definitions:
       deleted_at:
         format: date-time
         type: string
+      updated_at:
+        format: date-time
+        type: string
       id:
         format: uint64
         type: integer
         example: 42
-      updated_at:
-        format: date-time
-        type: string
       address:
         type: string
         x-go-name: Address
@@ -482,6 +482,106 @@ paths:
       summary: Updates user's contact information
       tags:
         - users
+  /v1/teams:
+    get:
+      description: Returns list of teams.
+      operationId: listTeams
+      parameters:
+        - description: number of results
+          in: query
+          name: limit
+          type: integer
+        - description: page number
+          in: query
+          name: page
+          type: integer
+      responses:
+        '200':
+          $ref: '#/responses/teamListResp'
+        '400':
+          $ref: '#/responses/errMsg'
+        '401':
+          $ref: '#/responses/err'
+        '403':
+          $ref: '#/responses/err'
+        '500':
+          $ref: '#/responses/err'
+      summary: Returns list of teams.
+      tags:
+        - teams
+    post:
+      description: Creates a new team.
+      parameters:
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/teamCreate'
+      operationId: teamCreate
+      responses:
+        '200':
+          $ref: '#/responses/teamResp'
+        '400':
+          $ref: '#/responses/errMsg'
+        '401':
+          $ref: '#/responses/err'
+        '403':
+          $ref: '#/responses/errMsg'
+        '500':
+          $ref: '#/responses/err'
+      summary: Creates new team.
+      tags:
+        - teams
+  '/v1/teams/{id}':
+    delete:
+      description: Deletes a team with requested ID.
+      operationId: teamDelete
+      parameters:
+        - description: id of team
+          in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          $ref: '#/responses/ok'
+        '400':
+          $ref: '#/responses/err'
+        '401':
+          $ref: '#/responses/err'
+        '403':
+          $ref: '#/responses/err'
+        '500':
+          $ref: '#/responses/err'
+      summary: Deletes a team
+      tags:
+        - teams
+    get:
+      description: Returns a single team by its ID.
+      operationId: getTeam
+      parameters:
+        - description: id of team
+          in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          $ref: '#/responses/teamResp'
+        '400':
+          $ref: '#/responses/err'
+        '401':
+          $ref: '#/responses/err'
+        '403':
+          $ref: '#/responses/err'
+        '404':
+          $ref: '#/responses/err'
+        '500':
+          $ref: '#/responses/err'
+      summary: Returns a single team.
+      tags:
+        - teams
 produces:
   - application/json
 responses:

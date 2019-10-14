@@ -1,0 +1,35 @@
+description: Team represents team domain model
+properties:
+  created_at:
+    format: date-time
+    type: string
+  deleted_at:
+    format: date-time
+    type: string
+  updated_at:
+    format: date-time
+    type: string
+  id:
+    format: uint64
+    type: integer
+    example: 42
+  name:
+    type: string
+    x-go-name: Name
+    example: The A Team
+  account_id:
+    format: uint64
+    type: integer
+    x-go-name: AccountID
+    example: 23
+  description:
+    type: string
+    x-go-name: Desciption
+    example: For fighting Justice
+  members:
+    format: array
+    x-go-name: Members
+    items:
+      $ref: '#/definitions/User'
+type: object
+x-go-package: github.com/johncoleman83/cerebrum/pkg/utl/models

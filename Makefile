@@ -21,13 +21,7 @@ godoc:
 
 .PHONY: init # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
 init:
-	@echo 'if you have not already, install these dependencies of the specified version or newer'
-	@echo 'docker 18.09.0'
-	@echo 'golang version go1.11.4 darwin/amd64'
-	@echo 'npm 6.5.0'
-	@echo 'multi-file-swagger: https://github.com/mohsen1/multi-file-swagger-example'
-	@echo 'golang/dep: https://github.com/golang/dep'
-	go get -t -v ./...
+	./scripts/init.py
 
 .PHONY: dep # install the project's dependencies
 dep:

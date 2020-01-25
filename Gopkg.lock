@@ -25,65 +25,65 @@
     "currency",
   ]
   pruneopts = "NUT"
-  revision = "f63010822830b6fe52288ee52d5a1151088ce039"
-  version = "v0.12.1"
+  revision = "9f105231d3a5f6877a2bf8321dfa15ea6f844b1b"
+  version = "v0.13.0"
 
 [[projects]]
   digest = "1:1683152827ebac377858b53a6ad0be90fb1711061c7e580c5dc719834a349162"
   name = "github.com/go-playground/universal-translator"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
-  version = "v0.16.0"
+  revision = "f87b1403479a348651dbf5f07f5cc6e5fcf07008"
+  version = "v0.17.0"
 
 [[projects]]
-  digest = "1:ce77b60a5a960206e689e397af69f7e60df7d03d310a4062c72da623ec16f754"
+  digest = "1:747fc8ca21776d73d8dddf06a49db7b96154c1b669728b38f9192393d44e6291"
   name = "github.com/go-playground/validator"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "cdd5c28d217804eec51fa694927e6c57465748f6"
-  version = "v9.25.0"
+  revision = "21c910fc6d9c3556c28252b04beb17de0c2d40ec"
+  version = "v9.31.0"
 
 [[projects]]
-  digest = "1:13e9a236e56e18fecb73f5b2f2eb7f60060a1a9bc27e5a7328ab22e275ecb63e"
+  digest = "1:24f20a61b3d084137d13cf53aba7365862b850fe4f30b733ed0e3c7ade9ca86d"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "72cd26f257d44c1114970e19afddcd812016007e"
-  version = "v1.4.1"
+  revision = "17ef3dd9d98b69acec3e85878995ada9533a9370"
+  version = "v1.5.0"
 
 [[projects]]
-  digest = "1:05bee1867e4c402256c67735a7d610f926f3003fbaa091801aaac7bb2d6f28af"
+  digest = "1:3d3df99880596fbe936c55974a1d5cf50e35a5599898443e912322b012b05b26"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
     "dialects/mysql",
   ]
   pruneopts = "NUT"
-  revision = "472c70caa40267cb89fd8facb07fe6454b578626"
-  version = "v1.9.2"
+  revision = "79a77d771dee4e4b60e9c543e8663bbc80466670"
+  version = "v1.9.12"
 
 [[projects]]
-  branch = "master"
   digest = "1:802f75230c29108e787d40679f9bf5da1a5673eaf5c10eb89afd993e18972909"
   name = "github.com/jinzhu/inflection"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "04140366298a54a039076d798123ffa108fff46c"
+  revision = "f5c5f50e6090ae76a29240b61ae2a90dd810112e"
+  version = "v1.0.0"
 
 [[projects]]
-  digest = "1:6a9a0e42dbadd13b1d4ac430c820159b9fa2e581c686f2d8d6d6d091f0b10428"
+  digest = "1:e1a4a004e1797b96ee265d52809696ef6101fb7830aa50bd9ffc331e535f1956"
   name = "github.com/labstack/echo"
   packages = [
     ".",
     "middleware",
   ]
   pruneopts = "NUT"
-  revision = "c7eb8da9ec73e78c4f38413f3f835e0cd52c7d72"
-  version = "v3.3.8"
+  revision = "38772c686c76b501f94bd6cd5b77f5842e93b559"
+  version = "v3.3.10"
 
 [[projects]]
-  digest = "1:47ee373e16e657b31403855fbd88625fc8a9dc839f4b2a2a1b47747890bd322e"
+  digest = "1:df9821f5255054ce986032dff29e86885962ad1b147a98f4823462fa2c962017"
   name = "github.com/labstack/gommon"
   packages = [
     "bytes",
@@ -92,32 +92,32 @@
     "random",
   ]
   pruneopts = "NUT"
-  revision = "7fd9f68ece0bcb1a905fac8f1549f0083f71c51b"
-  version = "v0.2.8"
+  revision = "4919956f6fb227b548f004da27c7c6b20fba499f"
+  version = "v0.3.0"
 
 [[projects]]
-  digest = "1:c41a98ec16b8b053f921ad36d510f552321d6c86d2cd46d15b0ef3b85e67dd5f"
+  digest = "1:1397155793926ba9ec5ab4f8ad496d3d1bd17622e2e1ecbcabcf7612b12537be"
   name = "github.com/leodido/go-urn"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "70078a794e8ea4b497ba7c19a78cd60f90ccf0f4"
-  version = "v1.1.0"
+  revision = "a0f5013415294bb94553821ace21a1a74c0298cc"
+  version = "v1.2.0"
 
 [[projects]]
-  digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
+  digest = "1:bced2617aac935b7931d43bdd5fd5ef3eacbb52291c61e423afe8037f6dd95f9"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
+  revision = "98ec13f34aabf44cc914c65a1cfb7b9bc815aef1"
+  version = "v0.1.4"
 
 [[projects]]
-  digest = "1:bffa444ca07c69c599ae5876bc18b25bfd5fa85b297ca10a25594d284a7e9c5d"
+  digest = "1:4c2c63bfd4c2ae0c5a9d7f75cab1f4fac4e8c2ce58f52a73322cefc9bdb4c5bd"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
-  version = "v0.0.4"
+  revision = "7b513a986450394f7bbf1476909911b3aa3a55ce"
+  version = "v0.0.12"
 
 [[projects]]
   digest = "1:bdfb0c1330370fa59d2cb3961dc926492888ef6c16e00c557ab66233e0f58844"
@@ -146,7 +146,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:ef2fb2ed953f7e3f8d9dd98a62e1f89650c37410555ed36f58f256b769b7dfb1"
+  digest = "1:07a1397821cbea64dd3358af7796d4d925ca6ca2616946c0341d1531533d118f"
   name = "github.com/rs/zerolog"
   packages = [
     ".",
@@ -154,16 +154,16 @@
     "internal/json",
   ]
   pruneopts = "NUT"
-  revision = "8747b7b3a51b5d08ee7ac50eaf4869edaf9f714a"
-  version = "v1.11.0"
+  revision = "f1dd50b8c64d79be1392edf1d8fda5cedea4916d"
+  version = "v1.17.2"
 
 [[projects]]
-  digest = "1:42e8c2456d7ec0f31e182c20022e74324c4da2cb3bd9069ff9b131fe33466308"
+  digest = "1:6e7bb8be062d38ec9e9222973e81835554bfa2181b9ab29ff206514bd44fe8d2"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "NUT"
-  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
-  version = "v1.3.0"
+  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:af354641f23332b1a8d5d361d11b5a9171589e412a67d499633706c611acc064"
@@ -174,16 +174,16 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
   digest = "1:f17377eef01c91aee2d0f93095d672bd27697c62e5546bde97f9c8412c141356"
   name = "github.com/valyala/fasttemplate"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
+  revision = "8fcc7a99b5795b7c3e95172237cf93282fc339a9"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:64cbf54de6183132e134a9c38a95e6c06c43f0031a3140cc6a86d441f4fbecbb"
+  digest = "1:9f1f757ecedaf2f5102151502fed104ff185431f3e028f256fa2dd5991dbc3ec"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -192,31 +192,56 @@
     "blowfish",
   ]
   pruneopts = "NUT"
-  revision = "057139ce5d2bdbe6fe73c53679e24e9cf007f637"
+  revision = "530e935923ad688be97c15eeb8e5ee42ebf2b54a"
 
 [[projects]]
   branch = "master"
-  digest = "1:5be6e111bef99ae60fa7a01266905c8050d8a43837d5c4840ff5417584d7418e"
+  digest = "1:d1f7edf951b9cc444358a31de2f4e4c1c5c539ea9c6aca13f5bf92eb1124fc4b"
+  name = "golang.org/x/net"
+  packages = ["idna"]
+  pruneopts = "NUT"
+  revision = "6afb5195e5aab057fda82e27171243402346b0ad"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a135a07d1745698cf75b7d37893d246157d10c2a7e95256e5514732e127c15a6"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "NUT"
-  revision = "b90733256f2e882e81d52f9126de08df5615afd9"
+  revision = "9fbb57f87de9ccfe3a99d4e3270ce8a926ebba4f"
 
 [[projects]]
-  digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
-  name = "google.golang.org/appengine"
-  packages = ["cloudsql"]
+  digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
+  name = "golang.org/x/text"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/language",
+    "internal/language/compact",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable",
+  ]
   pruneopts = "NUT"
-  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
-  version = "v1.4.0"
+  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
+  version = "v0.3.2"
 
 [[projects]]
-  digest = "1:18108594151654e9e696b27b181b953f9a90b16bf14d253dd1b397b025a1487f"
+  digest = "1:d9b9ac6943a512737f76bf3d61b08d97121c66686bc02ffc231313563230b468"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
-  version = "v2.2.2"
+  revision = "53403b58ad1b561927d19068c655246f2db79d48"
+  version = "v2.2.8"
 
 [solve-meta]
   analyzer-name = "dep"

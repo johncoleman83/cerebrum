@@ -29,9 +29,13 @@ init:
 	@echo 'golang/dep: https://github.com/golang/dep'
 	go get -t -v ./...
 
-.PHONY: dep # update go package dependencies
+.PHONY: dep # install the project's dependencies
 dep:
-	dep ensure
+	dep ensure -v
+
+.PHONY: update # update all go package dependencies
+update:
+	dep ensure --update -v
 
 .PHONY: setup # start docker dev db, bootstrap it and serve application
 setup:

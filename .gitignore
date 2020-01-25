@@ -1,3 +1,4 @@
 profile.out
 coverage.txt
 logs/swagger.log
+.DS_Store

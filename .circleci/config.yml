@@ -6,7 +6,7 @@
 #
 version: 2
 jobs:
-  build_and_test:
+  test:
     docker:
       - image: circleci/golang:1.13
       # Specify service dependencies here if necessary
@@ -33,7 +33,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Wait for db
+          name: wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           name: install dependencies

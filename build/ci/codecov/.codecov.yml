@@ -1,3 +1,8 @@
+# reference:
+#   * https://github.com/codecov/codecov-bash
+#   * https://github.com/codecov/example-go
+#   * https://docs.codecov.io/docs/codecov-yaml
+
 codecov:
   notify:
     require_ci_to_pass: yes

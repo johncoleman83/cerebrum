@@ -1,12 +1,15 @@
 # Golang CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
+# Reference
+#   * https://circleci.com/docs/2.0/language-go/
+#   * https://github.com/CircleCI-Public/circleci-demo-go/blob/master/Makefile
+#
 version: 2
 jobs:
-  build:
+  build_and_test:
     docker:
       # specify the version
-      - image: circleci/golang:1.9
+      - image: circleci/golang:1.13
 
       - image: mysql:latest
         command: mysqld --sql_mode=""
@@ -28,13 +31,12 @@ jobs:
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/johncoleman83/cerebrum
+    environment: # environment variables for the build itself
+      TEST_RESULTS: ./test # path to where test results will be saved
     steps:
       - checkout
-      - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
+
+      - setup_remote_docker
 
       - run:
           name: Wait for db
@@ -45,18 +47,24 @@ jobs:
           command: go get -t -v ./...
 
       - run:
-          name: test all
-          command: ./test
+          name: test go packages
+          command: ./scripts/test.bash
 
       - run:
-          name: ensure golint is installed
+          name: install golint
           command: go get -u golang.org/x/lint/golint
 
       - run:
-          name: run lint
+          name: run linter
           command: make lint
 
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
-          name: codecov.io
-          command: bash <(curl -s https://codecov.io/bash)
+          name: code coverage check with codecov.io
+          command: bash <(curl -s https://codecov.io/bash) -y ./build/ci/codecov/codecov.yml || echo "Codecov did not collect coverage reports"
+
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build_and_test

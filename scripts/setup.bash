@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-# npm install -g multi-file-swagger
-
-function introduction_message() {
-
-	go get -t -v ./...
-}
-
 function special_execute() {
     set -x; "$@"; set +x;
 }

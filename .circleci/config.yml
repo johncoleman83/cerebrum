@@ -8,9 +8,10 @@ version: 2
 jobs:
   build_and_test:
     docker:
-      # specify the version
       - image: circleci/golang:1.13
-
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: mysql:latest
         command: mysqld --sql_mode=""
         restart: always
@@ -21,11 +22,6 @@ jobs:
           MYSQL_DATABASE: cerebrum_mysql_test_db
           MYSQL_USER: mysql_test_user
           MYSQL_PASSWORD: mysql_test_password
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
@@ -35,36 +31,62 @@ jobs:
       TEST_RESULTS: ./test # path to where test results will be saved
     steps:
       - checkout
-
       - setup_remote_docker
-
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
-
       - run:
           name: install dependencies
           command: go get -t -v ./...
-
       - run:
           name: test go packages
           command: ./scripts/test.bash
+      - store_artifacts:
+          path: log
+          destination: test.log
+      - store_test_results:
+          path: test
 
+  lint:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: install golint
           command: go get -u golang.org/x/lint/golint
-
       - run:
           name: run linter
           command: make lint
+      - store_artifacts:
+          path: log
+          destination: test.log
+      - store_test_results:
+          path: test
 
+  code_coverage:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    steps:
+      - checkout
+      - setup_remote_docker
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
           name: code coverage check with codecov.io
           command: bash <(curl -s https://codecov.io/bash) -y ./build/ci/codecov/codecov.yml || echo "Codecov did not collect coverage reports"
-
+      - store_artifacts:
+          path: log
+          destination: test.log
+      - store_test_results:
+          path: test
+    
 workflows:
   version: 2
-  build-workflow:
+  build-and-test:
     jobs:
       - build_and_test
+      - lint
+      - code_coverage

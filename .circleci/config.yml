@@ -1,13 +1,46 @@
 # Golang CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
+# Reference
+#   * https://circleci.com/docs/2.0/language-go/
+#   * https://github.com/CircleCI-Public/circleci-demo-go/blob/master/Makefile
+#
 version: 2
-jobs:
-  build:
-    docker:
-      # specify the version
-      - image: circleci/golang:1.9
 
+merge_master: &merge_master
+  name: Fetch PR merge commit
+  command: |
+    if [[ -n "${CIRCLE_PULL_REQUEST}" ]]; then
+      git fetch origin master
+      git rebase origin/master
+      if [[ $? -ne 0 ]]; then
+        echo "aborting due to detected merge conflicts."
+        exit 1
+      fi
+    fi
+
+jobs:
+  lint:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          <<: *merge_master
+      - run:
+          name: install golint
+          command: go get -u golang.org/x/lint/golint
+      - run:
+          name: run linter
+          command: make lint
+
+  test:
+    docker:
+      - image: circleci/golang:1.13
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: mysql:latest
         command: mysqld --sql_mode=""
         restart: always
@@ -18,45 +51,34 @@ jobs:
           MYSQL_DATABASE: cerebrum_mysql_test_db
           MYSQL_USER: mysql_test_user
           MYSQL_PASSWORD: mysql_test_password
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/johncoleman83/cerebrum
     steps:
+      - setup_remote_docker
       - checkout
       - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
-
+          <<: *merge_master
       - run:
-          name: Wait for db
+          name: wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
-
       - run:
           name: install dependencies
           command: go get -t -v ./...
-
       - run:
-          name: test all
-          command: ./test
-
-      - run:
-          name: ensure golint is installed
-          command: go get -u golang.org/x/lint/golint
-
-      - run:
-          name: run lint
-          command: make lint
-
+          name: test go packages
+          command: |
+            ./scripts/test.bash
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
-          name: codecov.io
-          command: bash <(curl -s https://codecov.io/bash)
+          name: code coverage check with codecov.io
+          command: bash <(curl -s https://codecov.io/bash) -y ./build/ci/codecov/.codecov.yml || echo "Codecov did not collect coverage reports"
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - lint
+      - test

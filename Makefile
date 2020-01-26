@@ -21,37 +21,43 @@ godoc:
 
 .PHONY: init # install package and development dependencies such as docker, npm, swagger compiler, golang/dep
 init:
-	@echo 'if you have not already, install these dependencies of the specified version or newer'
-	@echo 'docker 18.09.0'
-	@echo 'golang version go1.11.4 darwin/amd64'
-	@echo 'npm 6.5.0'
-	@echo 'multi-file-swagger: https://github.com/mohsen1/multi-file-swagger-example'
-	@echo 'golang/dep: https://github.com/golang/dep'
-	go get -t -v ./...
+	./scripts/setup.bash
 
-.PHONY: dep # update go package dependencies
+.PHONY: dep # install the project's dependencies
 dep:
-	dep ensure
+	dep ensure -v
 
-.PHONY: setup # start docker dev db, bootstrap it and serve application
+.PHONY: update # update all go package dependencies
+update:
+	dep ensure --update -v
+
+.PHONY: setup # setup development env or start docker dev db, bootstrap it and serve application
 setup:
+ifeq ($(FOR),app)
 	@make ENV=dev docker
 	@make bootstrap
-	go run cmd/api/main.go
+	go run -x cmd/api/main.go
+else ifeq ($(FOR),env)
+	./scripts/setup.bash
+else
+	@echo 'Usage: $ make FOR=VAR docker'
+	@echo 'where VAR could be `env` or `dev`'
+	@echo 'run `$$ make help` for more info'
+endif
 
 .PHONY: serve # starts backend server, executes $ go run cmd/api/main.go
 serve:
 	@make ENV=dev docker
-	go run cmd/api/main.go
+	go run -x cmd/api/main.go
 
-.PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./configs/docker/docker-compose.yml --file ./configs/docker/docker-compose.dev.yml up --detach
+.PHONY: docker # start docker dev dependencies, executes $ docker-compose --file ./build/package/docker/docker-compose.yml --file ./build/package/docker/docker-compose.dev.yml up --detach
 docker:
 ifeq ($(ENV),dev)
 	if ! [ -z $(TEST_CONTAINER) ]; then	\
 		if [[ `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = true ]]; then docker stop $(TEST_CONTAINER); fi \
 	fi
 	if [ -z $(DEV_CONTAINER) ] || [ `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = false ]; then	\
-		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_dev \
+		docker-compose --file ./build/package/docker/docker-compose.yml up --detach db_dev \
 		&& echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
 		&& sleep 10; fi
 else ifeq ($(ENV),test)
@@ -59,18 +65,18 @@ else ifeq ($(ENV),test)
 		if [[ `docker inspect -f {{.State.Running}} $(DEV_CONTAINER)` = true ]]; then docker stop $(DEV_CONTAINER); fi \
 	fi
 	if [ -z $(TEST_CONTAINER) ] || [ `docker inspect -f {{.State.Running}} $(TEST_CONTAINER)` = false ]; then	\
-		docker-compose --file ./configs/docker/docker-compose.yml up --detach db_test \
+		docker-compose --file ./build/package/docker/docker-compose.yml up --detach db_test \
 		&& echo -e "... zzz\ngoing to sleep to allow mysql enough time to startup" \
 		&& sleep 10; fi
 else
-	@echo 'Usage: $ make ENV=XXXXX docker'
-	@echo 'where ENV could be `test` or `dev`'
+	@echo 'Usage: $ make ENV=VAR docker'
+	@echo 'where VAR could be `test` or `dev`'
 	@echo 'run `$$ make help` for more info'
 endif
 
 .PHONY: bootstrap # bootstrap the db with dev models
 bootstrap:
-	go run scripts/bootstrap/main.go
+	go run -x scripts/bootstrap/main.go
 
 .PHONY: mysql # login to mysql dev container to inspect
 mysql:
@@ -80,7 +86,7 @@ mysql:
 .PHONY: test_script # runs a test script $ go run scripts/testing/main.go
 test_script:
 	@make ENV=dev docker
-	go run scripts/testing/main.go
+	go run -x scripts/testing/main.go
 
 .PHONY: test # run all tests
 test:
@@ -90,7 +96,7 @@ test:
 
 .PHONY: test_go # run all go file tests
 test_go:
-	go test `go list ./... | grep -v -e pkg/utl/mock`
+	./scripts/test.bash
 
 .PHONY: lint # run linters on go package
 lint:
@@ -105,8 +111,8 @@ ifdef TYPE
 		cp -rf compiled/full_spec.$(TYPE) ../dist/full_spec.yaml && \
 		cd -
 else
-	@echo 'Usage: $ make TYPE=XXXXX swagger'
-	@echo 'where TYPE is a valid file extension like `yaml` or `json`'
+	@echo 'Usage: $ make TYPE=VAR swagger'
+	@echo 'where VAR is a valid file extension like `yaml` or `json`'
 	@echo 'run `$$ make help` for more info'
 endif
 
@@ -122,8 +128,8 @@ else ifeq ($(ENV),all)
 	@make ENV=dev clean
 	@make ENV=test clean
 else
-	@echo 'Usage: $ make ENV=XXXXX clean'
-	@echo 'where ENV could be `test`, `dev`, `git` or `all`'
+	@echo 'Usage: $ make ENV=VAR clean'
+	@echo 'where VAR could be `test`, `dev` or `all`'
 	@echo 'run `$$ make help` for more info'
 endif
 

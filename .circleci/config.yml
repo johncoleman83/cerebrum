@@ -4,13 +4,7 @@
 #   * https://circleci.com/docs/2.0/language-go/
 #   * https://github.com/CircleCI-Public/circleci-demo-go/blob/master/Makefile
 #
-version: 2.1
-
-orbs:
-  go: circleci/go@0.2.0 # https://circleci.com/orbs/registry/orb/circleci/go
-
-defaults: &defaults
-  working_directory: /go/src/github.com/johncoleman83/cerebrum
+version: 2
 
 merge_master: &merge_master
   name: Fetch PR merge commit
@@ -25,13 +19,25 @@ merge_master: &merge_master
     fi
 
 jobs:
-  test:
-    <<: *defaults
-    parameters:
-      tag:
-        type: string
-        default: '1.13'
+  lint:
     docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          <<: *merge_master
+      - run:
+          name: install golint
+          command: go get -u golang.org/x/lint/golint
+      - run:
+          name: run linter
+          command: make lint
+
+  test:
+    docker:
+      - image: circleci/golang:1.13
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -49,12 +55,12 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
+    working_directory: /go/src/github.com/johncoleman83/cerebrum
     steps:
       - setup_remote_docker
       - checkout
       - run:
           <<: *merge_master
-      - go/install
       - run:
           name: wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
@@ -63,69 +69,16 @@ jobs:
           command: go get -t -v ./...
       - run:
           name: test go packages
-          command: ./scripts/test.bash
-      - store_artifacts:
-          path: log
-          destination: test.log
-      - store_test_results:
-          path: test
-
-  lint:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - checkout
-      - run:
-          <<: *merge_master
-      - go/install
-      - run:
-          name: install golint
-          command: go get -u golang.org/x/lint/golint
-      - run:
-          name: run linter
-          command: make lint
-      - store_artifacts:
-          path: log
-          destination: test.log
-      - store_test_results:
-          path: test
-
-  code_coverage:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          <<: *merge_master
+          command: |
+            ./scripts/test.bash
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
           name: code coverage check with codecov.io
-          command: bash <(curl -s https://codecov.io/bash) -y ./build/ci/codecov/codecov.yml || echo "Codecov did not collect coverage reports"
-      - store_artifacts:
-          path: log
-          destination: test.log
-      - store_test_results:
-          path: test
+          command: bash <(curl -s https://codecov.io/bash) -y ./build/ci/codecov/.codecov.yml || echo "Codecov did not collect coverage reports"
 
-  code_climate:
-    <<: *defaults
-    environment: 
-      - CC_TEST_REPORTER_ID: 42fb106e769642e0c715fe3c6299b9bdb8963abe5321a03719b611335096b254
-    steps:
-      - attach_workspace:
-          at: ~/repo/tmp
-      - run:
-          name: Upload coverage results to Code Climate
-          command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 2 -o tmp/codeclimate.total.json
-            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
-    
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build_and_test:
-          tag: '1.13'
-      - lint:
-          tag: '1.13'
-      - code_coverage
-      - code_climate
+      - lint
+      - test

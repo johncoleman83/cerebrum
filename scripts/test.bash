@@ -3,7 +3,7 @@
 function execute() {
     set -e
 
-    COVERAGE_TXT="./test/coverage.txt"
+    COVERAGE_TXT="./coverage.txt"
     echo "" > $COVERAGE_TXT
 
     for d in $(go list ../... | grep -v -e pkg/utl/mock); do

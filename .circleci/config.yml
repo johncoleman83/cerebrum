@@ -4,11 +4,34 @@
 #   * https://circleci.com/docs/2.0/language-go/
 #   * https://github.com/CircleCI-Public/circleci-demo-go/blob/master/Makefile
 #
-version: 2
+version: 2.1
+
+orbs:
+  go: circleci/go@0.2.0 # https://circleci.com/orbs/registry/orb/circleci/go
+
+defaults: &defaults
+  working_directory: /go/src/github.com/johncoleman83/cerebrum
+
+merge_master: &merge_master
+  name: Fetch PR merge commit
+  command: |
+    if [[ -n "${CIRCLE_PULL_REQUEST}" ]]; then
+      git fetch origin master
+      git rebase origin/master
+      if [[ $? -ne 0 ]]; then
+        echo "aborting due to detected merge conflicts."
+        exit 1
+      fi
+    fi
+
 jobs:
   test:
+    <<: *defaults
+    parameters:
+      tag:
+        type: string
+        default: '1.13'
     docker:
-      - image: circleci/golang:1.13
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -26,12 +49,12 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/johncoleman83/cerebrum
-    environment: # environment variables for the build itself
-      TEST_RESULTS: ./test # path to where test results will be saved
     steps:
-      - checkout
       - setup_remote_docker
+      - checkout
+      - run:
+          <<: *merge_master
+      - go/install
       - run:
           name: wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
@@ -48,12 +71,13 @@ jobs:
           path: test
 
   lint:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    <<: *defaults
     steps:
-      - checkout
       - setup_remote_docker
+      - checkout
+      - run:
+          <<: *merge_master
+      - go/install
       - run:
           name: install golint
           command: go get -u golang.org/x/lint/golint
@@ -67,12 +91,11 @@ jobs:
           path: test
 
   code_coverage:
-    docker:
-      - image: circleci/golang:1.13
-    working_directory: /go/src/github.com/johncoleman83/cerebrum
+    <<: *defaults
     steps:
       - checkout
-      - setup_remote_docker
+      - run:
+          <<: *merge_master
       # token required for private projects 'bash <(curl -s https://codecov.io/bash) -t token'
       - run:
           name: code coverage check with codecov.io
@@ -82,11 +105,27 @@ jobs:
           destination: test.log
       - store_test_results:
           path: test
+
+  code_climate:
+    <<: *defaults
+    environment: 
+      - CC_TEST_REPORTER_ID: 42fb106e769642e0c715fe3c6299b9bdb8963abe5321a03719b611335096b254
+    steps:
+      - attach_workspace:
+          at: ~/repo/tmp
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 2 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
     
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build_and_test
-      - lint
+      - build_and_test:
+          tag: '1.13'
+      - lint:
+          tag: '1.13'
       - code_coverage
+      - code_climate

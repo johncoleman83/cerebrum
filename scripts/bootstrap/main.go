@@ -59,15 +59,15 @@ func main() {
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	user := models.User{
-		Base:          models.Base{ID: 1},
-		Email:         "rocinante@mail.com",
-		FirstName:     "Rocinante",
-		LastName:      "DeLaMancha",
-		Username:      adminUsername,
-		RoleID:        1,
-		AccountID:     1,
-		PrimaryTeamID: 1,
-		Password:      adminPassword,
+		Base:      models.Base{ID: 1},
+		Email:     "rocinante@mail.com",
+		FirstName: "Rocinante",
+		LastName:  "DeLaMancha",
+		Username:  adminUsername,
+		RoleID:    1,
+		AccountID: 1,
+		TeamID:    1,
+		Password:  adminPassword,
 	}
 	account := models.Account{
 		Base:    models.Base{ID: 1},

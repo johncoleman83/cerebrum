@@ -220,10 +220,10 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
-						ID:            1,
-						AccountID:     2,
-						PrimaryTeamID: 3,
-						AccessLevel:   models.UserRole,
+						ID:          1,
+						AccountID:   2,
+						TeamID:      3,
+						AccessLevel: models.UserRole,
 					}
 				}}},
 		{
@@ -235,10 +235,10 @@ func TestList(t *testing.T) {
 			rbac: &mock.RBAC{
 				UserFn: func(c echo.Context) *models.AuthUser {
 					return &models.AuthUser{
-						ID:            1,
-						AccountID:     2,
-						PrimaryTeamID: 3,
-						AccessLevel:   models.AdminRole,
+						ID:          1,
+						AccountID:   2,
+						TeamID:      3,
+						AccessLevel: models.AdminRole,
 					}
 				}},
 			udb: &mockstore.UserDBClient{
@@ -457,15 +457,15 @@ func TestUpdate(t *testing.T) {
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(1991),
 						},
-						AccountID:     1,
-						PrimaryTeamID: 2,
-						RoleID:        5,
-						FirstName:     "Joanna",
-						LastName:      "Dimsley",
-						Mobile:        "334455",
-						Phone:         "444555",
-						Address:       "Work Address",
-						Email:         "golang@go.org",
+						AccountID: 1,
+						TeamID:    2,
+						RoleID:    5,
+						FirstName: "Joanna",
+						LastName:  "Dimsley",
+						Mobile:    "334455",
+						Phone:     "444555",
+						Address:   "Work Address",
+						Email:     "golang@go.org",
 					}, nil
 				},
 				UpdateFn: func(db *gorm.DB, usr *models.User) error {
@@ -492,15 +492,15 @@ func TestUpdate(t *testing.T) {
 					CreatedAt: mock.TestTime(1990),
 					UpdatedAt: mock.TestTime(2000),
 				},
-				AccountID:     1,
-				PrimaryTeamID: 2,
-				RoleID:        5,
-				FirstName:     "Bethany",
-				LastName:      "Christian",
-				Mobile:        "123456",
-				Phone:         "234567",
-				Address:       "Work Address",
-				Email:         "golang@go.org",
+				AccountID: 1,
+				TeamID:    2,
+				RoleID:    5,
+				FirstName: "Bethany",
+				LastName:  "Christian",
+				Mobile:    "123456",
+				Phone:     "234567",
+				Address:   "Work Address",
+				Email:     "golang@go.org",
 			},
 			udb: &mockstore.UserDBClient{
 				ViewFn: func(db *gorm.DB, id uint) (*models.User, error) {
@@ -510,15 +510,15 @@ func TestUpdate(t *testing.T) {
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(1991),
 						},
-						AccountID:     1,
-						PrimaryTeamID: 2,
-						RoleID:        5,
-						FirstName:     "AnewName",
-						LastName:      "ALastName",
-						Mobile:        "334455",
-						Phone:         "444555",
-						Address:       "Work Address",
-						Email:         "golang@go.org",
+						AccountID: 1,
+						TeamID:    2,
+						RoleID:    5,
+						FirstName: "AnewName",
+						LastName:  "ALastName",
+						Mobile:    "334455",
+						Phone:     "444555",
+						Address:   "Work Address",
+						Email:     "golang@go.org",
 					}, nil
 				},
 				UpdateFn: func(db *gorm.DB, usr *models.User) error {

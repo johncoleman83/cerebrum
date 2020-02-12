@@ -26,18 +26,18 @@ func checkBool(b bool) error {
 func (s *Service) User(c echo.Context) *models.AuthUser {
 	id := c.Get("id").(uint)
 	accountID := c.Get("account_id").(uint)
-	teamID := c.Get("primary_team_id").(uint)
+	teamID := c.Get("team_id").(uint)
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
 	role := c.Get("role").(models.AccessRole)
 
 	return &models.AuthUser{
-		ID:            id,
-		Username:      user,
-		AccountID:     accountID,
-		PrimaryTeamID: teamID,
-		Email:         email,
-		AccessLevel:   role,
+		ID:          id,
+		Username:    user,
+		AccountID:   accountID,
+		TeamID:      teamID,
+		Email:       email,
+		AccessLevel: role,
 	}
 }
 
@@ -48,7 +48,7 @@ func (s *Service) EnforceRole(c echo.Context, r models.AccessRole) error {
 
 // EnforceUser checks whether the request to change user data is done by the same user
 func (s *Service) EnforceUser(c echo.Context, ID uint) error {
-	// TODO: Implement querying db and checking the requested user's account_id/primary_team_id
+	// TODO: Implement querying db and checking the requested user's account_id/team_id
 	// to allow account/team admins to view the user
 	if s.isAdmin(c) {
 		return nil
@@ -78,7 +78,7 @@ func (s *Service) EnforceTeam(c echo.Context, ID uint) error {
 	if err := s.EnforceRole(c, models.TeamAdminRole); err != nil {
 		return err
 	}
-	return checkBool(c.Get("primary_team_id").(uint) == ID)
+	return checkBool(c.Get("team_id").(uint) == ID)
 }
 
 func (s *Service) isAdmin(c echo.Context) bool {

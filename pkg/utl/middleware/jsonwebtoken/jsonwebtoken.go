@@ -57,7 +57,7 @@ func (j *Service) MWFunc() echo.MiddlewareFunc {
 
 			c.Set("id", id)
 			c.Set("account_id", accountID)
-			c.Set("primary_team_id", teamID)
+			c.Set("team_id", teamID)
 			c.Set("username", username)
 			c.Set("email", email)
 			c.Set("role", role)
@@ -98,7 +98,7 @@ func (j *Service) GenerateToken(u *models.User) (string, string, error) {
 		"e":   u.Email,
 		"r":   u.Role.AccessLevel,
 		"c":   u.AccountID,
-		"l":   u.PrimaryTeamID,
+		"l":   u.TeamID,
 		"exp": expire.Unix(),
 	})
 

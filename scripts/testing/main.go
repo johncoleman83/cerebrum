@@ -24,14 +24,14 @@ const (
 
 func createUser(cfg *config.Configuration, sec *secure.Service, r uint, e, f, l, u, p string) models.User {
 	user := models.User{
-		Email:         e,
-		FirstName:     f,
-		LastName:      l,
-		Username:      u,
-		RoleID:        r,
-		AccountID:     1,
-		PrimaryTeamID: 1,
-		Password:      p,
+		Email:     e,
+		FirstName: f,
+		LastName:  l,
+		Username:  u,
+		RoleID:    r,
+		AccountID: 1,
+		TeamID:    1,
+		Password:  p,
 	}
 	if ok := sec.Password(user.Password, user.FirstName, user.LastName, user.Username, user.Email); !ok {
 		log.Fatal(fmt.Sprintf("Password %v is not strong enough", user.Password))

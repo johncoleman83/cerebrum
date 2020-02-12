@@ -94,8 +94,8 @@ func TestGenerateToken(t *testing.T) {
 				Role: models.Role{
 					AccessLevel: models.SuperAdminRole,
 				},
-				AccountID:     1,
-				PrimaryTeamID: 1,
+				AccountID: 1,
+				TeamID:    1,
 			},
 			expectedToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 		},

@@ -1,7 +1,7 @@
 # Cerebrum
 
 [![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/johncoleman83/cerebrum)
-[![codecov](https://codecov.io/gh/johncoleman83/cerebrum/branch/master/graph/badge.svg)](https://codecov.io/gh/johncoleman83/cerebrum)
+[![codecov](https://codecov.io/gh/johncoleman83/cerebrum/branch/main/graph/badge.svg?token=oIta2VhQc8)](https://codecov.io/gh/johncoleman83/cerebrum)
 [![Go Report Card](https://goreportcard.com/badge/github.com/johncoleman83/cerebrum)](https://goreportcard.com/report/github.com/johncoleman83/cerebrum)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 

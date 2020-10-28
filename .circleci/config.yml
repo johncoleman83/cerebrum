@@ -6,12 +6,12 @@
 #
 version: 2
 
-merge_master: &merge_master
+merge_main: &merge_main
   name: Fetch PR merge commit
   command: |
     if [[ -n "${CIRCLE_PULL_REQUEST}" ]]; then
-      git fetch origin master
-      git rebase origin/master
+      git fetch origin main
+      git rebase origin/main
       if [[ $? -ne 0 ]]; then
         echo "aborting due to detected merge conflicts."
         exit 1
@@ -27,7 +27,7 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          <<: *merge_master
+          <<: *merge_main
       - run:
           name: install golint
           command: go get -u golang.org/x/lint/golint
@@ -60,7 +60,7 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          <<: *merge_master
+          <<: *merge_main
       - run:
           name: wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m

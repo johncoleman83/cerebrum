@@ -53,15 +53,15 @@
   version = "v1.5.0"
 
 [[projects]]
-  digest = "1:3d3df99880596fbe936c55974a1d5cf50e35a5599898443e912322b012b05b26"
+  digest = "1:5676bec5a37cdc941224051bbf7792da5293ccce95c9019496f4a5f682cf5038"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
     "dialects/mysql",
   ]
   pruneopts = "NUT"
-  revision = "79a77d771dee4e4b60e9c543e8663bbc80466670"
-  version = "v1.9.12"
+  revision = "6f4358eeb5e3df768c182ae54d90ceacff0880a8"
+  version = "v1.9.16"
 
 [[projects]]
   digest = "1:802f75230c29108e787d40679f9bf5da1a5673eaf5c10eb89afd993e18972909"
@@ -104,12 +104,12 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:bced2617aac935b7931d43bdd5fd5ef3eacbb52291c61e423afe8037f6dd95f9"
+  digest = "1:4f2864b803e69a843d2d01c5c8d437a6228ff1bdbec55327e83e9c42e756137d"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "98ec13f34aabf44cc914c65a1cfb7b9bc815aef1"
-  version = "v0.1.4"
+  revision = "2e1b0c1546e0173c0907cf05c67b8ba29ed8b4d1"
+  version = "v0.1.8"
 
 [[projects]]
   digest = "1:4c2c63bfd4c2ae0c5a9d7f75cab1f4fac4e8c2ce58f52a73322cefc9bdb4c5bd"
@@ -146,7 +146,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:07a1397821cbea64dd3358af7796d4d925ca6ca2616946c0341d1531533d118f"
+  digest = "1:b2c916e532549f809bd38cd17efb5f2f5d861ca2534cec62319cfeb4040cddd1"
   name = "github.com/rs/zerolog"
   packages = [
     ".",
@@ -154,16 +154,16 @@
     "internal/json",
   ]
   pruneopts = "NUT"
-  revision = "f1dd50b8c64d79be1392edf1d8fda5cedea4916d"
-  version = "v1.17.2"
+  revision = "72acd6cfe8bbbf5c52bfc805a3889c6941499c95"
+  version = "v1.20.0"
 
 [[projects]]
-  digest = "1:6e7bb8be062d38ec9e9222973e81835554bfa2181b9ab29ff206514bd44fe8d2"
+  digest = "1:c59bbf7751c26b0fd98789cc8a8bdedc8377a61506537f62874902e597b20fa3"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "NUT"
-  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
-  version = "v1.4.0"
+  revision = "f654a9112bbeac49ca2cd45bfbe11533c4666cf8"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:af354641f23332b1a8d5d361d11b5a9171589e412a67d499633706c611acc064"
@@ -174,16 +174,16 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:f17377eef01c91aee2d0f93095d672bd27697c62e5546bde97f9c8412c141356"
+  digest = "1:d00142b645e575d2181bc4a468fca2671ca20857ce2373bc11b53aa6d1e3a255"
   name = "github.com/valyala/fasttemplate"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "8fcc7a99b5795b7c3e95172237cf93282fc339a9"
-  version = "v1.1.0"
+  revision = "2275c48ed3e40f01fa347e220be31070a89b6ad4"
+  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:9f1f757ecedaf2f5102151502fed104ff185431f3e028f256fa2dd5991dbc3ec"
+  digest = "1:e4418522cf2a46b9c035a832f784f9f3e30136ca276b59c9bf4de3d98acf78ac"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -192,26 +192,29 @@
     "blowfish",
   ]
   pruneopts = "NUT"
-  revision = "530e935923ad688be97c15eeb8e5ee42ebf2b54a"
+  revision = "9e8e0b390897c84cad53ebe9ed2d1d331a5394d9"
 
 [[projects]]
   branch = "master"
-  digest = "1:d1f7edf951b9cc444358a31de2f4e4c1c5c539ea9c6aca13f5bf92eb1124fc4b"
+  digest = "1:c9114d38f9b4f1b76925ad26f7cf4418e17781008ddafb28f441dfe288e195b6"
   name = "golang.org/x/net"
   packages = ["idna"]
   pruneopts = "NUT"
-  revision = "6afb5195e5aab057fda82e27171243402346b0ad"
+  revision = "8eef5233e2a1497eadd978519021e64df3f09d7d"
 
 [[projects]]
   branch = "master"
-  digest = "1:a135a07d1745698cf75b7d37893d246157d10c2a7e95256e5514732e127c15a6"
+  digest = "1:9577ff2bde530dd1ed35f4fe83747bfd894369db2a628eab98e16b0a0452752e"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "internal/unsafeheader",
+    "unix",
+  ]
   pruneopts = "NUT"
-  revision = "9fbb57f87de9ccfe3a99d4e3270ce8a926ebba4f"
+  revision = "708e7fb298acb681b049dc66adab734a0a78a528"
 
 [[projects]]
-  digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
+  digest = "1:a45009ae1e0da0b589cd5da9f30770041573e61f2f79fb3e86aa3790d5c495c4"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -232,16 +235,24 @@
     "unicode/rangetable",
   ]
   pruneopts = "NUT"
-  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
-  version = "v0.3.2"
+  revision = "22f1617af38ed4cd65b3b96e02bab267e560155c"
+  version = "v0.3.4"
 
 [[projects]]
-  digest = "1:d9b9ac6943a512737f76bf3d61b08d97121c66686bc02ffc231313563230b468"
+  digest = "1:62a89978829993fb84e755bff5ae0e3d84837228898fd55b1a88a885036e1e51"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "53403b58ad1b561927d19068c655246f2db79d48"
-  version = "v2.2.8"
+  revision = "0b1645d91e851e735d3e23330303ce81f70adbe3"
+  version = "v2.3.0"
+
+[[projects]]
+  branch = "v3"
+  digest = "1:c9a53b5be2654e3d1d466419bb389371ff3755220ec3cafd43dd8742fb7aebdd"
+  name = "gopkg.in/yaml.v3"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "eeeca48fe7764f320e4870d231902bf9c1be2c08"
 
 [solve-meta]
   analyzer-name = "dep"

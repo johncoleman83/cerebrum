@@ -16,8 +16,8 @@ server:
 
 jwt:
   secret: kP7iUolk16bg5yuPX5TLMTcXHZC9RwKuR2hHgmQPtXlziiSDsB
-  duration_minutes: 15
-  refresh_duration_minutes: 15
+  duration_minutes: 720
+  refresh_duration_minutes: 720
   max_refresh_minutes: 1440
   signing_algorithm: HS256
 

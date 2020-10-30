@@ -1,3 +1,10 @@
+# Website
+
+* UI for [main app](https://github.com/johncoleman83/cerebrum)
+* Conatins a login page and another page to show the user data.
+
+## Info from Bootstrapper
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts

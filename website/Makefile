@@ -20,3 +20,11 @@ install:
 .PHONY: update # run npm update, to make major dependency updates install `npm install -g npm-check-updates` then run `ncu -u`
 update:
 	npm update
+
+.PHONY: serve # run npm start, to serve the UI
+serve:
+	npm start
+
+.PHONY: lint # run es lint
+lint:
+	./node_modules/.bin/eslint --fix src

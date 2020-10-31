@@ -27,6 +27,7 @@ Gorsk is a Golang starter kit for developing RESTful services. It is designed to
 * There's no reason to start 10 new docker containers for every test DB test.
   * Just use 1 test container and be sure to refresh the DB for every test.
 * Removed unused dependencies
+* Added React Redux frontend [website](website)
 
 
 ## Dependencies

@@ -96,12 +96,12 @@
   version = "v0.3.0"
 
 [[projects]]
-  digest = "1:1397155793926ba9ec5ab4f8ad496d3d1bd17622e2e1ecbcabcf7612b12537be"
+  digest = "1:569868a81eff298831a096b20dc5e4b4832e1ead8f0b61f2e03f0cbff15817cd"
   name = "github.com/leodido/go-urn"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "a0f5013415294bb94553821ace21a1a74c0298cc"
-  version = "v1.2.0"
+  revision = "6c96508144d00b380edbc8bda077e27b832d0c7b"
+  version = "v1.2.1"
 
 [[projects]]
   digest = "1:4f2864b803e69a843d2d01c5c8d437a6228ff1bdbec55327e83e9c42e756137d"
@@ -158,12 +158,12 @@
   version = "v1.20.0"
 
 [[projects]]
-  digest = "1:c59bbf7751c26b0fd98789cc8a8bdedc8377a61506537f62874902e597b20fa3"
+  digest = "1:257678dc4f0189515d88387a39364c4f56ea37a632e9cc94e540ab911f0bbb0d"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "NUT"
-  revision = "f654a9112bbeac49ca2cd45bfbe11533c4666cf8"
-  version = "v1.6.1"
+  revision = "acba37e5db06f0093b465a7d47822bf13644b66c"
+  version = "v1.7.0"
 
 [[projects]]
   digest = "1:af354641f23332b1a8d5d361d11b5a9171589e412a67d499633706c611acc064"
@@ -183,7 +183,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e4418522cf2a46b9c035a832f784f9f3e30136ca276b59c9bf4de3d98acf78ac"
+  digest = "1:a04e99e4a70e1f1dc893237123baa92ff0b289e69b9a1cafde5c0d5c25d24990"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -192,7 +192,7 @@
     "blowfish",
   ]
   pruneopts = "NUT"
-  revision = "9e8e0b390897c84cad53ebe9ed2d1d331a5394d9"
+  revision = "eec23a3978adcfd26c29f4153eaa3e3d9b2cc53a"
 
 [[projects]]
   branch = "master"
@@ -200,21 +200,21 @@
   name = "golang.org/x/net"
   packages = ["idna"]
   pruneopts = "NUT"
-  revision = "8eef5233e2a1497eadd978519021e64df3f09d7d"
+  revision = "5f4716e94777e714bc2fb3e3a44599cb40817aac"
 
 [[projects]]
   branch = "master"
-  digest = "1:9577ff2bde530dd1ed35f4fe83747bfd894369db2a628eab98e16b0a0452752e"
+  digest = "1:71799067586598b21f26279d3a0ebead5db41194828b177815ace09af65df4ad"
   name = "golang.org/x/sys"
   packages = [
     "internal/unsafeheader",
     "unix",
   ]
   pruneopts = "NUT"
-  revision = "708e7fb298acb681b049dc66adab734a0a78a528"
+  revision = "22da62e12c0cd9c1da93581e1113ca4d82a5be14"
 
 [[projects]]
-  digest = "1:a45009ae1e0da0b589cd5da9f30770041573e61f2f79fb3e86aa3790d5c495c4"
+  digest = "1:33168e887aff0e3eae823593f38433f28928104925e54a6252937e6e3939f904"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -235,24 +235,24 @@
     "unicode/rangetable",
   ]
   pruneopts = "NUT"
-  revision = "22f1617af38ed4cd65b3b96e02bab267e560155c"
-  version = "v0.3.4"
+  revision = "75a595aef632b07c6eeaaa805adb6f0f66e4130e"
+  version = "v0.3.5"
 
 [[projects]]
-  digest = "1:62a89978829993fb84e755bff5ae0e3d84837228898fd55b1a88a885036e1e51"
+  digest = "1:0b74852e34746033bb64ec0b21c16a4952917bdaf344446a1682f101c042e610"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "0b1645d91e851e735d3e23330303ce81f70adbe3"
-  version = "v2.3.0"
+  revision = "7649d4548cb53a614db133b2a8ac1f31859dda8c"
+  version = "v2.4.0"
 
 [[projects]]
   branch = "v3"
-  digest = "1:c9a53b5be2654e3d1d466419bb389371ff3755220ec3cafd43dd8742fb7aebdd"
+  digest = "1:7f943028086d549b7f99ecad153e416e4726538768d663277f3c272f93ffb1c2"
   name = "gopkg.in/yaml.v3"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "eeeca48fe7764f320e4870d231902bf9c1be2c08"
+  revision = "496545a6307b2a7d7a710fd516e5e16e8ab62dbc"
 
 [solve-meta]
   analyzer-name = "dep"

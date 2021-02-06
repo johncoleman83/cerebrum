@@ -40,8 +40,8 @@ ifeq ($(FOR),app)
 else ifeq ($(FOR),env)
 	./scripts/setup.bash
 else
-	@echo 'Usage: $ make FOR=VAR docker'
-	@echo 'where VAR could be `env` or `dev`'
+	@echo 'Usage: $ make FOR=VAR setup'
+	@echo 'where VAR could be `env` or `app`'
 	@echo 'run `$$ make help` for more info'
 endif
 

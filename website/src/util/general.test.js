@@ -118,16 +118,6 @@ describe('redirectTo', () => {
     expect(window.location.assign).toHaveBeenCalledTimes(1);
     expect(window.location.assign).toHaveBeenCalledWith(href);
   });
-
-  it('should log the redirection and not redirect if in development', () => {
-    getEnvironment.mockReturnValue('development');
-    global.console = { debug: jest.fn() };
-
-    const href = 'some href';
-    redirectTo(href);
-    expect(window.location.assign).toHaveBeenCalledTimes(0);
-    expect(console.debug).toHaveBeenCalledTimes(1);
-  });
 });
 
 describe('reduceArrayToObject', () => {

@@ -1,4 +1,3 @@
-import getEnvironment from 'src/util/environment';
 import {
   setNamedProperties,
   redirectTo,

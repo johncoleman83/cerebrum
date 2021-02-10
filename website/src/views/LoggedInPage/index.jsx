@@ -4,16 +4,14 @@ import {
   Card,
   CardTitle,
   Container,
-  Breadcrumb,
-  BreadcrumbItem,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import {
   user,
   isUserValid,
 } from 'src/features/current-user/selectors';
+import TopNavbar from 'src/components/top-navbar';
 
 class LoggedInPage extends Component {
   constructor(props) {
@@ -30,15 +28,13 @@ class LoggedInPage extends Component {
   render() {
     return (
       <React.Fragment>
+        <TopNavbar />
+
         <Helmet>
           <title>LoggedInPage</title>
         </Helmet>
 
         <Container className="pb-4 h-100 d-flex flex-column">
-          <Breadcrumb>
-            <BreadcrumbItem active>LoggedInPage</BreadcrumbItem>
-            <BreadcrumbItem><Link to="/login">Login Page</Link></BreadcrumbItem>
-          </Breadcrumb>
 
           <h1 className="h1 font-weight-normal">Logged In!</h1>
 

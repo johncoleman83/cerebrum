@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   Container,
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
   Form,
   FormGroup,
@@ -19,6 +17,7 @@ import {
   user,
   isUserValid,
 } from 'src/features/current-user/selectors';
+import TopNavbar from 'src/components/top-navbar';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -61,15 +60,13 @@ class LoginPage extends Component {
   render() {
     return (
       <React.Fragment>
+        <TopNavbar />
+
         <Helmet>
           <title>Login Page</title>
         </Helmet>
 
         <Container className="pb-4 h-100 d-flex flex-column">
-          <Breadcrumb>
-            <BreadcrumbItem active>Login Page</BreadcrumbItem>
-          </Breadcrumb>
-
           <h1 className="h1 font-weight-normal">Login</h1>
           {
             this.props.authorization.error && (

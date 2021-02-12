@@ -19,7 +19,7 @@ const TopNavBar = ({ activeLink }) => {
   const toggleNavbar = () => setCollapsed(!collapsed);
 
   const activeClass = (link) => {
-    link === activeLink ? 'active' : '';
+    return link === activeLink ? 'active' : '';
   };
 
   return (
@@ -31,24 +31,18 @@ const TopNavBar = ({ activeLink }) => {
             <NavbarToggler onClick={toggleNavbar} className="mr-2" />
             <Collapse isOpen={!collapsed} navbar>
               <Nav navbar>
-                <NavItem>
-                  <NavLink tag={Link} to="/" className={activeClass('/')}>
+                <NavItem className={activeClass('/')}>
+                  <NavLink tag={Link} to="/">
                     Home
                   </NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink
-                    tag={Link}
-                    to="/profile"
-                    className={activeClass('/profile')}
-                  >
+                <NavItem className={activeClass('/profile')}>
+                  <NavLink tag={Link} to="/profile">
                     Profile
                   </NavLink>
-                  <NavLink
-                    tag={Link}
-                    to="/login"
-                    className={activeClass('/login')}
-                  >
+                </NavItem>
+                <NavItem className={activeClass('/login')}>
+                  <NavLink tag={Link} to="/login">
                     Login
                   </NavLink>
                 </NavItem>

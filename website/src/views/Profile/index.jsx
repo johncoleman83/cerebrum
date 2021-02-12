@@ -32,7 +32,7 @@ class Profile extends Component {
 
     return (
       <React.Fragment>
-        <TopNavbar activeLink='/'/>
+        <TopNavbar activeLink='/profile'/>
 
         <Helmet>
           <title>Home</title>

@@ -6,13 +6,13 @@ import {
   default as currentUserReducer,
 } from 'src/features/current-user/reducer';
 import {
-  default as authorizationReducer,
-} from 'src/features/authorization/reducer';
+  default as authenticationReducer,
+} from 'src/features/authentication/reducer';
 
 const createReduxStore = () => {
   const allReducers = combineReducers({
     currentUser: currentUserReducer,
-    authorization: authorizationReducer,
+    authentication: authenticationReducer,
   });
 
   const middleware = [thunk];

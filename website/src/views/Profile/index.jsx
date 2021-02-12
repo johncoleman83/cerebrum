@@ -11,9 +11,9 @@ import {
   user,
   isUserValid,
 } from 'src/features/current-user/selectors';
-import TopNavbar from 'src/components/top-navbar';
+import TopNavbar from 'src/components/TopNavBar';
 
-class LoggedInPage extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,12 +26,16 @@ class LoggedInPage extends Component {
   }
 
   render() {
+    console.info('Profile render()');
+    console.info('this.props');
+    console.info(this.props);
+
     return (
       <React.Fragment>
-        <TopNavbar />
+        <TopNavbar activeLink='/'/>
 
         <Helmet>
-          <title>LoggedInPage</title>
+          <title>Home</title>
         </Helmet>
 
         <Container className="pb-4 h-100 d-flex flex-column">
@@ -62,12 +66,7 @@ class LoggedInPage extends Component {
   }
 }
 
-LoggedInPage.propTypes = {
-  authorization: PropTypes.shape({
-    authToken: PropTypes.string,
-    isFetching: PropTypes.bool,
-    error: PropTypes.oneOfType([PropTypes.object]),
-  }),
+Profile.propTypes = {
   currentUser: PropTypes.shape({
     user: PropTypes.oneOfType([
       PropTypes.shape({
@@ -85,11 +84,6 @@ LoggedInPage.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  authorization: {
-    authToken: state.authorization.authToken,
-    error: state.authorization.error,
-    isFetching: state.authorization.isFetching,
-  },
   currentUser: {
     user: user(state),
     isUserValid: isUserValid(state),
@@ -98,4 +92,4 @@ const mapStateToProps = (state) => ({
   },
 });
 
-export default connect(mapStateToProps)(LoggedInPage);
+export default connect(mapStateToProps)(Profile);

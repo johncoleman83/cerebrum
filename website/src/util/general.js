@@ -12,6 +12,18 @@ const camelize = (text, separator = '_') => {
     words.slice(1).map((word) => capitalize(word)).join('')].join('');
 };
 
+export const isAuthError = (error) => {
+  (error && error?.response?.status === 401) ?? false;
+};
+
+
+export function isAuthenticated(state) {
+  return (
+    state.authentication.isAuthValid &&
+    state.currentUser.isUserValid
+  );
+}
+
 export function camelizeKeys(object, keysToSkip = []) {
   return toPairs(object)
       .filter((pair) => !keysToSkip.includes(pair[0]))

@@ -11,15 +11,16 @@ import {
 import { Redirect } from 'react-router';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
-import { loginAction, logoutAction } from 'src/features/authorization/actions';
+import { loginAction, logoutAction } from 'src/features/authentication/actions';
+import { isAuthValid } from 'src/features/authentication/selectors';
 import { fetchMeAction } from 'src/features/current-user/actions';
 import {
   user,
   isUserValid,
 } from 'src/features/current-user/selectors';
-import TopNavbar from 'src/components/top-navbar';
+import TopNavbar from 'src/components/TopNavBar';
 
-class LoginPage extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -47,7 +48,7 @@ class LoginPage extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     await this.props.loginAction(this.state.username, this.state.password);
-    const authToken = this.props.authorization.authToken;
+    const authToken = this.props.authentication.authToken;
     if (authToken.length > 0) {
       await this.props.fetchMeAction(authToken);
     }
@@ -60,7 +61,7 @@ class LoginPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <TopNavbar />
+        <TopNavbar activeLink='/login'/>
 
         <Helmet>
           <title>Login Page</title>
@@ -69,17 +70,17 @@ class LoginPage extends Component {
         <Container className="pb-4 h-100 d-flex flex-column">
           <h1 className="h1 font-weight-normal">Login</h1>
           {
-            this.props.authorization.error && (
+            this.props.authentication.error && (
               <p>error =
                 {
-                  JSON.stringify(this.props.authorization.error.response.data)
+                  JSON.stringify(this.props.authentication.error.response.data)
                 }
               </p>
             )
           }
           {
             this.state.loaded &&
-            this.props.authorization.authToken.length > 0 &&
+            this.props.authentication.authToken.length > 0 &&
             this.props.currentUser.isUserValid &&
               <Redirect to="/" />
           }
@@ -121,16 +122,13 @@ class LoginPage extends Component {
   }
 }
 
-LoginPage.defaultProps = {
-  error: null,
-};
-
-LoginPage.propTypes = {
+Login.propTypes = {
   loginAction: PropTypes.func.isRequired,
   fetchMeAction: PropTypes.func.isRequired,
   logoutAction: PropTypes.func.isRequired,
-  authorization: PropTypes.shape({
+  authentication: PropTypes.shape({
     authToken: PropTypes.string,
+    isAuthValid: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool,
     error: PropTypes.oneOfType([PropTypes.object]),
   }),
@@ -151,10 +149,11 @@ LoginPage.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  authorization: {
-    authToken: state.authorization.authToken,
-    error: state.authorization.error,
-    isFetching: state.authorization.isFetching,
+  authentication: {
+    authToken: state.authentication.authToken,
+    isAuthValid: isAuthValid(state),
+    error: state.authentication.error,
+    isFetching: state.authentication.isFetching,
   },
   currentUser: {
     user: user(state),
@@ -165,4 +164,4 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = { loginAction, fetchMeAction, logoutAction };
-export default connect(mapStateToProps, mapActionsToProps)(LoginPage);
+export default connect(mapStateToProps, mapActionsToProps)(Login);

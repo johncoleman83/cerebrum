@@ -8,16 +8,16 @@ import {
   Label,
   Input,
 } from 'reactstrap';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
-import { loginAction, logoutAction } from 'src/features/authentication/actions';
-import { isAuthValid } from 'src/features/authentication/selectors';
-import { fetchMeAction } from 'src/features/current-user/actions';
+import { loginAction, logoutAction } from 'src/redux/authentication/actions';
+import { isAuthValid } from 'src/redux/authentication/selectors';
+import { fetchMeAction } from 'src/redux/current-user/actions';
 import {
   user,
   isUserValid,
-} from 'src/features/current-user/selectors';
+} from 'src/redux/current-user/selectors';
 import TopNavbar from 'src/components/TopNavBar';
 
 class Login extends Component {
@@ -80,7 +80,7 @@ class Login extends Component {
           }
           {
             this.state.loaded &&
-            this.props.authentication.authToken.length > 0 &&
+            this.props.authentication.isAuthValid &&
             this.props.currentUser.isUserValid &&
               <Redirect to="/" />
           }

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import {
   user,
   isUserValid,
-} from 'src/features/current-user/selectors';
+} from 'src/redux/current-user/selectors';
 import TopNavbar from 'src/components/TopNavBar';
 
 class Profile extends Component {
@@ -26,13 +26,9 @@ class Profile extends Component {
   }
 
   render() {
-    console.info('Profile render()');
-    console.info('this.props');
-    console.info(this.props);
-
     return (
       <React.Fragment>
-        <TopNavbar activeLink='/'/>
+        <TopNavbar activeLink='/profile'/>
 
         <Helmet>
           <title>Home</title>

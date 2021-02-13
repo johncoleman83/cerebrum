@@ -2,7 +2,6 @@ import isPlainObject from 'lodash/isPlainObject';
 import toPairs from 'lodash/toPairs';
 import camelCase from 'lodash/camelCase';
 
-
 const capitalize = (word) =>
   `${word.slice(0, 1).toUpperCase()}${word.slice(1).toLowerCase()}`;
 
@@ -11,18 +10,6 @@ const camelize = (text, separator = '_') => {
   return [words[0],
     words.slice(1).map((word) => capitalize(word)).join('')].join('');
 };
-
-export const isAuthError = (error) => {
-  (error && error?.response?.status === 401) ?? false;
-};
-
-
-export function isAuthenticated(state) {
-  return (
-    state.authentication.isAuthValid &&
-    state.currentUser.isUserValid
-  );
-}
 
 export function camelizeKeys(object, keysToSkip = []) {
   return toPairs(object)

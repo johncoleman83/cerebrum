@@ -1,32 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchMeAction } from 'src/features/current-user/actions';
+import { fetchMeAction } from 'src/redux/current-user/actions';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   user,
   isUserValid,
-} from 'src/features/current-user/selectors';
+} from 'src/redux/current-user/selectors';
 import {
   isAuthValid,
-} from 'src/features/authentication/selectors';
+} from 'src/redux/authentication/selectors';
 import {
   redirectToLogin,
-} from 'src/features/authentication/redirect/util';
+} from 'src/redux/authentication/redirect/util';
 import Login from 'src/views/Login';
 import Home from 'src/views/Home';
 import Profile from 'src/views/Profile';
 import PropTypes from 'prop-types';
 import config from 'src/config/app';
-import { isAuthenticated, isAuthError } from '../../util/general';
+import { shouldLogout, protectedComponent } from '../../util/authentication';
 
 const getBaseName = () => config.URL_STRING;
-
-const shouldLogout = (store) => {
-  return (
-    isAuthError(store.currentUser.error) ||
-    !isAuthenticated(store)
-  );
-};
 
 class App extends Component {
   constructor(props) {
@@ -48,8 +41,6 @@ class App extends Component {
   }
 
   render() {
-    console.info('calling BrowserRouter this.props');
-    console.info(this.props);
     return (
       <BrowserRouter basename={getBaseName()}>
         {this.state.loaded && (
@@ -59,7 +50,7 @@ class App extends Component {
               component={Login} />
             <Route
               path='/profile'
-              component={Profile} />
+              render={() => protectedComponent(Profile, this.props)} />
             <Route
               exact path='/'
               component={Home} />

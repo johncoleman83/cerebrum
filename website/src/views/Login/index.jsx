@@ -59,6 +59,9 @@ class Login extends Component {
   }
 
   render() {
+    console.info('Login render()');
+    console.info('this.props');
+    console.info(this.props);
     return (
       <React.Fragment>
         <TopNavbar activeLink='/login'/>

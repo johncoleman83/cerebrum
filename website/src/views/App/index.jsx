@@ -48,7 +48,7 @@ class App extends Component {
   }
 
   render() {
-    console.info('calling BrowserRouter this.props');
+    console.info('calling App BrowserRouter this.props');
     console.info(this.props);
     return (
       <BrowserRouter basename={getBaseName()}>

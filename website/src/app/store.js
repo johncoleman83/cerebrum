@@ -4,10 +4,10 @@ import {
 } from 'redux';
 import {
   default as currentUserReducer,
-} from 'src/features/current-user/reducer';
+} from 'src/redux/current-user/reducer';
 import {
   default as authenticationReducer,
-} from 'src/features/authentication/reducer';
+} from 'src/redux/authentication/reducer';
 
 const createReduxStore = () => {
   const allReducers = combineReducers({

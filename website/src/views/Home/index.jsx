@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
-import { isAuthValid } from 'src/features/authentication/selectors';
+import { isAuthValid } from 'src/redux/authentication/selectors';
 import TopNavbar from 'src/components/TopNavBar';
 
 class Home extends Component {
@@ -23,8 +23,6 @@ class Home extends Component {
   }
 
   render() {
-    console.info('Home render()');
-    console.info(this.props);
     return (
       <React.Fragment>
         <TopNavbar activeLink='/'/>
